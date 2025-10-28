@@ -1,4 +1,4 @@
-package com.supplychainx.supplychainx;
+package com.supplychainx;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
