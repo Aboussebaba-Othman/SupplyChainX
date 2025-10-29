@@ -1,4 +1,4 @@
-package com.othman.exemple.common.config;
+package com.supplychainx.common.config;
 
 import org.mapstruct.MapperConfig;
 import org.mapstruct.NullValuePropertyMappingStrategy;

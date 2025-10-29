@@ -1,4 +1,4 @@
-package com.othman.exemple.common.config;
+package com.supplychainx.common.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;

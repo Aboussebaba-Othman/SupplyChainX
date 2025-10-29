@@ -28,7 +28,6 @@
         <module>supplychainx-audit</module>
         <module>supplychainx-app</module>
         <module>supplychainx-integration</module>
-        <module>supplychainx-app</module>
     </modules>
     
     <properties>

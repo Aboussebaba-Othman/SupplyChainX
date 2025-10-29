@@ -1,4 +1,4 @@
-package com.othman.exemple.common.constant;
+package com.supplychainx.common.constant;
 
 
 public final class SecurityConstants {
