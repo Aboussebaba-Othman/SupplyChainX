@@ -1,4 +1,4 @@
-package com.othman.exemple.common.dto;
+package com.supplychainx.common.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

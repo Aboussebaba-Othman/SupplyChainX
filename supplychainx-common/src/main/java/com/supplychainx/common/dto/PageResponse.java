@@ -1,4 +1,4 @@
-package com.othman.exemple.common.dto;
+package com.supplychainx.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
