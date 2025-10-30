@@ -27,7 +27,7 @@ public class SupplierController {
 
     private final SupplierService supplierService;
 
-    // US3: Créer un nouveau fournisseur
+   
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Créer un fournisseur", description = "Crée un nouveau fournisseur dans le système")
@@ -37,7 +37,6 @@ public class SupplierController {
         return ApiResponse.success("Fournisseur créé avec succès", supplier);
     }
 
-    // US4: Mettre à jour un fournisseur
     @PutMapping("/{id}")
     @Operation(summary = "Mettre à jour un fournisseur", description = "Met à jour les informations d'un fournisseur existant")
     public ApiResponse<SupplierResponseDTO> update(
@@ -48,7 +47,6 @@ public class SupplierController {
         return ApiResponse.success("Fournisseur mis à jour avec succès", supplier);
     }
 
-    // US5: Supprimer un fournisseur
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Supprimer un fournisseur", description = "Supprime un fournisseur s'il n'a pas de commandes actives")
@@ -57,7 +55,6 @@ public class SupplierController {
         supplierService.delete(id);
     }
 
-    // US6: Consulter un fournisseur par ID
     @GetMapping("/{id}")
     @Operation(summary = "Consulter un fournisseur par ID", description = "Récupère les détails d'un fournisseur par son ID")
     public ApiResponse<SupplierResponseDTO> findById(@PathVariable Long id) {
@@ -66,7 +63,6 @@ public class SupplierController {
         return ApiResponse.success(supplier);
     }
 
-    // Consulter un fournisseur par code
     @GetMapping("/code/{code}")
     @Operation(summary = "Consulter un fournisseur par code", description = "Récupère les détails d'un fournisseur par son code")
     public ApiResponse<SupplierResponseDTO> findByCode(@PathVariable String code) {
@@ -75,7 +71,6 @@ public class SupplierController {
         return ApiResponse.success(supplier);
     }
 
-    // US7: Lister tous les fournisseurs avec pagination
     @GetMapping
     @Operation(summary = "Lister tous les fournisseurs", description = "Récupère la liste de tous les fournisseurs avec pagination")
     public ApiResponse<PageResponse<SupplierResponseDTO>> findAll(
@@ -85,7 +80,6 @@ public class SupplierController {
         return ApiResponse.success(suppliers);
     }
 
-    // Rechercher des fournisseurs par nom
     @GetMapping("/search")
     @Operation(summary = "Rechercher des fournisseurs par nom", description = "Recherche des fournisseurs dont le nom contient la chaîne fournie")
     public ApiResponse<List<SupplierResponseDTO>> searchByName(
@@ -96,7 +90,6 @@ public class SupplierController {
         return ApiResponse.success(suppliers);
     }
 
-    // Filtrer par note minimale
     @GetMapping("/rating/{minRating}")
     @Operation(summary = "Filtrer par note minimale", description = "Récupère les fournisseurs avec une note supérieure ou égale à la note minimale")
     public ApiResponse<List<SupplierResponseDTO>> findByMinimumRating(@PathVariable Double minRating) {
@@ -105,7 +98,6 @@ public class SupplierController {
         return ApiResponse.success(suppliers);
     }
 
-    // Filtrer par délai de livraison maximum
     @GetMapping("/lead-time/{maxLeadTime}")
     @Operation(summary = "Filtrer par délai maximum", description = "Récupère les fournisseurs avec un délai de livraison inférieur ou égal au délai maximum")
     public ApiResponse<List<SupplierResponseDTO>> findByMaxLeadTime(@PathVariable Integer maxLeadTime) {
@@ -114,7 +106,6 @@ public class SupplierController {
         return ApiResponse.success(suppliers);
     }
 
-    // Liste des fournisseurs triés par note
     @GetMapping("/top-rated")
     @Operation(summary = "Fournisseurs les mieux notés", description = "Récupère tous les fournisseurs triés par note décroissante")
     public ApiResponse<List<SupplierResponseDTO>> findTopRated(
@@ -124,7 +115,6 @@ public class SupplierController {
         return ApiResponse.success(suppliers);
     }
 
-    // Vérifier si un fournisseur peut être supprimé
     @GetMapping("/{id}/can-delete")
     @Operation(summary = "Vérifier la suppression possible", description = "Vérifie si un fournisseur peut être supprimé (pas de commandes actives)")
     public ApiResponse<Boolean> canBeDeleted(@PathVariable Long id) {
