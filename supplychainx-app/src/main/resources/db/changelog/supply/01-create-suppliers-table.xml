@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="01-create-suppliers-table" author="supplychainx">
+        <createTable tableName="suppliers">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(100)">
+                <constraints unique="true"/>
+            </column>
+            <column name="phone" type="VARCHAR(20)"/>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="rating" type="DOUBLE"/>
+            <column name="lead_time" type="INT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createIndex indexName="idx_suppliers_code" tableName="suppliers">
+            <column name="code"/>
+        </createIndex>
+        <createIndex indexName="idx_suppliers_email" tableName="suppliers">
+            <column name="email"/>
+        </createIndex>
+        <createIndex indexName="idx_suppliers_rating" tableName="suppliers">
+            <column name="rating"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

@@ -42,6 +42,13 @@ public class RawMaterial extends BaseEntity {
     @Size(max = 20, message = "L'unité ne peut pas dépasser 20 caractères")
     private String unit;
 
+    @Column(name = "unit_price")
+    private Double unitPrice;
+
+    @Column(name = "category", length = 50)
+    @Size(max = 50, message = "La catégorie ne peut pas dépasser 50 caractères")
+    private String category;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "material_suppliers",
