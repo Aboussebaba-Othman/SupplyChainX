@@ -57,12 +57,10 @@ public class Product extends BaseEntity {
     @DecimalMin(value = "0.0", message = "Le coût de production doit être positif")
     private Double productionCost;
 
-    // Relation OneToMany avec BillOfMaterial
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<BillOfMaterial> billsOfMaterial = new ArrayList<>();
 
-    // Relation OneToMany avec ProductionOrder
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<ProductionOrder> productionOrders = new ArrayList<>();
