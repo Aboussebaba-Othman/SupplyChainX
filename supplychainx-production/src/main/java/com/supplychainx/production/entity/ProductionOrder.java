@@ -52,9 +52,6 @@ public class ProductionOrder extends BaseEntity {
     @DecimalMin(value = "0.0", message = "Le coût total doit être positif")
     private Double totalCost;
 
-    @Column(name = "notes", columnDefinition = "TEXT")
-    private String notes;
-
     // Méthode utilitaire pour calculer le coût total de production
     public Double calculateTotalCost() {
         if (product != null && product.getProductionCost() != null && quantity != null) {
