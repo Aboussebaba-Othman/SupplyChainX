@@ -85,14 +85,43 @@ ORDER BY rating DESC, name;
 ```
 1. Create Raw Material - Bois de Chêne
    POST /api/raw-materials
+   Body: {
+     "code": "RM-BOIS-001",
+     "name": "Bois de chêne massif",
+     "category": "Bois",
+     "unit": "kg",
+     "unitPrice": 15.50,
+     "stock": 500,
+     "stockMin": 100
+   }
    ✓ Status: 201 Created
    ✓ code="RM-BOIS-001", category="Bois", stock=500
 
 2. Create Raw Material - Vis Acier
+   POST /api/raw-materials
+   Body: {
+     "code": "RM-VIS-001",
+     "name": "Vis acier 4x40mm",
+     "category": "Quincaillerie",
+     "unit": "pièce",
+     "unitPrice": 0.15,
+     "stock": 10000,
+     "stockMin": 2000
+   }
    ✓ Status: 201 Created
    ✓ code="RM-VIS-001", category="Quincaillerie", stock=10000
 
 3. Create Raw Material - Vernis
+   POST /api/raw-materials
+   Body: {
+     "code": "RM-VERN-001",
+     "name": "Vernis brillant",
+     "category": "Finition",
+     "unit": "litre",
+     "unitPrice": 25.00,
+     "stock": 50,
+     "stockMin": 10
+   }
    ✓ Status: 201 Created
    ✓ code="RM-VERN-001", category="Finition", stock=50
 

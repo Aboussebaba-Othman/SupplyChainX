@@ -129,7 +129,7 @@
 						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"code\": \"RM-BOIS-001\",\n  \"name\": \"Bois de chêne massif\",\n  \"description\": \"Planches de chêne séché 200x50x3 cm\",\n  \"category\": \"Bois\",\n  \"unit\": \"kg\",\n  \"unitPrice\": 15.50,\n  \"stock\": 500,\n  \"stockMin\": 100\n}"
+							"raw": "{\n  \"code\": \"RM-BOIS-001\",\n  \"name\": \"Bois de chêne massif\",\n  \"category\": \"Bois\",\n  \"unit\": \"kg\",\n  \"unitPrice\": 15.50,\n  \"stock\": 500,\n  \"stockMin\": 100\n}"
 						},
 						"url": {"raw": "{{baseUrl}}/api/raw-materials", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials"]}
 					}
@@ -141,7 +141,7 @@
 						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"code\": \"RM-VIS-001\",\n  \"name\": \"Vis acier 4x40mm\",\n  \"description\": \"Vis de fixation en acier inoxydable\",\n  \"category\": \"Quincaillerie\",\n  \"unit\": \"pcs\",\n  \"unitPrice\": 0.25,\n  \"stock\": 10000,\n  \"stockMin\": 2000\n}"
+							"raw": "{\n  \"code\": \"RM-VIS-001\",\n  \"name\": \"Vis acier 4x40mm\",\n  \"category\": \"Quincaillerie\",\n  \"unit\": \"pièce\",\n  \"unitPrice\": 0.15,\n  \"stock\": 10000,\n  \"stockMin\": 2000\n}"
 						},
 						"url": {"raw": "{{baseUrl}}/api/raw-materials", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials"]}
 					}
@@ -153,7 +153,7 @@
 						"header": [{"key": "Content-Type", "value": "application/json"}],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"code\": \"RM-VERN-001\",\n  \"name\": \"Vernis brillant\",\n  \"description\": \"Vernis de finition transparent brillant\",\n  \"category\": \"Finition\",\n  \"unit\": \"L\",\n  \"unitPrice\": 12.00,\n  \"stock\": 50,\n  \"stockMin\": 10\n}"
+							"raw": "{\n  \"code\": \"RM-VERN-001\",\n  \"name\": \"Vernis brillant\",\n  \"category\": \"Finition\",\n  \"unit\": \"litre\",\n  \"unitPrice\": 25.00,\n  \"stock\": 50,\n  \"stockMin\": 10\n}"
 						},
 						"url": {"raw": "{{baseUrl}}/api/raw-materials", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials"]}
 					}
