@@ -119,7 +119,7 @@ public class ProductController {
     @Operation(summary = "Ajouter du stock", description = "Ajoute une quantité au stock d'un produit")
     public ResponseEntity<ProductResponseDTO> addStock(
             @PathVariable Long id,
-            @RequestParam Integer quantity) {
+            @RequestParam Double quantity) {
         log.info("Requête d'ajout de stock pour le produit ID: {} - Quantité: {}", id, quantity);
         ProductResponseDTO response = productService.addStock(id, quantity);
         return ResponseEntity.ok(response);
@@ -129,7 +129,7 @@ public class ProductController {
     @Operation(summary = "Réduire le stock", description = "Réduit le stock d'un produit (avec validation de disponibilité)")
     public ResponseEntity<ProductResponseDTO> reduceStock(
             @PathVariable Long id,
-            @RequestParam Integer quantity) {
+            @RequestParam Double quantity) {
         log.info("Requête de réduction de stock pour le produit ID: {} - Quantité: {}", id, quantity);
         ProductResponseDTO response = productService.reduceStock(id, quantity);
         return ResponseEntity.ok(response);

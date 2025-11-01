@@ -1,6 +1,7 @@
 package com.supplychainx.production.entity;
 
 import com.supplychainx.common.entity.BaseEntity;
+import com.supplychainx.production.enums.Priority;
 import com.supplychainx.production.enums.ProductionOrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -22,7 +23,6 @@ public class ProductionOrder extends BaseEntity {
     @Size(max = 50, message = "Le numéro d'ordre ne peut pas dépasser 50 caractères")
     private String orderNumber;
 
-    // Relation ManyToOne avec Product
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     @NotNull(message = "Le produit est obligatoire")
@@ -33,38 +33,51 @@ public class ProductionOrder extends BaseEntity {
     @Min(value = 1, message = "La quantité doit être au minimum 1")
     private Integer quantity;
 
-    @Column(name = "planned_date", nullable = false)
-    @NotNull(message = "La date de planification est obligatoire")
-    private LocalDate plannedDate;
-
-    @Column(name = "start_date")
-    private LocalDate startDate;
-
-    @Column(name = "completion_date")
-    private LocalDate completionDate;
-
     @Column(name = "status", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Le statut est obligatoire")
     private ProductionOrderStatus status;
 
-    @Column(name = "total_cost")
-    @DecimalMin(value = "0.0", message = "Le coût total doit être positif")
-    private Double totalCost;
+    @Column(name = "start_date")
+    private LocalDate startDate;
 
-    // Méthode utilitaire pour calculer le coût total de production
-    public Double calculateTotalCost() {
-        if (product != null && product.getProductionCost() != null && quantity != null) {
-            return product.getProductionCost() * quantity;
-        }
-        return 0.0;
+    @Column(name = "end_date")
+    private LocalDate endDate;
+
+    @Column(name = "estimated_time")
+    @Min(value = 0, message = "Le temps estimé ne peut pas être négatif")
+    private Integer estimatedTime;
+
+    @Column(name = "priority", length = 20)
+    @Enumerated(EnumType.STRING)
+    private Priority priority;
+
+    public boolean canBeStarted() {
+        return status == ProductionOrderStatus.EN_ATTENTE;
     }
 
-    // Méthode pour vérifier si l'ordre est en retard
-    public boolean isDelayed() {
-        if (status == ProductionOrderStatus.EN_COURS && plannedDate != null) {
-            return LocalDate.now().isAfter(plannedDate);
+    public boolean canBeCancelled() {
+        return status != ProductionOrderStatus.TERMINE && status != ProductionOrderStatus.ANNULE;
+    }
+
+    public Integer calculateEstimatedTime() {
+        if (product != null && product.getProductionTime() != null && quantity != null) {
+            return product.getProductionTime() * quantity;
         }
-        return false;
+        return 0;
+    }
+
+    public boolean checkMaterialsAvailability() {
+        return true;
+    }
+
+    public void consumeMaterials() {
+    }
+
+    public boolean isDelayed() {
+        if (status == null) return false;
+        if (status != ProductionOrderStatus.EN_PRODUCTION) return false;
+        if (endDate == null) return false;
+        return endDate.isBefore(java.time.LocalDate.now());
     }
 }

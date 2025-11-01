@@ -30,9 +30,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     @Query("SELECT COUNT(p) FROM Product p WHERE p.stock < p.stockMin")
     Long countLowStockProducts();
 
-    List<Product> findByStockLessThan(Integer stock);
+    List<Product> findByStockLessThan(Double stock);
 
-    @Query("SELECT SUM(p.productionCost * p.stock) FROM Product p")
+    @Query("SELECT SUM(p.cost * p.stock) FROM Product p")
     Double calculateTotalInventoryValue();
 
     @Query("SELECT CASE WHEN COUNT(po) > 0 THEN true ELSE false END " +

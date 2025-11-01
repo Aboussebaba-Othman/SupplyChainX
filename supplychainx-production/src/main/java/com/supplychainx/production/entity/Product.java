@@ -34,28 +34,23 @@ public class Product extends BaseEntity {
     @Size(max = 50, message = "La catégorie ne peut pas dépasser 50 caractères")
     private String category;
 
+    @Column(name = "production_time")
+    @Min(value = 0, message = "Le temps de production ne peut pas être négatif")
+    private Integer productionTime;
+
+    @Column(name = "cost")
+    @DecimalMin(value = "0.0", message = "Le coût doit être positif")
+    private Double cost;
+
     @Column(name = "stock", nullable = false)
     @NotNull(message = "Le stock est obligatoire")
-    @Min(value = 0, message = "Le stock ne peut pas être négatif")
-    private Integer stock;
+    @DecimalMin(value = "0.0", message = "Le stock ne peut pas être négatif")
+    private Double stock;
 
     @Column(name = "stock_min", nullable = false)
     @NotNull(message = "Le stock minimum est obligatoire")
-    @Min(value = 0, message = "Le stock minimum ne peut pas être négatif")
-    private Integer stockMin;
-
-    @Column(name = "unit", nullable = false, length = 20)
-    @NotBlank(message = "L'unité de mesure est obligatoire")
-    @Size(max = 20, message = "L'unité ne peut pas dépasser 20 caractères")
-    private String unit;
-
-    @Column(name = "unit_price")
-    @DecimalMin(value = "0.0", message = "Le prix unitaire doit être positif")
-    private Double unitPrice;
-
-    @Column(name = "production_cost")
-    @DecimalMin(value = "0.0", message = "Le coût de production doit être positif")
-    private Double productionCost;
+    @DecimalMin(value = "0.0", message = "Le stock minimum ne peut pas être négatif")
+    private Double stockMin;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
@@ -64,6 +59,28 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @Builder.Default
     private List<ProductionOrder> productionOrders = new ArrayList<>();
+
+    // Méthode utilitaire pour vérifier si le produit est disponible en quantité suffisante
+    public boolean isAvailable(Integer quantity) {
+        return stock >= quantity;
+    }
+
+    // Méthode utilitaire pour ajouter du stock
+    public void addStock(Double quantity) {
+        this.stock += quantity;
+    }
+
+    // Méthode utilitaire pour réduire le stock
+    public void reduceStock(Double quantity) {
+        if (this.stock >= quantity) {
+            this.stock -= quantity;
+        }
+    }
+
+    // Méthode utilitaire pour vérifier si le produit peut être supprimé
+    public boolean canBeDeleted() {
+        return productionOrders == null || productionOrders.isEmpty();
+    }
 
     // Méthode utilitaire pour vérifier si le stock est faible
     public boolean isLowStock() {

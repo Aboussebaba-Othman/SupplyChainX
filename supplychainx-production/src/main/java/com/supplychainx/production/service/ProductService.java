@@ -131,7 +131,7 @@ public class ProductService {
     }
 
     // Ajouter du stock à un produit
-    public ProductResponseDTO addStock(Long id, Integer quantity) {
+    public ProductResponseDTO addStock(Long id, Double quantity) {
         log.info("Ajout de {} unités au stock du produit ID: {}", quantity, id);
 
         if (quantity == null || quantity <= 0) {
@@ -141,7 +141,7 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + id));
 
-        Integer currentStock = product.getStock() != null ? product.getStock() : 0;
+        Double currentStock = product.getStock() != null ? product.getStock() : 0.0;
         product.setStock(currentStock + quantity);
 
         Product updatedProduct = productRepository.save(product);
@@ -151,7 +151,7 @@ public class ProductService {
     }
 
     // Réduire le stock d'un produit
-    public ProductResponseDTO reduceStock(Long id, Integer quantity) {
+    public ProductResponseDTO reduceStock(Long id, Double quantity) {
         log.info("Réduction de {} unités du stock du produit ID: {}", quantity, id);
 
         if (quantity == null || quantity <= 0) {
@@ -161,7 +161,7 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + id));
 
-        Integer currentStock = product.getStock() != null ? product.getStock() : 0;
+        Double currentStock = product.getStock() != null ? product.getStock() : 0.0;
 
         if (currentStock < quantity) {
             throw new IllegalArgumentException("Stock insuffisant. Stock actuel: " + currentStock + ", Quantité demandée: " + quantity);

@@ -49,11 +49,11 @@ public class ProductionOrderService {
 
         ProductionOrder productionOrder = productionOrderMapper.toEntity(requestDTO);
         productionOrder.setProduct(product);
-        productionOrder.setStatus(ProductionOrderStatus.PLANIFIE);
+        productionOrder.setStatus(ProductionOrderStatus.EN_ATTENTE);
 
-        // Calculer le coût total estimé
-        Double totalCost = productionOrder.calculateTotalCost();
-        productionOrder.setTotalCost(totalCost);
+        // Calculer le temps estimé
+        Integer estimatedTime = productionOrder.calculateEstimatedTime();
+        productionOrder.setEstimatedTime(estimatedTime);
 
         ProductionOrder savedOrder = productionOrderRepository.save(productionOrder);
 
@@ -120,7 +120,7 @@ public class ProductionOrderService {
     public List<ProductionOrderResponseDTO> getDelayedProductionOrders() {
         log.debug("Récupération des ordres de production retardés");
 
-        List<ProductionOrder> delayedOrders = productionOrderRepository.findDelayedOrders(LocalDate.now());
+        List<ProductionOrder> delayedOrders = productionOrderRepository.findByStatusAndEndDateBefore(ProductionOrderStatus.EN_PRODUCTION, LocalDate.now());
         return productionOrderMapper.toResponseDTOList(delayedOrders);
     }
 
@@ -129,8 +129,9 @@ public class ProductionOrderService {
     public Page<ProductionOrderResponseDTO> getProductionOrdersByDateRange(LocalDate startDate, LocalDate endDate, Pageable pageable) {
         log.debug("Récupération des ordres de production entre {} et {}", startDate, endDate);
 
-        return productionOrderRepository.findByPlannedDateBetween(startDate, endDate, pageable)
-                .map(productionOrderMapper::toResponseDTO);
+    // Use startDate as the period field (plannedDate was removed/renamed to startDate)
+    return productionOrderRepository.findByStartDateBetween(startDate, endDate, pageable)
+        .map(productionOrderMapper::toResponseDTO);
     }
 
     // Mettre à jour un ordre de production
@@ -159,9 +160,9 @@ public class ProductionOrderService {
         productionOrderMapper.updateEntityFromDTO(requestDTO, productionOrder);
         productionOrder.setProduct(product);
 
-        // Recalculer le coût total
-        Double totalCost = productionOrder.calculateTotalCost();
-        productionOrder.setTotalCost(totalCost);
+        // Recalculer le temps estimé
+        Integer estimatedTime = productionOrder.calculateEstimatedTime();
+        productionOrder.setEstimatedTime(estimatedTime);
 
         ProductionOrder updatedOrder = productionOrderRepository.save(productionOrder);
 
@@ -176,9 +177,9 @@ public class ProductionOrderService {
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec l'ID: " + id));
 
-        // Vérifier que l'ordre est au statut PLANIFIE
-        if (productionOrder.getStatus() != ProductionOrderStatus.PLANIFIE) {
-            throw new IllegalArgumentException("Seuls les ordres planifiés peuvent être démarrés. Statut actuel: " + productionOrder.getStatus());
+        // Vérifier que l'ordre est au statut EN_ATTENTE
+        if (productionOrder.getStatus() != ProductionOrderStatus.EN_ATTENTE) {
+            throw new IllegalArgumentException("Seuls les ordres en attente peuvent être démarrés. Statut actuel: " + productionOrder.getStatus());
         }
 
         // Vérifier la disponibilité des matières premières
@@ -187,7 +188,7 @@ public class ProductionOrderService {
         }
 
         // Mettre à jour le statut et la date de début
-        productionOrder.setStatus(ProductionOrderStatus.EN_COURS);
+        productionOrder.setStatus(ProductionOrderStatus.EN_PRODUCTION);
         productionOrder.setStartDate(LocalDate.now());
 
         ProductionOrder updatedOrder = productionOrderRepository.save(productionOrder);
@@ -203,9 +204,9 @@ public class ProductionOrderService {
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec l'ID: " + id));
 
-        // Vérifier que l'ordre est au statut EN_COURS
-        if (productionOrder.getStatus() != ProductionOrderStatus.EN_COURS) {
-            throw new IllegalArgumentException("Seuls les ordres en cours peuvent être terminés. Statut actuel: " + productionOrder.getStatus());
+        // Vérifier que l'ordre est au statut EN_PRODUCTION
+        if (productionOrder.getStatus() != ProductionOrderStatus.EN_PRODUCTION) {
+            throw new IllegalArgumentException("Seuls les ordres en production peuvent être terminés. Statut actuel: " + productionOrder.getStatus());
         }
 
         // Consommer les matières premières
@@ -213,13 +214,13 @@ public class ProductionOrderService {
 
         // Ajouter les produits finis au stock
         Product product = productionOrder.getProduct();
-        Integer currentStock = product.getStock() != null ? product.getStock() : 0;
+        Double currentStock = product.getStock() != null ? product.getStock() : 0.0;
         product.setStock(currentStock + productionOrder.getQuantity());
         productRepository.save(product);
 
         // Mettre à jour le statut et la date de fin
         productionOrder.setStatus(ProductionOrderStatus.TERMINE);
-        productionOrder.setCompletionDate(LocalDate.now());
+        productionOrder.setEndDate(LocalDate.now());
 
         ProductionOrder updatedOrder = productionOrderRepository.save(productionOrder);
 
@@ -260,7 +261,7 @@ public class ProductionOrderService {
                 .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec l'ID: " + id));
 
         // Seuls les ordres annulés ou planifiés peuvent être supprimés
-        if (productionOrder.getStatus() == ProductionOrderStatus.EN_COURS || 
+        if (productionOrder.getStatus() == ProductionOrderStatus.EN_PRODUCTION || 
             productionOrder.getStatus() == ProductionOrderStatus.TERMINE) {
             throw new IllegalArgumentException("Impossible de supprimer un ordre en cours ou terminé. Veuillez d'abord l'annuler.");
         }
@@ -306,7 +307,8 @@ public class ProductionOrderService {
             }
 
             // Réduire le stock de la matière première
-            rawMaterial.setStock((int) (rawMaterial.getStock() - requiredQuantity));
+            // RawMaterial.stock is Integer, so round requiredQuantity up
+            rawMaterial.setStock(rawMaterial.getStock() - (int) Math.ceil(requiredQuantity));
             rawMaterialRepository.save(rawMaterial);
 
             log.debug("Matière première consommée: {} - Quantité: {}", rawMaterial.getName(), requiredQuantity);

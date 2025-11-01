@@ -22,17 +22,17 @@
             <column name="category" type="VARCHAR(50)">
                 <constraints nullable="true"/>
             </column>
-            <column name="stock" type="INT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="stock_min" type="INT">
-                <constraints nullable="false"/>
-            </column>
             <column name="production_time" type="INT">
                 <constraints nullable="true"/>
             </column>
             <column name="cost" type="DECIMAL(10,2)">
                 <constraints nullable="true"/>
+            </column>
+            <column name="stock" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stock_min" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
             </column>
             <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
                 <constraints nullable="false"/>

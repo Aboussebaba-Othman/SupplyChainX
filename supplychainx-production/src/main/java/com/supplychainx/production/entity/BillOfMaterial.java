@@ -15,13 +15,11 @@ import lombok.*;
 @EqualsAndHashCode(callSuper = true)
 public class BillOfMaterial extends BaseEntity {
 
-    // Relation ManyToOne avec Product (un produit peut avoir plusieurs lignes de nomenclature)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     @NotNull(message = "Le produit est obligatoire")
     private Product product;
 
-    // Relation ManyToOne avec RawMaterial (une matière première peut être utilisée dans plusieurs produits)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "raw_material_id", nullable = false)
     @NotNull(message = "La matière première est obligatoire")
@@ -37,8 +35,7 @@ public class BillOfMaterial extends BaseEntity {
     @Size(max = 20, message = "L'unité ne peut pas dépasser 20 caractères")
     private String unit;
 
-    // Méthode utilitaire pour calculer le coût de cette ligne de nomenclature
-    public Double calculateLineCost() {
+    public Double calculateTotalCost() {
         if (rawMaterial != null && rawMaterial.getUnitPrice() != null && quantity != null) {
             return rawMaterial.getUnitPrice() * quantity;
         }

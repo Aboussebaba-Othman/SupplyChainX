@@ -20,7 +20,7 @@ public interface BillOfMaterialMapper {
     BillOfMaterial toEntity(BillOfMaterialRequestDTO dto);
 
     // Convertir Entity vers ResponseDTO
-    @Mapping(target = "lineCost", expression = "java(entity.calculateLineCost())")
+    @Mapping(target = "lineCost", expression = "java(entity.calculateTotalCost())")
     BillOfMaterialResponseDTO toResponseDTO(BillOfMaterial entity);
 
     // Convertir une liste d'entités vers une liste de DTOs
