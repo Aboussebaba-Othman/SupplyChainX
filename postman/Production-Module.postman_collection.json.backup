@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "production-module-2025",
+		"_postman_id": "production-module-2024",
 		"name": "SupplyChainX - Production Module",
 		"description": "Collection complète pour tester le module Production (Products, Bills of Material, Production Orders)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -21,7 +21,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"code\": \"PROD-001\",\n  \"name\": \"Chaise en bois\",\n  \"description\": \"Chaise ergonomique en bois massif\",\n  \"category\": \"Mobilier\",\n  \"unit\": \"pièce\",\n  \"unitPrice\": 89.99,\n  \"productionCost\": 45.50,\n  \"stock\": 100,\n  \"stockMin\": 20\n}"
+							"raw": "{\n  \"code\": \"PROD-001\",\n  \"name\": \"Chaise en bois\",\n  \"description\": \"Chaise ergonomique en bois massif\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 120,\n  \"cost\": 45.50,\n  \"stock\": 100.0,\n  \"stockMin\": 20.0\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/production/products",
@@ -49,7 +49,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"code\": \"PROD-002\",\n  \"name\": \"Table rectangulaire\",\n  \"description\": \"Table en chêne massif 180x90cm\",\n  \"category\": \"Mobilier\",\n  \"unit\": \"pièce\",\n  \"unitPrice\": 299.99,\n  \"productionCost\": 120.00,\n  \"stock\": 50,\n  \"stockMin\": 10\n}"
+							"raw": "{\n  \"code\": \"PROD-002\",\n  \"name\": \"Table rectangulaire\",\n  \"description\": \"Table en chêne massif 180x90cm\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 180,\n  \"cost\": 120.00,\n  \"stock\": 50.0,\n  \"stockMin\": 10.0\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/production/products",
@@ -288,7 +288,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"code\": \"PROD-001\",\n  \"name\": \"Chaise en bois premium\",\n  \"description\": \"Chaise ergonomique en bois massif de chêne\",\n  \"category\": \"Mobilier\",\n  \"unit\": \"pièce\",\n  \"unitPrice\": 99.99,\n  \"productionCost\": 52.00,\n  \"stock\": 100,\n  \"stockMin\": 20\n}"
+							"raw": "{\n  \"code\": \"PROD-001\",\n  \"name\": \"Chaise en bois premium\",\n  \"description\": \"Chaise ergonomique en bois massif de chêne\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 150,\n  \"cost\": 52.00,\n  \"stock\": 100.0,\n  \"stockMin\": 20.0\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/production/products/1",
