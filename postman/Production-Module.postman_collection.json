@@ -1,0 +1,1031 @@
+{
+	"info": {
+		"_postman_id": "production-module-2024",
+		"name": "SupplyChainX - Production Module",
+		"description": "Collection complète pour tester le module Production (Products, Bills of Material, Production Orders)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"PROD-001\",\n  \"name\": \"Chaise en bois\",\n  \"description\": \"Chaise ergonomique en bois massif\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 120,\n  \"cost\": 45.50,\n  \"stock\": 100.0,\n  \"stockMin\": 20.0\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product - Table",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"PROD-002\",\n  \"name\": \"Table rectangulaire\",\n  \"description\": \"Table en chêne massif 180x90cm\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 180,\n  \"cost\": 120.00,\n  \"stock\": 50.0,\n  \"stockMin\": 10.0\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products?page=0&size=20&sort=name,asc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "name,asc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/code/PROD-001",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"code",
+								"PROD-001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Products by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/search?name=Chaise&page=0&size=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Chaise"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/category/Mobilier?page=0&size=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"category",
+								"Mobilier"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Low Stock Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/low-stock?page=0&size=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"low-stock"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Count Low Stock Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/low-stock/count",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"low-stock",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calculate Total Inventory Value",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/inventory/value",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"inventory",
+								"value"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"PROD-001\",\n  \"name\": \"Chaise en bois premium\",\n  \"description\": \"Chaise ergonomique en bois massif de chêne\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 150,\n  \"cost\": 52.00,\n  \"stock\": 100.0,\n  \"stockMin\": 20.0\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Stock",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/1/add-stock?quantity=50.0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"1",
+								"add-stock"
+							],
+							"query": [
+								{
+									"key": "quantity",
+									"value": "50.0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reduce Stock",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/1/reduce-stock?quantity=25.0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"1",
+								"reduce-stock"
+							],
+							"query": [
+								{
+									"key": "quantity",
+									"value": "25.0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/products/99",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"products",
+								"99"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bills of Material",
+			"item": [
+				{
+					"name": "Create BOM - Chaise (Bois)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": 1,\n  \"rawMaterialId\": 1,\n  \"quantity\": 2.5,\n  \"unit\": \"kg\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create BOM - Chaise (Vis)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": 1,\n  \"rawMaterialId\": 2,\n  \"quantity\": 12.0,\n  \"unit\": \"pcs\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create BOM - Table (Bois)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": 2,\n  \"rawMaterialId\": 1,\n  \"quantity\": 8.0,\n  \"unit\": \"kg\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Bills of Material",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get BOM by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get BOMs by Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material/product/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material",
+								"product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get BOMs by Raw Material",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material/raw-material/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material",
+								"raw-material",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Total Raw Material Quantity for Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material/product/1/total-quantity",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material",
+								"product",
+								"1",
+								"total-quantity"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update BOM",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": 1,\n  \"rawMaterialId\": 1,\n  \"quantity\": 3.0,\n  \"unit\": \"kg\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete BOM",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/bills-of-material/99",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"bills-of-material",
+								"99"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Production Orders",
+			"item": [
+				{
+					"name": "Create Production Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"PO-2025-001\",\n  \"productId\": 1,\n  \"quantity\": 10,\n  \"priority\": \"STANDARD\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Production Order - Urgent",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"PO-2025-002\",\n  \"productId\": 2,\n  \"quantity\": 5,\n  \"priority\": \"URGENT\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Production Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders?page=0&size=20&sort=orderNumber,desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								},
+								{
+									"key": "sort",
+									"value": "orderNumber,desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Production Order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Production Order by Number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/number/PO-2025-001",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"number",
+								"PO-2025-001"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders by Status - EN_ATTENTE",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/status/EN_ATTENTE?page=0&size=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"status",
+								"EN_ATTENTE"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders by Status - EN_PRODUCTION",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/status/EN_PRODUCTION?page=0&size=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"status",
+								"EN_PRODUCTION"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders by Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/product/1?page=0&size=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"product",
+								"1"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Delayed Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/delayed",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"delayed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders by Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/date-range?startDate=2025-11-01&endDate=2025-11-30&page=0&size=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"date-range"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-11-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-11-30"
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Production Order",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"PO-2025-001\",\n  \"productId\": 1,\n  \"quantity\": 15,\n  \"priority\": \"URGENT\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Start Production",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/1/start",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"1",
+								"start"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Production",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/1/complete",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"1",
+								"complete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Production Order",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/2/cancel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"2",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Production Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/production/orders/99",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"production",
+								"orders",
+								"99"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081",
+			"type": "string"
+		}
+	]
+}
