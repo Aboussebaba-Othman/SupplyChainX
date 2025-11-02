@@ -26,5 +26,6 @@ public interface ProductionOrderMapper {
 
     // Mettre à jour une entité existante avec les données du DTO
     @Mapping(target = "product", ignore = true)
+    @Mapping(target = "status", ignore = true)
     void updateEntityFromDTO(ProductionOrderRequestDTO dto, @MappingTarget ProductionOrder entity);
 }

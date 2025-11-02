@@ -740,7 +740,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/production/production-orders/number/PO-2025-001",
+							"raw": "{{baseUrl}}/api/production/production-orders/order-number/PO-2025-001",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -748,7 +748,7 @@
 								"api",
 								"production",
 								"production-orders",
-								"number",
+								"order-number",
 								"PO-2025-001"
 							]
 						}
@@ -918,10 +918,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"orderNumber\": \"PO-2025-001\",\n  \"productId\": 1,\n  \"quantity\": 15,\n  \"priority\": \"URGENT\"\n}"
+							"raw": "{\n  \"orderNumber\": \"PO-2025-TEST-001\",\n  \"productId\": 1,\n  \"quantity\": 15,\n  \"priority\": \"STANDARD\"\n}"
 						},
 						"url": {
-							"raw": "{{baseUrl}}/api/production/production-orders/1",
+							"raw": "{{baseUrl}}/api/production/production-orders/3",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -929,7 +929,7 @@
 								"api",
 								"production",
 								"production-orders",
-								"1"
+								"3"
 							]
 						}
 					},
