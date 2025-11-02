@@ -18,11 +18,10 @@ public class ProductResponseDTO {
     private String name;
     private String description;
     private String category;
-    private Integer stock;
-    private Integer stockMin;
-    private String unit;
-    private Double unitPrice;
-    private Double productionCost;
+    private Double stock;
+    private Double stockMin;
+    private Integer productionTime;
+    private Double cost;
     private boolean lowStock;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

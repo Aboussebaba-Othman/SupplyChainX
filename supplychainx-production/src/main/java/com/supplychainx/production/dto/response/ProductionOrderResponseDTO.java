@@ -19,11 +19,11 @@ public class ProductionOrderResponseDTO {
     private String orderNumber;
     private ProductResponseDTO product;
     private Integer quantity;
-    private LocalDate plannedDate;
     private LocalDate startDate;
-    private LocalDate completionDate;
+    private LocalDate endDate;
     private ProductionOrderStatus status;
-    private Double totalCost;
+    private Integer estimatedTime;
+    private String priority;
     private boolean delayed;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

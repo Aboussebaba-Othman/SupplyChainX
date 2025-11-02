@@ -56,7 +56,7 @@ public class ProductionOrderController {
     @GetMapping
     @Operation(summary = "Récupérer tous les ordres de production", description = "Récupère la liste paginée de tous les ordres de production")
     public ResponseEntity<Page<ProductionOrderResponseDTO>> getAllProductionOrders(
-            @PageableDefault(size = 20, sort = "plannedDate") Pageable pageable) {
+            @PageableDefault(size = 20, sort = "startDate") Pageable pageable) {
         log.info("Requête de récupération de tous les ordres de production - Page: {}, Size: {}", 
                  pageable.getPageNumber(), pageable.getPageSize());
         Page<ProductionOrderResponseDTO> response = productionOrderService.getAllProductionOrders(pageable);
@@ -67,7 +67,7 @@ public class ProductionOrderController {
     @Operation(summary = "Récupérer les ordres de production par statut", description = "Récupère tous les ordres de production d'un statut spécifique")
     public ResponseEntity<Page<ProductionOrderResponseDTO>> getProductionOrdersByStatus(
             @PathVariable ProductionOrderStatus status,
-            @PageableDefault(size = 20, sort = "plannedDate") Pageable pageable) {
+            @PageableDefault(size = 20, sort = "startDate") Pageable pageable) {
         log.info("Requête de récupération des ordres de production avec le statut: {}", status);
         Page<ProductionOrderResponseDTO> response = productionOrderService.getProductionOrdersByStatus(status, pageable);
         return ResponseEntity.ok(response);
@@ -77,7 +77,7 @@ public class ProductionOrderController {
     @Operation(summary = "Récupérer les ordres de production par produit", description = "Récupère tous les ordres de production pour un produit spécifique")
     public ResponseEntity<Page<ProductionOrderResponseDTO>> getProductionOrdersByProduct(
             @PathVariable Long productId,
-            @PageableDefault(size = 20, sort = "plannedDate") Pageable pageable) {
+            @PageableDefault(size = 20, sort = "startDate") Pageable pageable) {
         log.info("Requête de récupération des ordres de production pour le produit ID: {}", productId);
         Page<ProductionOrderResponseDTO> response = productionOrderService.getProductionOrdersByProduct(productId, pageable);
         return ResponseEntity.ok(response);
@@ -96,7 +96,7 @@ public class ProductionOrderController {
     public ResponseEntity<Page<ProductionOrderResponseDTO>> getProductionOrdersByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @PageableDefault(size = 20, sort = "plannedDate") Pageable pageable) {
+            @PageableDefault(size = 20, sort = "startDate") Pageable pageable) {
         log.info("Requête de récupération des ordres de production entre {} et {}", startDate, endDate);
         Page<ProductionOrderResponseDTO> response = productionOrderService.getProductionOrdersByDateRange(startDate, endDate, pageable);
         return ResponseEntity.ok(response);

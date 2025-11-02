@@ -26,20 +26,17 @@ public class ProductRequestDTO {
     private String category;
 
     @NotNull(message = "Le stock est obligatoire")
-    @Min(value = 0, message = "Le stock ne peut pas être négatif")
-    private Integer stock;
+    @DecimalMin(value = "0.0", message = "Le stock ne peut pas être négatif")
+    private Double stock;
 
     @NotNull(message = "Le stock minimum est obligatoire")
-    @Min(value = 0, message = "Le stock minimum ne peut pas être négatif")
-    private Integer stockMin;
+    @DecimalMin(value = "0.0", message = "Le stock minimum ne peut pas être négatif")
+    private Double stockMin;
 
-    @NotBlank(message = "L'unité de mesure est obligatoire")
-    @Size(max = 20, message = "L'unité ne peut pas dépasser 20 caractères")
-    private String unit;
-
-    @DecimalMin(value = "0.0", message = "Le prix unitaire doit être positif")
-    private Double unitPrice;
+    @Min(value = 0, message = "Le temps de production doit être positif")
+    private Integer productionTime;
 
     @DecimalMin(value = "0.0", message = "Le coût de production doit être positif")
-    private Double productionCost;
+    private Double cost;
 }
+

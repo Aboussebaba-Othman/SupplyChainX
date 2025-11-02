@@ -23,7 +23,7 @@ public interface ProductionOrderRepository extends JpaRepository<ProductionOrder
 
     Page<ProductionOrder> findByStatus(ProductionOrderStatus status, Pageable pageable);
 
-    @Query("SELECT po FROM ProductionOrder po WHERE po.plannedDate BETWEEN :start AND :end")
+    @Query("SELECT po FROM ProductionOrder po WHERE po.startDate BETWEEN :start AND :end")
     Page<ProductionOrder> findByStartDateBetween(@Param("start") LocalDate start, @Param("end") LocalDate end, Pageable pageable);
 
     // Find orders in a given status whose end date is before `now` (delayed)

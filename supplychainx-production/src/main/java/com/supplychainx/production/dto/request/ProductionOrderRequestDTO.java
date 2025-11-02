@@ -1,5 +1,6 @@
 package com.supplychainx.production.dto.request;
 
+import com.supplychainx.production.enums.Priority;
 import com.supplychainx.production.enums.ProductionOrderStatus;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -26,11 +27,9 @@ public class ProductionOrderRequestDTO {
     @Min(value = 1, message = "La quantité doit être au minimum 1")
     private Integer quantity;
 
-    @NotNull(message = "La date de planification est obligatoire")
-    private LocalDate plannedDate;
+    private LocalDate startDate;
 
-    @NotNull(message = "Le statut est obligatoire")
     private ProductionOrderStatus status;
 
-    private String notes;
+    private Priority priority;
 }
