@@ -4,7 +4,8 @@ This repository contains a multi-module Spring Boot application for SupplyChainX
 
 Quick commands
 
-- Build the application (from repo root):
+  
+[![CI](https://github.com/Aboussebaba-Othman/SupplyChainX/actions/workflows/ci.yml/badge.svg?branch=supplychainx-production)](https://github.com/Aboussebaba-Othman/SupplyChainX/actions/workflows/ci.yml)
 
   ./mvnw clean package -DskipTests
 
