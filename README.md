@@ -61,6 +61,14 @@ SupplyChainX est une application complète de gestion de chaîne d'approvisionne
   - Workflow complet de production (Planification → Production → Terminé)
   - Gestion automatique des stocks
 
+- **Module Delivery (Livraison)**
+  - Gestion des clients
+  - Commandes de livraison multi-produits
+  - Lignes de commande avec validation des stocks
+  - Gestion des livraisons physiques
+  - Suivi de livraison (tracking)
+  - Workflow complet (Préparation → En route → Livrée)
+
 ## 🏗️ Architecture
 
 ### Structure Multi-Module Maven
@@ -71,6 +79,7 @@ SupplyChainX/
 ├── supplychainx-security/        # Configuration de sécurité
 ├── supplychainx-supply/          # Module Approvisionnement
 ├── supplychainx-production/      # Module Production
+├── supplychainx-delivery/        # Module Livraison
 └── supplychainx-app/             # Application principale (point d'entrée)
 ```
 
@@ -217,6 +226,51 @@ PATCH  /api/production/production-orders/{id}/complete # Terminer la production
 PATCH  /api/production/production-orders/{id}/cancel   # Annuler un ordre
 ```
 
+#### 🚚 **Delivery Module - Clients**
+```
+POST   /api/delivery/customers            # Créer un client
+GET    /api/delivery/customers            # Liste des clients (paginée)
+GET    /api/delivery/customers/{id}       # Détails d'un client
+GET    /api/delivery/customers/code/{code} # Client par code
+PUT    /api/delivery/customers/{id}       # Modifier un client
+GET    /api/delivery/customers/search?keyword=xxx  # Rechercher des clients
+GET    /api/delivery/customers/city/{city}         # Clients par ville
+GET    /api/delivery/customers/country/{country}   # Clients par pays
+DELETE /api/delivery/customers/{id}       # Supprimer un client
+```
+
+#### 📦 **Delivery Module - Commandes de Livraison**
+```
+POST   /api/delivery/orders               # Créer une commande (multi-produits)
+GET    /api/delivery/orders               # Liste des commandes (paginée)
+GET    /api/delivery/orders/{id}          # Détails d'une commande
+GET    /api/delivery/orders/number/{orderNumber}  # Commande par numéro
+PUT    /api/delivery/orders/{id}          # Modifier une commande
+GET    /api/delivery/orders/status/{status}       # Commandes par statut
+GET    /api/delivery/orders/customer/{customerId} # Commandes d'un client
+GET    /api/delivery/orders/date-range?startDate&endDate  # Par période
+GET    /api/delivery/orders/delayed       # Commandes en retard
+PATCH  /api/delivery/orders/{id}/status?status=xxx # Changer le statut
+DELETE /api/delivery/orders/{id}          # Supprimer une commande
+```
+
+#### 🚛 **Delivery Module - Livraisons**
+```
+POST   /api/delivery/deliveries           # Créer une livraison
+GET    /api/delivery/deliveries           # Liste des livraisons (paginée)
+GET    /api/delivery/deliveries/{id}      # Détails d'une livraison
+GET    /api/delivery/deliveries/number/{deliveryNumber}  # Par numéro
+GET    /api/delivery/deliveries/tracking/{trackingNumber} # Par tracking
+GET    /api/delivery/deliveries/order/{deliveryOrderId}   # Livraison d'une commande
+GET    /api/delivery/deliveries/status/{status}           # Par statut
+GET    /api/delivery/deliveries/date/{date}               # Par date
+GET    /api/delivery/deliveries/delayed    # Livraisons en retard
+GET    /api/delivery/deliveries/driver/{driver}  # Livraisons d'un chauffeur
+PATCH  /api/delivery/deliveries/{id}/status?status=xxx  # Changer le statut
+PATCH  /api/delivery/deliveries/{id}/deliver            # Marquer comme livrée
+DELETE /api/delivery/deliveries/{id}       # Supprimer une livraison
+```
+
 ### 📄 Documentation Swagger
 
 Documentation interactive complète disponible à :
@@ -249,8 +303,69 @@ Le projet inclut deux types de tests automatisés :
 # Tests d'intégration (workflow complet)
 ./mvnw -pl supplychainx-app test -Dtest=ProductionWorkflowIntegrationTest
 
+# Tests d'intégration Delivery
+./mvnw -pl supplychainx-app test -Dtest=DeliveryWorkflowIntegrationTest
+
 # Tous les tests du projet
 ./mvnw test
+```
+
+### Scénarios de Tests d'Intégration
+
+#### Production Workflow
+
+Les tests d'intégration validentsle workflow complet Production:
+
+1. **Workflow Nominal** (`testCompleteProductionWorkflow_success`)
+   - Création Supplier → RawMaterial → Product → BOM
+   - Création d'un ordre de production (10 unités)
+   - Démarrage de la production (vérification stock matières)
+   - Finalisation de la production (consommation matières + ajout produits)
+   - Assertions : stocks mis à jour correctement
+
+2. **Matières Insuffisantes** (`testProductionWorkflow_insufficientMaterials_fails`)
+   - BOM nécessitant 2000 kg alors que seulement 1000 disponibles
+   - Tentative de démarrage → exception attendue
+   - Statut reste `EN_ATTENTE`
+
+3. **État Invalide** (`testProductionWorkflow_cannotCompleteNonStartedOrder`)
+   - Tentative de finaliser un ordre non démarré
+   - Exception attendue avec message explicite
+
+#### Delivery Workflow
+
+Les tests d'intégration Delivery couvrent 7 scénarios:
+
+1. **Workflow Complet** (`testCompleteDeliveryWorkflow_success`)
+   - Création Client → Products → DeliveryOrder (multi-lignes) → Delivery
+   - Transitions de statut : EN_PREPARATION → EN_ROUTE → LIVREE
+   - Vérification des relations et calculs (totalAmount, tracking)
+
+2. **Produit Indisponible** (`testDeliveryWorkflow_productNotAvailable_fails`)
+   - Tentative de commande avec stock insuffisant
+   - Exception BusinessException attendue
+
+3. **Livraison Dupliquée** (`testDeliveryWorkflow_duplicateDeliveryForOrder_fails`)
+   - Une seule livraison par commande autorisée
+   - Exception si tentative de duplication
+
+4. **Transition Invalide** (`testDeliveryWorkflow_invalidStatusTransition_fails`)
+   - Impossible de modifier une commande déjà livrée
+   - Validation des transitions de statut
+
+5. **Recherche et Filtres** (`testDeliveryWorkflow_searchAndFilterOperations`)
+   - Recherche clients par ville/pays
+   - Filtrage commandes par statut/client
+   - Pagination testée
+
+6. **Suppression en Cascade** (`testDeliveryWorkflow_cascadeDeleteOrderDeletesLines`)
+   - Suppression de commande supprime les lignes associées
+   - Contraintes d'intégrité respectées
+
+7. **Tracking** (`testDeliveryWorkflow_trackingByDeliveryNumber`)
+   - Recherche par numéro de livraison
+   - Recherche par numéro de tracking
+   - Recherche par commande associée
 ```
 
 ### Scénarios de Tests d'Intégration
@@ -276,7 +391,12 @@ Les tests d'intégration valident le workflow complet :
 ### Résultats Attendus
 
 ```
+# Production Tests
 Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+
+# Delivery Tests
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0
+
 BUILD SUCCESS
 ```
 
@@ -295,6 +415,11 @@ Les collections Postman complètes et testées sont disponibles dans le dossier 
    - Products (Produits)
    - Bills of Material (Nomenclatures)
    - Production Orders (Ordres de Production)
+
+3. **Delivery-Module.postman_collection.json** (33 requêtes)
+   - Customers (Clients)
+   - Delivery Orders (Commandes de Livraison)
+   - Deliveries (Livraisons physiques)
 
 ### Import dans Postman
 
@@ -353,6 +478,93 @@ PATCH /api/production/production-orders/1/complete
 # }
 ```
 
+## 🚚 Workflow de Livraison Complet
+
+### Exemple : Livrer 5 Chaises et 3 Tables à un Client
+
+```bash
+# 1. Créer un client
+POST /api/delivery/customers
+{
+  "code": "CUST-001",
+  "name": "ACME Corp",
+  "contact": "Othman",
+  "phone": "+212600000000",
+  "email": "contact@acme.com",
+  "address": "10 Rue Principale",
+  "city": "Casablanca",
+  "postalCode": "20000",
+  "country": "Morocco"
+}
+# Réponse: { "id": 1, "code": "CUST-001", ... }
+
+# 2. Créer une commande multi-produits (vérifie les stocks disponibles)
+POST /api/delivery/orders
+{
+  "orderNumber": "ORD-2025-001",
+  "customerId": 1,
+  "orderDate": "2025-11-04",
+  "expectedDeliveryDate": "2025-11-06",
+  "deliveryAddress": "10 Rue Principale",
+  "deliveryCity": "Casablanca",
+  "deliveryPostalCode": "20000",
+  "status": "EN_PREPARATION",
+  "orderLines": [
+    { "productId": 1, "quantity": 5, "unitPrice": 50.0 },  # 5 Chaises
+    { "productId": 2, "quantity": 3, "unitPrice": 120.0 }  # 3 Tables
+  ]
+}
+# Réponse: { 
+#   "id": 1, 
+#   "status": "EN_PREPARATION",
+#   "totalAmount": 610.0,  # (5*50) + (3*120) = 610
+#   "orderLines": [...]
+# }
+
+# 3. Créer une livraison physique
+POST /api/delivery/deliveries
+{
+  "deliveryNumber": "DEL-2025-001",
+  "deliveryOrderId": 1,
+  "vehicle": "Truck-12",
+  "driver": "Ahmed",
+  "driverPhone": "+212600111222",
+  "status": "PLANIFIEE",
+  "deliveryDate": "2025-11-06",
+  "cost": 75.0,
+  "trackingNumber": "TRK-2025-001"
+}
+# Réponse: { "id": 1, "status": "PLANIFIEE", "trackingNumber": "TRK-2025-001", ... }
+
+# 4. Changer le statut de la commande (En route)
+PATCH /api/delivery/orders/1/status?status=EN_ROUTE
+# Réponse: { "status": "EN_ROUTE", ... }
+
+# 5. Démarrer la livraison
+PATCH /api/delivery/deliveries/1/status?status=EN_COURS
+# Réponse: { "status": "EN_COURS", ... }
+
+# 6. Marquer comme livrée (met à jour automatiquement la date)
+PATCH /api/delivery/deliveries/1/deliver
+# Réponse: { 
+#   "status": "LIVREE",
+#   "actualDeliveryDate": "2025-11-04",
+#   ...
+# }
+
+# 7. Finaliser la commande
+PATCH /api/delivery/orders/1/status?status=LIVREE
+# Réponse: { 
+#   "status": "LIVREE",
+#   "actualDeliveryDate": "2025-11-04",
+#   ...
+# }
+
+# 8. Tracking - Le client peut suivre sa livraison
+GET /api/delivery/deliveries/tracking/TRK-2025-001
+# Réponse: { "status": "LIVREE", "driver": "Ahmed", "actualDeliveryDate": "2025-11-04", ... }
+```
+
 ## 📊 Base de Données
 
 ### Tables Créées (Liquibase)
@@ -365,6 +577,10 @@ PATCH /api/production/production-orders/1/complete
 - **products** - Produits finis
 - **bills_of_material** - Nomenclatures (recettes)
 - **production_orders** - Ordres de production
+- **customers** - Clients
+- **delivery_orders** - Commandes de livraison
+- **delivery_order_lines** - Lignes de commande
+- **deliveries** - Livraisons physiques
 - **audit_logs** - Journal d'audit
 - **databasechangelog** - Migrations Liquibase
 
@@ -376,7 +592,11 @@ RawMaterial N→N Supplier (via raw_materials_suppliers)
 RawMaterial 1→N BillOfMaterial
 Product 1→N BillOfMaterial
 Product 1→N ProductionOrder
+Product 1→N DeliveryOrderLine
 SupplyOrder 1→N SupplyOrderLine
+Customer 1→N DeliveryOrder
+DeliveryOrder 1→N DeliveryOrderLine
+DeliveryOrder 1→1 Delivery
 ```
 
 ## 🔐 Sécurité
@@ -438,10 +658,14 @@ mvn clean install -DskipTests
 ### Version 1.0.0 (Novembre 2025)
 - ✅ Module Supply complet (Suppliers, Raw Materials, Supply Orders)
 - ✅ Module Production complet (Products, BOMs, Production Orders)
-- ✅ Workflow de production fonctionnel
-- ✅ Collections Postman testées
+- ✅ Module Delivery complet (Customers, Delivery Orders, Deliveries)
+- ✅ Workflow de production fonctionnel (avec consommation matières)
+- ✅ Workflow de livraison fonctionnel (avec validation stocks produits)
+- ✅ Collections Postman testées (200+ requêtes)
+- ✅ Tests d'intégration (Production: 3 tests, Delivery: 7 tests)
 - ✅ Documentation Swagger
-- ✅ 95 endpoints REST
+- ✅ 128+ endpoints REST
+- ✅ Gestion des exceptions unifiée (BusinessException, ResourceNotFoundException)
 
 ## 👨‍💻 Auteur
 
