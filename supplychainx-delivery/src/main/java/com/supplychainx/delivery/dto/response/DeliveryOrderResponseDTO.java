@@ -26,6 +26,5 @@ public class DeliveryOrderResponseDTO {
     private String deliveryPostalCode;
     private Double totalAmount;
     private OrderStatus status;
-    private String notes;
     private List<DeliveryOrderLineResponseDTO> orderLines;
 }

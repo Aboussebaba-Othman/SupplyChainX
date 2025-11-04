@@ -59,9 +59,6 @@ public class DeliveryOrder extends BaseEntity {
     @NotNull(message = "Le statut est obligatoire")
     private OrderStatus status;
 
-    @Column(name = "notes", columnDefinition = "TEXT")
-    private String notes;
-
     @OneToOne(mappedBy = "deliveryOrder", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Delivery delivery;
 

@@ -39,8 +39,6 @@ public class DeliveryOrderRequestDTO {
 
     private OrderStatus status;
 
-    private String notes;
-
     @NotNull(message = "Les lignes de commande sont obligatoires")
     @Size(min = 1, message = "Il doit y avoir au moins une ligne de commande")
     private List<DeliveryOrderLineRequestDTO> orderLines;
