@@ -1,6 +1,6 @@
 package com.supplychainx.delivery.dto.response;
 
-import com.supplychainx.delivery.enums.DeliveryStatus;
+import com.supplychainx.delivery.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,7 +25,7 @@ public class DeliveryOrderResponseDTO {
     private String deliveryCity;
     private String deliveryPostalCode;
     private Double totalAmount;
-    private DeliveryStatus status;
+    private OrderStatus status;
     private String notes;
     private List<DeliveryOrderLineResponseDTO> orderLines;
 }

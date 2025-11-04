@@ -1,6 +1,6 @@
 package com.supplychainx.delivery.dto.request;
 
-import com.supplychainx.delivery.enums.DeliveryStatus;
+import com.supplychainx.delivery.enums.OrderStatus;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +37,7 @@ public class DeliveryOrderRequestDTO {
     @Size(max = 20, message = "Le code postal ne peut pas dépasser 20 caractères")
     private String deliveryPostalCode;
 
-    private DeliveryStatus status;
+    private OrderStatus status;
 
     private String notes;
 

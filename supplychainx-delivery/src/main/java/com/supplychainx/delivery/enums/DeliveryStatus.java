@@ -1,9 +1,9 @@
 package com.supplychainx.delivery.enums;
 
 public enum DeliveryStatus {
-    EN_ATTENTE,      // En attente
-    PREPAREE,        // Préparée
-    EN_LIVRAISON,    // En cours de livraison
-    LIVREE,          // Livrée
-    ANNULEE          // Annulée
+    PLANIFIEE,      // Livraison planifiée
+    EN_COURS,       // Livraison en cours
+    LIVREE,         // Livraison effectuée
+    ANNULEE,        // Livraison annulée
+    RETARDEE        // Livraison retardée
 }

@@ -1,7 +1,7 @@
 package com.supplychainx.delivery.entity;
 
 import com.supplychainx.common.entity.BaseEntity;
-import com.supplychainx.delivery.enums.DeliveryStatus;
+import com.supplychainx.delivery.enums.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -57,10 +57,13 @@ public class DeliveryOrder extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     @NotNull(message = "Le statut est obligatoire")
-    private DeliveryStatus status;
+    private OrderStatus status;
 
     @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
+
+    @OneToOne(mappedBy = "deliveryOrder", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Delivery delivery;
 
     @OneToMany(mappedBy = "deliveryOrder", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @Builder.Default
