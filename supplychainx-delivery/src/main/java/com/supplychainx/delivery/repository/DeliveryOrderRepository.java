@@ -1,7 +1,7 @@
 package com.supplychainx.delivery.repository;
 
 import com.supplychainx.delivery.entity.DeliveryOrder;
-import com.supplychainx.delivery.enums.DeliveryStatus;
+import com.supplychainx.delivery.enums.OrderStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,7 +20,7 @@ public interface DeliveryOrderRepository extends JpaRepository<DeliveryOrder, Lo
 
     boolean existsByOrderNumber(String orderNumber);
 
-    Page<DeliveryOrder> findByStatus(DeliveryStatus status, Pageable pageable);
+        Page<DeliveryOrder> findByStatus(OrderStatus status, Pageable pageable);
 
     Page<DeliveryOrder> findByCustomerId(Long customerId, Pageable pageable);
 
@@ -33,10 +33,10 @@ public interface DeliveryOrderRepository extends JpaRepository<DeliveryOrder, Lo
 
     @Query("SELECT d FROM DeliveryOrder d WHERE d.status = :status AND d.expectedDeliveryDate < :date")
     List<DeliveryOrder> findDelayedOrders(
-            @Param("status") DeliveryStatus status,
+            @Param("status") OrderStatus status,
             @Param("date") LocalDate date
     );
 
-    @Query("SELECT d FROM DeliveryOrder d WHERE d.expectedDeliveryDate = :date AND d.status IN ('EN_ATTENTE', 'PREPAREE', 'EN_LIVRAISON')")
-    List<DeliveryOrder> findOrdersForDeliveryDate(@Param("date") LocalDate date);
+        @Query("SELECT d FROM DeliveryOrder d WHERE d.expectedDeliveryDate = :date AND d.status IN ('EN_PREPARATION', 'EN_ROUTE')")
+        List<DeliveryOrder> findOrdersForDeliveryDate(@Param("date") LocalDate date);
 }
