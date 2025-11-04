@@ -1,5 +1,6 @@
 package com.supplychainx.production.service;
 
+import com.supplychainx.common.exception.BusinessException;
 import com.supplychainx.production.dto.request.ProductionOrderRequestDTO;
 import com.supplychainx.production.dto.response.ProductionOrderResponseDTO;
 import com.supplychainx.production.entity.BillOfMaterial;
@@ -128,7 +129,7 @@ class ProductionOrderServiceTest {
         when(productionOrderRepository.findById(20L)).thenReturn(Optional.of(order));
         when(billOfMaterialRepository.findByProductId(sampleProduct.getId())).thenReturn(Collections.singletonList(bom));
 
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> productionOrderService.startProduction(20L));
+        BusinessException ex = assertThrows(BusinessException.class, () -> productionOrderService.startProduction(20L));
         assertTrue(ex.getMessage().contains("Matières premières insuffisantes"));
     }
 }
