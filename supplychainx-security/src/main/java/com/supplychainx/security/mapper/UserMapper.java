@@ -5,9 +5,7 @@ import com.supplychainx.security.dto.response.UserResponseDTO;
 import com.supplychainx.security.entity.User;
 import org.mapstruct.*;
 
-/**
- * MapStruct mapper for User entity and DTOs
- */
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
