@@ -1,5 +1,7 @@
 package com.supplychainx.production.service;
 
+import com.supplychainx.common.exception.BusinessException;
+import com.supplychainx.common.exception.ResourceNotFoundException;
 import com.supplychainx.production.dto.request.ProductionOrderRequestDTO;
 import com.supplychainx.production.dto.response.ProductionOrderResponseDTO;
 import com.supplychainx.production.entity.BillOfMaterial;
@@ -40,12 +42,12 @@ public class ProductionOrderService {
 
         // Vérifier si le numéro d'ordre existe déjà
         if (productionOrderRepository.existsByOrderNumber(requestDTO.getOrderNumber())) {
-            throw new IllegalArgumentException("Un ordre de production avec ce numéro existe déjà: " + requestDTO.getOrderNumber());
+            throw new BusinessException("Un ordre de production avec ce numéro existe déjà: " + requestDTO.getOrderNumber());
         }
 
         // Vérifier que le produit existe
         Product product = productRepository.findById(requestDTO.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + requestDTO.getProductId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + requestDTO.getProductId()));
 
         ProductionOrder productionOrder = productionOrderMapper.toEntity(requestDTO);
         productionOrder.setProduct(product);
@@ -67,7 +69,7 @@ public class ProductionOrderService {
         log.debug("Récupération de l'ordre de production avec l'ID: {}", id);
 
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ordre de production non trouvé avec l'ID: " + id));
 
         return productionOrderMapper.toResponseDTO(productionOrder);
     }
@@ -78,7 +80,7 @@ public class ProductionOrderService {
         log.debug("Récupération de l'ordre de production avec le numéro: {}", orderNumber);
 
         ProductionOrder productionOrder = productionOrderRepository.findByOrderNumber(orderNumber)
-                .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec le numéro: " + orderNumber));
+                .orElseThrow(() -> new ResourceNotFoundException("Ordre de production non trouvé avec le numéro: " + orderNumber));
 
         return productionOrderMapper.toResponseDTO(productionOrder);
     }
@@ -108,7 +110,7 @@ public class ProductionOrderService {
 
         // Vérifier que le produit existe
         if (!productRepository.existsById(productId)) {
-            throw new IllegalArgumentException("Produit non trouvé avec l'ID: " + productId);
+            throw new ResourceNotFoundException("Produit non trouvé avec l'ID: " + productId);
         }
 
         return productionOrderRepository.findByProductId(productId, pageable)
@@ -139,23 +141,23 @@ public class ProductionOrderService {
         log.info("Mise à jour de l'ordre de production avec l'ID: {}", id);
 
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ordre de production non trouvé avec l'ID: " + id));
 
         // Vérifier si l'ordre peut être modifié
         if (productionOrder.getStatus() == ProductionOrderStatus.TERMINE || 
             productionOrder.getStatus() == ProductionOrderStatus.ANNULE) {
-            throw new IllegalArgumentException("Impossible de modifier un ordre de production terminé ou annulé");
+            throw new BusinessException("Impossible de modifier un ordre de production terminé ou annulé");
         }
 
         // Vérifier si le nouveau numéro d'ordre existe déjà (sauf si c'est le même ordre)
         if (!productionOrder.getOrderNumber().equals(requestDTO.getOrderNumber()) && 
             productionOrderRepository.existsByOrderNumber(requestDTO.getOrderNumber())) {
-            throw new IllegalArgumentException("Un ordre de production avec ce numéro existe déjà: " + requestDTO.getOrderNumber());
+            throw new BusinessException("Un ordre de production avec ce numéro existe déjà: " + requestDTO.getOrderNumber());
         }
 
         // Vérifier que le produit existe
         Product product = productRepository.findById(requestDTO.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + requestDTO.getProductId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + requestDTO.getProductId()));
 
         productionOrderMapper.updateEntityFromDTO(requestDTO, productionOrder);
         productionOrder.setProduct(product);
@@ -175,16 +177,16 @@ public class ProductionOrderService {
         log.info("Démarrage de la production pour l'ordre ID: {}", id);
 
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ordre de production non trouvé avec l'ID: " + id));
 
         // Vérifier que l'ordre est au statut EN_ATTENTE
         if (productionOrder.getStatus() != ProductionOrderStatus.EN_ATTENTE) {
-            throw new IllegalArgumentException("Seuls les ordres en attente peuvent être démarrés. Statut actuel: " + productionOrder.getStatus());
+            throw new BusinessException("Seuls les ordres en attente peuvent être démarrés. Statut actuel: " + productionOrder.getStatus());
         }
 
         // Vérifier la disponibilité des matières premières
         if (!checkRawMaterialsAvailability(productionOrder)) {
-            throw new IllegalArgumentException("Matières premières insuffisantes pour démarrer la production");
+            throw new BusinessException("Matières premières insuffisantes pour démarrer la production");
         }
 
         // Mettre à jour le statut et la date de début
@@ -202,11 +204,11 @@ public class ProductionOrderService {
         log.info("Finalisation de la production pour l'ordre ID: {}", id);
 
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ordre de production non trouvé avec l'ID: " + id));
 
         // Vérifier que l'ordre est au statut EN_PRODUCTION
         if (productionOrder.getStatus() != ProductionOrderStatus.EN_PRODUCTION) {
-            throw new IllegalArgumentException("Seuls les ordres en production peuvent être terminés. Statut actuel: " + productionOrder.getStatus());
+            throw new BusinessException("Seuls les ordres en production peuvent être terminés. Statut actuel: " + productionOrder.getStatus());
         }
 
         // Consommer les matières premières
@@ -234,16 +236,16 @@ public class ProductionOrderService {
         log.info("Annulation de l'ordre de production ID: {}", id);
 
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ordre de production non trouvé avec l'ID: " + id));
 
         // Vérifier que l'ordre n'est pas déjà terminé
         if (productionOrder.getStatus() == ProductionOrderStatus.TERMINE) {
-            throw new IllegalArgumentException("Impossible d'annuler un ordre de production terminé");
+            throw new BusinessException("Impossible d'annuler un ordre de production terminé");
         }
 
         // Vérifier que l'ordre n'est pas déjà annulé
         if (productionOrder.getStatus() == ProductionOrderStatus.ANNULE) {
-            throw new IllegalArgumentException("Cet ordre de production est déjà annulé");
+            throw new BusinessException("Cet ordre de production est déjà annulé");
         }
 
         productionOrder.setStatus(ProductionOrderStatus.ANNULE);
@@ -258,12 +260,12 @@ public class ProductionOrderService {
         log.info("Suppression de l'ordre de production avec l'ID: {}", id);
 
         ProductionOrder productionOrder = productionOrderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Ordre de production non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Ordre de production non trouvé avec l'ID: " + id));
 
         // Seuls les ordres annulés ou planifiés peuvent être supprimés
         if (productionOrder.getStatus() == ProductionOrderStatus.EN_PRODUCTION || 
             productionOrder.getStatus() == ProductionOrderStatus.TERMINE) {
-            throw new IllegalArgumentException("Impossible de supprimer un ordre en cours ou terminé. Veuillez d'abord l'annuler.");
+            throw new BusinessException("Impossible de supprimer un ordre en cours ou terminé. Veuillez d'abord l'annuler.");
         }
 
         productionOrderRepository.delete(productionOrder);
@@ -303,7 +305,7 @@ public class ProductionOrderService {
             Double requiredQuantity = bom.getQuantity() * productionOrder.getQuantity();
 
             if (rawMaterial.getStock() < requiredQuantity) {
-                throw new IllegalArgumentException("Stock insuffisant pour la matière première: " + rawMaterial.getName());
+                throw new BusinessException("Stock insuffisant pour la matière première: " + rawMaterial.getName());
             }
 
             // Réduire le stock de la matière première

@@ -1,5 +1,7 @@
 package com.supplychainx.production.service;
 
+import com.supplychainx.common.exception.BusinessException;
+import com.supplychainx.common.exception.ResourceNotFoundException;
 import com.supplychainx.production.dto.request.BillOfMaterialRequestDTO;
 import com.supplychainx.production.dto.response.BillOfMaterialResponseDTO;
 import com.supplychainx.production.entity.BillOfMaterial;
@@ -34,11 +36,11 @@ public class BillOfMaterialService {
 
         // Vérifier que le produit existe
         Product product = productRepository.findById(requestDTO.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + requestDTO.getProductId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + requestDTO.getProductId()));
 
         // Vérifier que la matière première existe
         RawMaterial rawMaterial = rawMaterialRepository.findById(requestDTO.getRawMaterialId())
-                .orElseThrow(() -> new IllegalArgumentException("Matière première non trouvée avec l'ID: " + requestDTO.getRawMaterialId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Matière première non trouvée avec l'ID: " + requestDTO.getRawMaterialId()));
 
         BillOfMaterial billOfMaterial = billOfMaterialMapper.toEntity(requestDTO);
         billOfMaterial.setProduct(product);
@@ -56,7 +58,7 @@ public class BillOfMaterialService {
         log.debug("Récupération de la nomenclature avec l'ID: {}", id);
 
         BillOfMaterial billOfMaterial = billOfMaterialRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Nomenclature non trouvée avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nomenclature non trouvée avec l'ID: " + id));
 
         return billOfMaterialMapper.toResponseDTO(billOfMaterial);
     }
@@ -77,7 +79,7 @@ public class BillOfMaterialService {
 
         // Vérifier que le produit existe
         if (!productRepository.existsById(productId)) {
-            throw new IllegalArgumentException("Produit non trouvé avec l'ID: " + productId);
+            throw new ResourceNotFoundException("Produit non trouvé avec l'ID: " + productId);
         }
 
         List<BillOfMaterial> billOfMaterials = billOfMaterialRepository.findByProductId(productId);
@@ -91,7 +93,7 @@ public class BillOfMaterialService {
 
         // Vérifier que la matière première existe
         if (!rawMaterialRepository.existsById(rawMaterialId)) {
-            throw new IllegalArgumentException("Matière première non trouvée avec l'ID: " + rawMaterialId);
+            throw new ResourceNotFoundException("Matière première non trouvée avec l'ID: " + rawMaterialId);
         }
 
         List<BillOfMaterial> billOfMaterials = billOfMaterialRepository.findByRawMaterialId(rawMaterialId);
@@ -105,7 +107,7 @@ public class BillOfMaterialService {
 
         // Vérifier que le produit existe
         if (!productRepository.existsById(productId)) {
-            throw new IllegalArgumentException("Produit non trouvé avec l'ID: " + productId);
+            throw new ResourceNotFoundException("Produit non trouvé avec l'ID: " + productId);
         }
 
         Double total = billOfMaterialRepository.sumQuantityByProductId(productId);
@@ -117,15 +119,15 @@ public class BillOfMaterialService {
         log.info("Mise à jour de la nomenclature avec l'ID: {}", id);
 
         BillOfMaterial billOfMaterial = billOfMaterialRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Nomenclature non trouvée avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nomenclature non trouvée avec l'ID: " + id));
 
         // Vérifier que le produit existe
         Product product = productRepository.findById(requestDTO.getProductId())
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + requestDTO.getProductId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + requestDTO.getProductId()));
 
         // Vérifier que la matière première existe
         RawMaterial rawMaterial = rawMaterialRepository.findById(requestDTO.getRawMaterialId())
-                .orElseThrow(() -> new IllegalArgumentException("Matière première non trouvée avec l'ID: " + requestDTO.getRawMaterialId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Matière première non trouvée avec l'ID: " + requestDTO.getRawMaterialId()));
 
         billOfMaterialMapper.updateEntityFromDTO(requestDTO, billOfMaterial);
         billOfMaterial.setProduct(product);
@@ -142,7 +144,7 @@ public class BillOfMaterialService {
         log.info("Suppression de la nomenclature avec l'ID: {}", id);
 
         BillOfMaterial billOfMaterial = billOfMaterialRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Nomenclature non trouvée avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Nomenclature non trouvée avec l'ID: " + id));
 
         billOfMaterialRepository.delete(billOfMaterial);
         log.info("Nomenclature supprimée avec succès - ID: {}", id);

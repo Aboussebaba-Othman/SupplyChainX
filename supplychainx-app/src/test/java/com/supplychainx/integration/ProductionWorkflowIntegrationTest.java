@@ -1,5 +1,6 @@
 package com.supplychainx.integration;
 
+import com.supplychainx.common.exception.BusinessException;
 import com.supplychainx.production.dto.request.BillOfMaterialRequestDTO;
 import com.supplychainx.production.dto.request.ProductRequestDTO;
 import com.supplychainx.production.dto.request.ProductionOrderRequestDTO;
@@ -189,8 +190,8 @@ class ProductionWorkflowIntegrationTest {
         ProductionOrderResponseDTO order = productionOrderService.createProductionOrder(orderRequest);
 
         // Try to start production - should fail due to insufficient materials
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        BusinessException exception = assertThrows(
+                BusinessException.class,
                 () -> productionOrderService.startProduction(order.getId())
         );
 
@@ -221,8 +222,8 @@ class ProductionWorkflowIntegrationTest {
         ProductionOrderResponseDTO order = productionOrderService.createProductionOrder(orderRequest);
 
         // Try to complete without starting - should fail
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
+        BusinessException exception = assertThrows(
+                BusinessException.class,
                 () -> productionOrderService.completeProduction(order.getId())
         );
 

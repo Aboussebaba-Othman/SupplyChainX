@@ -1,5 +1,7 @@
 package com.supplychainx.production.service;
 
+import com.supplychainx.common.exception.BusinessException;
+import com.supplychainx.common.exception.ResourceNotFoundException;
 import com.supplychainx.production.dto.request.ProductRequestDTO;
 import com.supplychainx.production.dto.response.ProductResponseDTO;
 import com.supplychainx.production.entity.Product;
@@ -28,7 +30,7 @@ public class ProductService {
 
         // Vérifier si le code existe déjà
         if (productRepository.existsByCode(requestDTO.getCode())) {
-            throw new IllegalArgumentException("Un produit avec ce code existe déjà: " + requestDTO.getCode());
+            throw new BusinessException("Un produit avec ce code existe déjà: " + requestDTO.getCode());
         }
 
         Product product = productMapper.toEntity(requestDTO);
@@ -44,7 +46,7 @@ public class ProductService {
         log.debug("Récupération du produit avec l'ID: {}", id);
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + id));
 
         return productMapper.toResponseDTO(product);
     }
@@ -55,7 +57,7 @@ public class ProductService {
         log.debug("Récupération du produit avec le code: {}", code);
 
         Product product = productRepository.findByCode(code)
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec le code: " + code));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec le code: " + code));
 
         return productMapper.toResponseDTO(product);
     }
@@ -116,11 +118,11 @@ public class ProductService {
         log.info("Mise à jour du produit avec l'ID: {}", id);
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + id));
 
         // Vérifier si le nouveau code existe déjà (sauf si c'est le même produit)
         if (!product.getCode().equals(requestDTO.getCode()) && productRepository.existsByCode(requestDTO.getCode())) {
-            throw new IllegalArgumentException("Un produit avec ce code existe déjà: " + requestDTO.getCode());
+            throw new BusinessException("Un produit avec ce code existe déjà: " + requestDTO.getCode());
         }
 
         productMapper.updateEntityFromDTO(requestDTO, product);
@@ -135,11 +137,11 @@ public class ProductService {
         log.info("Ajout de {} unités au stock du produit ID: {}", quantity, id);
 
         if (quantity == null || quantity <= 0) {
-            throw new IllegalArgumentException("La quantité doit être positive");
+            throw new BusinessException("La quantité doit être positive");
         }
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + id));
 
         Double currentStock = product.getStock() != null ? product.getStock() : 0.0;
         product.setStock(currentStock + quantity);
@@ -155,16 +157,16 @@ public class ProductService {
         log.info("Réduction de {} unités du stock du produit ID: {}", quantity, id);
 
         if (quantity == null || quantity <= 0) {
-            throw new IllegalArgumentException("La quantité doit être positive");
+            throw new BusinessException("La quantité doit être positive");
         }
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + id));
 
         Double currentStock = product.getStock() != null ? product.getStock() : 0.0;
 
         if (currentStock < quantity) {
-            throw new IllegalArgumentException("Stock insuffisant. Stock actuel: " + currentStock + ", Quantité demandée: " + quantity);
+            throw new BusinessException("Stock insuffisant. Stock actuel: " + currentStock + ", Quantité demandée: " + quantity);
         }
 
         product.setStock(currentStock - quantity);
@@ -179,11 +181,11 @@ public class ProductService {
         log.info("Suppression du produit avec l'ID: {}", id);
 
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Produit non trouvé avec l'ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + id));
 
         // Vérifier si le produit est utilisé dans des ordres de production
         if (productRepository.isUsedInProductionOrders(id)) {
-            throw new IllegalArgumentException("Impossible de supprimer ce produit car il est utilisé dans des ordres de production");
+            throw new BusinessException("Impossible de supprimer ce produit car il est utilisé dans des ordres de production");
         }
 
         productRepository.delete(product);
