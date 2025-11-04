@@ -1,0 +1,569 @@
+{
+	"info": {
+		"_postman_id": "supply-module-2024-v2",
+		"name": "SupplyChainX - Supply Module",
+		"description": "Collection complète pour tester le module Supply (Suppliers, Raw Materials, Supply Orders, Supply Order Lines) - 70+ requêtes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Suppliers",
+			"item": [
+				{
+					"name": "Create Supplier - Bois & Cie",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"SUP-001\",\n  \"name\": \"Bois & Cie\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@boisetcie.fr\",\n  \"phone\": \"+33123456789\",\n  \"address\": \"15 Rue des Scieries, 69001 Lyon, France\",\n  \"rating\": 4.5,\n  \"leadTime\": 7\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/suppliers", "host": ["{{baseUrl}}"], "path": ["api", "suppliers"]}
+					}
+				},
+				{
+					"name": "Create Supplier - Quincaillerie Pro",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"SUP-002\",\n  \"name\": \"Quincaillerie Pro\",\n  \"contact\": \"Marie Martin\",\n  \"email\": \"marie@quincpro.fr\",\n  \"phone\": \"+33456789012\",\n  \"address\": \"42 Avenue de la Forge, 13001 Marseille, France\",\n  \"rating\": 5.0,\n  \"leadTime\": 3\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/suppliers", "host": ["{{baseUrl}}"], "path": ["api", "suppliers"]}
+					}
+				},
+				{
+					"name": "Get All Suppliers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/suppliers?page=0&size=20&sort=name,asc", "host": ["{{baseUrl}}"], "path": ["api", "suppliers"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}, {"key": "sort", "value": "name,asc"}]}
+					}
+				},
+				{
+					"name": "Get Supplier by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/suppliers/1", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "1"]}
+					}
+				},
+				{
+					"name": "Get Supplier by Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/suppliers/code/SUP-001", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "code", "SUP-001"]}
+					}
+				},
+				{
+					"name": "Search Suppliers by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/suppliers/search?name=Bois", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "search"], "query": [{"key": "name", "value": "Bois"}]}
+					}
+				},
+				{
+					"name": "Get Suppliers by Min Rating",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/suppliers/rating/4.0", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "rating", "4.0"]}
+					}
+				},
+				{
+					"name": "Get Suppliers by Max Lead Time",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/suppliers/lead-time/7", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "lead-time", "7"]}
+					}
+				},
+				{
+					"name": "Get Top Rated Suppliers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/suppliers/top-rated?page=0&size=10", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "top-rated"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "10"}]}
+					}
+				},
+				{
+					"name": "Update Supplier",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"SUP-001\",\n  \"name\": \"Bois & Cie Premium\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@boisetcie.fr\",\n  \"phone\": \"+33123456789\",\n  \"address\": \"15 Rue des Scieries, 69001 Lyon, France\",\n  \"rating\": 5.0,\n  \"leadTime\": 5\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/suppliers/1", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "1"]}
+					}
+				},
+				{
+					"name": "Can Delete Supplier",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/suppliers/1/can-delete", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "1", "can-delete"]}
+					}
+				},
+				{
+					"name": "Delete Supplier",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/suppliers/99", "host": ["{{baseUrl}}"], "path": ["api", "suppliers", "99"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Raw Materials",
+			"item": [
+				{
+					"name": "Create Raw Material - Bois de Chêne",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"RM-BOIS-001\",\n  \"name\": \"Bois de chêne massif\",\n  \"category\": \"Bois\",\n  \"unit\": \"kg\",\n  \"unitPrice\": 15.50,\n  \"stock\": 500,\n  \"stockMin\": 100\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/raw-materials", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials"]}
+					}
+				},
+				{
+					"name": "Create Raw Material - Vis Acier",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"RM-VIS-001\",\n  \"name\": \"Vis acier 4x40mm\",\n  \"category\": \"Quincaillerie\",\n  \"unit\": \"pièce\",\n  \"unitPrice\": 0.15,\n  \"stock\": 10000,\n  \"stockMin\": 2000\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/raw-materials", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials"]}
+					}
+				},
+				{
+					"name": "Create Raw Material - Vernis",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"RM-VERN-001\",\n  \"name\": \"Vernis brillant\",\n  \"category\": \"Finition\",\n  \"unit\": \"litre\",\n  \"unitPrice\": 25.00,\n  \"stock\": 50,\n  \"stockMin\": 10\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/raw-materials", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials"]}
+					}
+				},
+				{
+					"name": "Get All Raw Materials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials?page=0&size=20&sort=name,asc", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}, {"key": "sort", "value": "name,asc"}]}
+					}
+				},
+				{
+					"name": "Get Raw Material by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/1", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "1"]}
+					}
+				},
+				{
+					"name": "Get Raw Material by Code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/code/RM-BOIS-001", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "code", "RM-BOIS-001"]}
+					}
+				},
+				{
+					"name": "Search Raw Materials by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/search?name=Vis", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "search"], "query": [{"key": "name", "value": "Vis"}]}
+					}
+				},
+				{
+					"name": "Get Raw Materials by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/category/Bois", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "category", "Bois"]}
+					}
+				},
+				{
+					"name": "Get Low Stock Raw Materials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/low-stock", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "low-stock"]}
+					}
+				},
+				{
+					"name": "Get Low Stock Raw Materials (Paginated)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/low-stock/paginated?page=0&size=20", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "low-stock", "paginated"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}]}
+					}
+				},
+				{
+					"name": "Count Low Stock Raw Materials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/low-stock/count", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "low-stock", "count"]}
+					}
+				},
+				{
+					"name": "Get Raw Materials by Supplier",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/supplier/1", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "supplier", "1"]}
+					}
+				},
+				{
+					"name": "Update Raw Material",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"RM-BOIS-001\",\n  \"name\": \"Bois de chêne massif premium\",\n  \"category\": \"Bois\",\n  \"unit\": \"kg\",\n  \"unitPrice\": 18.00,\n  \"stock\": 500,\n  \"stockMin\": 100\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/1", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "1"]}
+					}
+				},
+				{
+					"name": "Add Stock",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/1/add-stock?quantity=100", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "1", "add-stock"], "query": [{"key": "quantity", "value": "100"}]}
+					}
+				},
+				{
+					"name": "Reduce Stock",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/1/reduce-stock?quantity=50", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "1", "reduce-stock"], "query": [{"key": "quantity", "value": "50"}]}
+					}
+				},
+				{
+					"name": "Can Delete Raw Material",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/1/can-delete", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "1", "can-delete"]}
+					}
+				},
+				{
+					"name": "Delete Raw Material",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/raw-materials/99", "host": ["{{baseUrl}}"], "path": ["api", "raw-materials", "99"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Supply Orders",
+			"item": [
+				{
+					"name": "Create Supply Order - Bois",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"SO-2025-001\",\n  \"supplierId\": 1,\n  \"orderDate\": \"2025-11-01\",\n  \"expectedDeliveryDate\": \"2025-11-10\",\n  \"status\": \"EN_ATTENTE\",\n  \"orderLines\": []\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/supply-orders", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders"]}
+					}
+				},
+				{
+					"name": "Create Supply Order - Quincaillerie",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"SO-2025-002\",\n  \"supplierId\": 2,\n  \"orderDate\": \"2025-11-01\",\n  \"expectedDeliveryDate\": \"2025-11-05\",\n  \"status\": \"EN_ATTENTE\",\n  \"orderLines\": []\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/supply-orders", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders"]}
+					}
+				},
+				{
+					"name": "Get All Supply Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders?page=0&size=20&sort=orderDate,desc", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}, {"key": "sort", "value": "orderDate,desc"}]}
+					}
+				},
+				{
+					"name": "Get Supply Order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/1", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "1"]}
+					}
+				},
+				{
+					"name": "Get Supply Order by Number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/number/SO-2025-001", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "number", "SO-2025-001"]}
+					}
+				},
+				{
+					"name": "Get Orders by Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/status/EN_ATTENTE?page=0&size=20", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "status", "EN_ATTENTE"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}]}
+					}
+				},
+				{
+					"name": "Get Orders by Supplier",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/supplier/1?page=0&size=20", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "supplier", "1"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "20"}]}
+					}
+				},
+				{
+					"name": "Get Orders by Supplier and Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/supplier/1/status/EN_ATTENTE", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "supplier", "1", "status", "EN_ATTENTE"]}
+					}
+				},
+				{
+					"name": "Get Orders by Date Range",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/date-range?startDate=2025-11-01&endDate=2025-11-30", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "date-range"], "query": [{"key": "startDate", "value": "2025-11-01"}, {"key": "endDate", "value": "2025-11-30"}]}
+					}
+				},
+				{
+					"name": "Get Delayed Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/delayed", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "delayed"]}
+					}
+				},
+				{
+					"name": "Get Recent Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/recent?page=0&size=10", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "recent"], "query": [{"key": "page", "value": "0"}, {"key": "size", "value": "10"}]}
+					}
+				},
+				{
+					"name": "Update Supply Order",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderNumber\": \"SO-2025-001\",\n  \"supplierId\": 1,\n  \"orderDate\": \"2025-11-01\",\n  \"expectedDeliveryDate\": \"2025-11-12\",\n  \"status\": \"EN_ATTENTE\",\n  \"orderLines\": []\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/1", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "1"]}
+					}
+				},
+				{
+					"name": "Update Order Status",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/1/status?status=EN_COURS", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "1", "status"], "query": [{"key": "status", "value": "EN_COURS"}]}
+					}
+				},
+				{
+					"name": "Receive Supply Order",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/1/receive?actualDeliveryDate=2025-11-08", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "1", "receive"], "query": [{"key": "actualDeliveryDate", "value": "2025-11-08"}]}
+					}
+				},
+				{
+					"name": "Cancel Supply Order",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/2/cancel", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "2", "cancel"]}
+					}
+				},
+				{
+					"name": "Count Active Orders by Supplier",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/supplier/1/active-count", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "supplier", "1", "active-count"]}
+					}
+				},
+				{
+					"name": "Sum Total Amount by Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/total-amount/status/EN_ATTENTE", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "total-amount", "status", "EN_ATTENTE"]}
+					}
+				},
+				{
+					"name": "Can Delete Supply Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/1/can-delete", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "1", "can-delete"]}
+					}
+				},
+				{
+					"name": "Can Modify Supply Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/1/can-modify", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "1", "can-modify"]}
+					}
+				},
+				{
+					"name": "Delete Supply Order",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-orders/99", "host": ["{{baseUrl}}"], "path": ["api", "supply-orders", "99"]}
+					}
+				}
+			]
+		},
+		{
+			"name": "Supply Order Lines",
+			"item": [
+				{
+					"name": "Add Line to Order - Bois de Chêne",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"materialId\": 1,\n  \"quantity\": 200,\n  \"unitPrice\": 15.50\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/order/1", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "order", "1"]}
+					}
+				},
+				{
+					"name": "Add Line to Order - Vis Acier",
+					"request": {
+						"method": "POST",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"materialId\": 2,\n  \"quantity\": 5000,\n  \"unitPrice\": 0.25\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/order/2", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "order", "2"]}
+					}
+				},
+				{
+					"name": "Get Order Line by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/1", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "1"]}
+					}
+				},
+				{
+					"name": "Get Lines by Supply Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/order/1", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "order", "1"]}
+					}
+				},
+				{
+					"name": "Get Lines by Material",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/material/1", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "material", "1"]}
+					}
+				},
+				{
+					"name": "Get Specific Line (Order + Material)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/order/1/material/1", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "order", "1", "material", "1"]}
+					}
+				},
+				{
+					"name": "Sum Quantity by Material in Active Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/material/1/total-quantity", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "material", "1", "total-quantity"]}
+					}
+				},
+				{
+					"name": "Sum Total Amount by Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/order/1/total-amount", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "order", "1", "total-amount"]}
+					}
+				},
+				{
+					"name": "Material Has Active Order Lines",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/material/1/has-active", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "material", "1", "has-active"]}
+					}
+				},
+				{
+					"name": "Update Order Line",
+					"request": {
+						"method": "PUT",
+						"header": [{"key": "Content-Type", "value": "application/json"}],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"materialId\": 1,\n  \"quantity\": 250,\n  \"unitPrice\": 15.50\n}"
+						},
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/1", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "1"]}
+					}
+				},
+				{
+					"name": "Delete Order Line",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {"raw": "{{baseUrl}}/api/supply-order-lines/99", "host": ["{{baseUrl}}"], "path": ["api", "supply-order-lines", "99"]}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8081",
+			"type": "string"
+		}
+	]
+}

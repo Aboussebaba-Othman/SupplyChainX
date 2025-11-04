@@ -1,0 +1,115 @@
+{
+  "info": {
+    "_postman_id": "b7b1d3b6-0000-4c9f-8c3a-000000000000",
+    "name": "SupplyChainX - Delivery Module",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for the Delivery module (Customers, DeliveryOrders, DeliveryOrderLines, Deliveries).\nReplace {{baseUrl}} variable with your API base (e.g. http://localhost:8080)."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": "{{baseUrl}}/api/delivery/customers",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CUST-001\",\n  \"name\": \"ACME Corp\",\n  \"contact\": \"Othman\",\n  \"phone\": \"+212600000000\",\n  \"email\": \"othman@example.com\",\n  \"address\": \"1 Rue Principale\",\n  \"city\": \"Casablanca\",\n  \"postalCode\": \"20000\",\n  \"country\": \"Morocco\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": "{{baseUrl}}/api/delivery/customers/:id",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CUST-001\",\n  \"name\": \"ACME Corporation\",\n  \"contact\": \"Othman B\",\n  \"phone\": \"+212600000001\",\n  \"email\": \"othman.b@example.com\",\n  \"address\": \"1 Rue Principale\",\n  \"city\": \"Casablanca\",\n  \"postalCode\": \"20000\",\n  \"country\": \"Morocco\"\n}"
+            }
+          }
+        },
+        { "name": "Get Customer by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/customers/:id" } },
+        { "name": "Get Customer by Code", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/customers/code/:code" } },
+        { "name": "List Customers (paged)", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/customers?page=0&size=20" } },
+        { "name": "Search Customers", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/customers/search?keyword=ACME" } },
+        { "name": "Get Customers by City", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/customers/city/Casablanca" } },
+        { "name": "Get Customers by Country", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/customers/country/Morocco" } },
+        { "name": "Delete Customer", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/delivery/customers/:id" } }
+      ]
+    },
+    {
+      "name": "Delivery Orders",
+      "item": [
+        {
+          "name": "Create DeliveryOrder",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": "{{baseUrl}}/api/delivery/orders",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNumber\": \"ORD-1001\",\n  \"customerId\": 1,\n  \"orderDate\": \"2025-11-04T09:00:00\",\n  \"expectedDeliveryDate\": \"2025-11-06\",\n  \"deliveryAddress\": \"1 Rue Client\",\n  \"deliveryCity\": \"Casablanca\",\n  \"deliveryPostalCode\": \"20000\",\n  \"status\": \"EN_PREPARATION\",\n  \"orderLines\": [\n    { \"productId\": 101, \"quantity\": 2, \"unitPrice\": 10.5 },\n    { \"productId\": 102, \"quantity\": 1, \"unitPrice\": 5.0 }\n  ]\n}"
+            }
+          }
+        },
+        {
+          "name": "Update DeliveryOrder",
+          "request": { "method": "PUT", "header": [ { "key": "Content-Type", "value": "application/json" } ], "url": "{{baseUrl}}/api/delivery/orders/:id", "body": { "mode": "raw", "raw": "{ /* same shape as create */ }" } }
+        },
+        { "name": "Get DeliveryOrder by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/orders/:id" } },
+        { "name": "Get DeliveryOrder by Number", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/orders/number/ORD-1001" } },
+        { "name": "List DeliveryOrders (paged)", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/orders?page=0&size=20" } },
+        { "name": "Get Orders by Status", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/orders/status/EN_PREPARATION" } },
+        { "name": "Get Orders by Customer", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/orders/customer/1" } },
+        { "name": "Get Orders by Date Range", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/orders/date-range?startDate=2025-11-01&endDate=2025-11-30" } },
+        { "name": "Get Delayed Orders", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/orders/delayed" } },
+        { "name": "Update Order Status (PATCH)", "request": { "method": "PATCH", "url": "{{baseUrl}}/api/delivery/orders/:id/status?status=EN_ROUTE" } },
+        { "name": "Delete DeliveryOrder", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/delivery/orders/:id" } }
+      ]
+    },
+    {
+      "name": "DeliveryOrderLines (via orders)",
+      "item": [
+        { "name": "Add/Modify lines handled by order endpoints", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/orders/:id" }, "description": "Order lines are managed inside DeliveryOrder create/update payloads." }
+      ]
+    },
+    {
+      "name": "Deliveries",
+      "item": [
+        {
+          "name": "Create Delivery",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "url": "{{baseUrl}}/api/delivery/deliveries",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deliveryNumber\": \"DEL-9001\",\n  \"deliveryOrderId\": 1,\n  \"vehicle\": \"Truck 12\",\n  \"driver\": \"Ahmed\",\n  \"driverPhone\": \"+212600111222\",\n  \"status\": \"PLANIFIEE\",\n  \"deliveryDate\": \"2025-11-06\",\n  \"cost\": 25.5,\n  \"trackingNumber\": \"TRK-9001\"\n}"
+            }
+          }
+        },
+        { "name": "Update Delivery", "request": { "method": "PUT", "header": [ { "key": "Content-Type", "value": "application/json" } ], "url": "{{baseUrl}}/api/delivery/deliveries/:id", "body": { "mode": "raw", "raw": "{ /* same shape as create */ }" } } },
+        { "name": "Get Delivery by ID", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/deliveries/:id" } },
+        { "name": "Get Delivery by Number", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/deliveries/number/DEL-9001" } },
+        { "name": "Get Delivery by Tracking Number", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/deliveries/tracking/TRK-9001" } },
+        { "name": "Get Delivery by Order", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/deliveries/order/1" } },
+        { "name": "List Deliveries (paged)", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/deliveries?page=0&size=20" } },
+        { "name": "Get Deliveries by Status", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/deliveries/status/PLANIFIEE" } },
+        { "name": "Get Deliveries by Date", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/deliveries/date/2025-11-06" } },
+        { "name": "Get Delayed Deliveries", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/deliveries/delayed" } },
+        { "name": "Get Active Deliveries by Driver", "request": { "method": "GET", "url": "{{baseUrl}}/api/delivery/deliveries/driver/Ahmed" } },
+        { "name": "Update Delivery Status (PATCH)", "request": { "method": "PATCH", "url": "{{baseUrl}}/api/delivery/deliveries/:id/status?status=EN_COURS" } },
+        { "name": "Mark Delivery as Delivered (PATCH)", "request": { "method": "PATCH", "url": "{{baseUrl}}/api/delivery/deliveries/:id/deliver" } },
+        { "name": "Delete Delivery", "request": { "method": "DELETE", "url": "{{baseUrl}}/api/delivery/deliveries/:id" } }
+      ]
+    }
+  ]
+}

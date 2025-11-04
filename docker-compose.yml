@@ -1,0 +1,85 @@
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: supplychainx-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: supplychainx_db
+      MYSQL_USER: supplychainx_user
+      MYSQL_PASSWORD: supplychainx_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - supplychainx-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # phpMyAdmin for database management
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: supplychainx-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+      UPLOAD_LIMIT: 300M
+    ports:
+      - "8080:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - supplychainx-network
+
+  # Spring Boot Application (uncomment when ready to deploy)
+  # supplychainx-app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: supplychainx-app
+  #   restart: unless-stopped
+  #   environment:
+  #     SPRING_PROFILES_ACTIVE: prod
+  #     SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/supplychainx_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+  #     SPRING_DATASOURCE_USERNAME: supplychainx_user
+  #     SPRING_DATASOURCE_PASSWORD: supplychainx_password
+  #   ports:
+  #     - "8090:8090"
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #   networks:
+  #     - supplychainx-network
+  #   volumes:
+  #     - app_logs:/app/logs
+
+  # Mailhog for email testing (optional)
+#  mailhog:
+#    image: mailhog/mailhog:latest
+#    container_name: supplychainx-mailhog
+#    restart: unless-stopped
+#    ports:
+#      - "1025:1025"  # SMTP port
+#      - "8025:8025"  # Web UI
+#    networks:
+#      - supplychainx-network
+
+volumes:
+  mysql_data:
+    driver: local
+  app_logs:
+    driver: local
+
+networks:
+  supplychainx-network:
+    driver: bridge
