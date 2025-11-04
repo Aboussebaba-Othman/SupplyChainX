@@ -17,4 +17,10 @@
     <include file="db/changelog/production/02-create-bills-of-material-table.xml"/>
     <include file="db/changelog/production/03-create-production-orders-table.xml"/>
 
+    <!-- Module Delivery -->
+    <include file="db/changelog/delivery/01-create-customers-table.xml"/>
+    <include file="db/changelog/delivery/02-create-delivery-orders-table.xml"/>
+    <include file="db/changelog/delivery/03-create-delivery-order-lines-table.xml"/>
+    <include file="db/changelog/delivery/04-create-deliveries-table.xml"/>
+
 </databaseChangeLog>

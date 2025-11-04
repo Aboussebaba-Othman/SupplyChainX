@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="04-create-deliveries-table" author="supplychainx">
+        <createTable tableName="deliveries">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="delivery_number" type="VARCHAR(50)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="delivery_order_id" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="vehicle" type="VARCHAR(100)"/>
+            <column name="driver" type="VARCHAR(100)"/>
+            <column name="driver_phone" type="VARCHAR(20)"/>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delivery_date" type="DATE"/>
+            <column name="actual_delivery_date" type="DATE"/>
+            <column name="cost" type="DECIMAL(15,2)"/>
+            <column name="tracking_number" type="VARCHAR(100)"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="deliveries"
+                baseColumnNames="delivery_order_id"
+                constraintName="fk_delivery_order"
+                referencedTableName="delivery_orders"
+                referencedColumnNames="id"
+                onDelete="CASCADE"
+                onUpdate="CASCADE"/>
+
+        <createIndex tableName="deliveries" indexName="idx_delivery_number">
+            <column name="delivery_number"/>
+        </createIndex>
+        <createIndex tableName="deliveries" indexName="idx_delivery_order">
+            <column name="delivery_order_id"/>
+        </createIndex>
+        <createIndex tableName="deliveries" indexName="idx_delivery_status">
+            <column name="status"/>
+        </createIndex>
+        <createIndex tableName="deliveries" indexName="idx_delivery_tracking">
+            <column name="tracking_number"/>
+        </createIndex>
+        <createIndex tableName="deliveries" indexName="idx_delivery_driver">
+            <column name="driver"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
