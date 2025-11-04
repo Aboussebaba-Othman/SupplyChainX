@@ -5,6 +5,10 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
+    <!-- Module Security -->
+    <include file="db/changelog/security/01-create-users-table.xml"/>
+    <include file="db/changelog/security/02-insert-test-users.xml"/>
+
     <!-- Module Supply -->
     <include file="db/changelog/supply/01-create-suppliers-table.xml"/>
     <include file="db/changelog/supply/02-create-raw-materials-table.xml"/>

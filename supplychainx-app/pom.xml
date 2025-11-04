@@ -26,6 +26,11 @@
         </dependency>
         <dependency>
             <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
             <artifactId>supplychainx-supply</artifactId>
             <version>${project.version}</version>
         </dependency>

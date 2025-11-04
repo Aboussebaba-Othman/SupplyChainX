@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- 
+        Insertion de 10 utilisateurs de test avec BCrypt password = "password123"
+        Hash: $2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW
+    -->
+    <changeSet id="002-insert-test-users" author="supplychainx">
+        
+        <!-- 1. ADMIN -->
+        <insert tableName="users">
+            <column name="username" value="admin"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="admin@supplychainx.com"/>
+            <column name="first_name" value="Admin"/>
+            <column name="last_name" value="System"/>
+            <column name="role" value="ADMIN"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <!-- 2. GESTIONNAIRE_APPROVISIONNEMENT (Supply Module) -->
+        <insert tableName="users">
+            <column name="username" value="supply_manager"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="supply.manager@supplychainx.com"/>
+            <column name="first_name" value="Sarah"/>
+            <column name="last_name" value="Martin"/>
+            <column name="role" value="GESTIONNAIRE_APPROVISIONNEMENT"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <!-- 3. RESPONSABLE_ACHATS (Supply Module) -->
+        <insert tableName="users">
+            <column name="username" value="purchase_manager"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="purchase.manager@supplychainx.com"/>
+            <column name="first_name" value="Marc"/>
+            <column name="last_name" value="Dubois"/>
+            <column name="role" value="RESPONSABLE_ACHATS"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <!-- 4. SUPERVISEUR_LOGISTIQUE (Supply Module) -->
+        <insert tableName="users">
+            <column name="username" value="logistics_supervisor"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="logistics.supervisor@supplychainx.com"/>
+            <column name="first_name" value="Claire"/>
+            <column name="last_name" value="Bernard"/>
+            <column name="role" value="SUPERVISEUR_LOGISTIQUE"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <!-- 5. CHEF_PRODUCTION (Production Module) -->
+        <insert tableName="users">
+            <column name="username" value="production_manager"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="production.manager@supplychainx.com"/>
+            <column name="first_name" value="Jean"/>
+            <column name="last_name" value="Leroy"/>
+            <column name="role" value="CHEF_PRODUCTION"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <!-- 6. PLANIFICATEUR (Production Module) -->
+        <insert tableName="users">
+            <column name="username" value="planner"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="planner@supplychainx.com"/>
+            <column name="first_name" value="Sophie"/>
+            <column name="last_name" value="Moreau"/>
+            <column name="role" value="PLANIFICATEUR"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <!-- 7. SUPERVISEUR_PRODUCTION (Production Module) -->
+        <insert tableName="users">
+            <column name="username" value="production_supervisor"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="production.supervisor@supplychainx.com"/>
+            <column name="first_name" value="Pierre"/>
+            <column name="last_name" value="Durand"/>
+            <column name="role" value="SUPERVISEUR_PRODUCTION"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <!-- 8. GESTIONNAIRE_COMMERCIAL (Delivery Module) -->
+        <insert tableName="users">
+            <column name="username" value="sales_manager"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="sales.manager@supplychainx.com"/>
+            <column name="first_name" value="Marie"/>
+            <column name="last_name" value="Petit"/>
+            <column name="role" value="GESTIONNAIRE_COMMERCIAL"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <!-- 9. RESPONSABLE_LOGISTIQUE (Delivery Module) -->
+        <insert tableName="users">
+            <column name="username" value="delivery_logistics"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="delivery.logistics@supplychainx.com"/>
+            <column name="first_name" value="Thomas"/>
+            <column name="last_name" value="Roux"/>
+            <column name="role" value="RESPONSABLE_LOGISTIQUE"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <!-- 10. SUPERVISEUR_LIVRAISONS (Delivery Module) -->
+        <insert tableName="users">
+            <column name="username" value="delivery_supervisor"/>
+            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="email" value="delivery.supervisor@supplychainx.com"/>
+            <column name="first_name" value="Julie"/>
+            <column name="last_name" value="Simon"/>
+            <column name="role" value="SUPERVISEUR_LIVRAISONS"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="account_non_locked" valueBoolean="true"/>
+            <column name="account_non_expired" valueBoolean="true"/>
+            <column name="credentials_non_expired" valueBoolean="true"/>
+            <column name="failed_login_attempts" valueNumeric="0"/>
+            <column name="created_by" value="system"/>
+        </insert>
+
+        <rollback>
+            <delete tableName="users">
+                <where>username IN ('admin', 'supply_manager', 'purchase_manager', 'logistics_supervisor', 
+                'production_manager', 'planner', 'production_supervisor', 'sales_manager', 
+                'delivery_logistics', 'delivery_supervisor')</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
