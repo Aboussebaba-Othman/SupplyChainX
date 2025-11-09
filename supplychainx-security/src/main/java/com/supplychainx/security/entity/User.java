@@ -1,6 +1,7 @@
 package com.supplychainx.security.entity;
 
 import com.supplychainx.common.entity.BaseEntity;
+import com.supplychainx.common.enums.Permission;
 import com.supplychainx.common.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -14,12 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * Entity representing a system user with authentication and authorization information.
- * Implements UserDetails for Spring Security integration.
- */
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(name = "uk_users_username", columnNames = "username"),
@@ -93,7 +91,17 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        Set<GrantedAuthority> authorities = new HashSet<>();
+        
+        // Add role authority (ROLE_*)
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        
+        // Add all permissions for this role (PERM_*)
+        for (Permission permission : role.getPermissions()) {
+            authorities.add(new SimpleGrantedAuthority(permission.getAuthority()));
+        }
+        
+        return authorities;
     }
 
     @Override

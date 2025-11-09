@@ -24,7 +24,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Fournisseurs", description = "API de gestion des fournisseurs")
-@PreAuthorize("@securityExpressions.hasSupplyAccess()")
 public class SupplierController {
 
     private final SupplierService supplierService;
@@ -33,6 +32,7 @@ public class SupplierController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Créer un fournisseur", description = "Crée un nouveau fournisseur dans le système")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_CREATE')")
     public ApiResponse<SupplierResponseDTO> create(@Valid @RequestBody SupplierRequestDTO requestDTO) {
         log.info("Requête de création d'un fournisseur - Code: {}", requestDTO.getCode());
         SupplierResponseDTO supplier = supplierService.create(requestDTO);
@@ -41,6 +41,7 @@ public class SupplierController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Mettre à jour un fournisseur", description = "Met à jour les informations d'un fournisseur existant")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_UPDATE')")
     public ApiResponse<SupplierResponseDTO> update(
             @PathVariable Long id,
             @Valid @RequestBody SupplierRequestDTO requestDTO) {
@@ -52,6 +53,7 @@ public class SupplierController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Supprimer un fournisseur", description = "Supprime un fournisseur s'il n'a pas de commandes actives")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_DELETE')")
     public void delete(@PathVariable Long id) {
         log.info("Requête de suppression du fournisseur ID: {}", id);
         supplierService.delete(id);
@@ -59,6 +61,7 @@ public class SupplierController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Consulter un fournisseur par ID", description = "Récupère les détails d'un fournisseur par son ID")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_READ')")
     public ApiResponse<SupplierResponseDTO> findById(@PathVariable Long id) {
         log.debug("Requête de consultation du fournisseur ID: {}", id);
         SupplierResponseDTO supplier = supplierService.findById(id);
@@ -67,6 +70,7 @@ public class SupplierController {
 
     @GetMapping("/code/{code}")
     @Operation(summary = "Consulter un fournisseur par code", description = "Récupère les détails d'un fournisseur par son code")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_READ')")
     public ApiResponse<SupplierResponseDTO> findByCode(@PathVariable String code) {
         log.debug("Requête de consultation du fournisseur avec le code: {}", code);
         SupplierResponseDTO supplier = supplierService.findByCode(code);
@@ -75,6 +79,7 @@ public class SupplierController {
 
     @GetMapping
     @Operation(summary = "Lister tous les fournisseurs", description = "Récupère la liste de tous les fournisseurs avec pagination")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_READ')")
     public ApiResponse<PageResponse<SupplierResponseDTO>> findAll(
             @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         log.debug("Requête de liste de tous les fournisseurs - Page: {}", pageable.getPageNumber());
@@ -84,6 +89,7 @@ public class SupplierController {
 
     @GetMapping("/search")
     @Operation(summary = "Rechercher des fournisseurs par nom", description = "Recherche des fournisseurs dont le nom contient la chaîne fournie")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_READ')")
     public ApiResponse<List<SupplierResponseDTO>> searchByName(
             @RequestParam String name,
             @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -94,6 +100,7 @@ public class SupplierController {
 
     @GetMapping("/rating/{minRating}")
     @Operation(summary = "Filtrer par note minimale", description = "Récupère les fournisseurs avec une note supérieure ou égale à la note minimale")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_READ')")
     public ApiResponse<List<SupplierResponseDTO>> findByMinimumRating(@PathVariable Double minRating) {
         log.debug("Requête de filtrage des fournisseurs - Note minimale: {}", minRating);
         List<SupplierResponseDTO> suppliers = supplierService.findByMinimumRating(minRating);
@@ -102,6 +109,7 @@ public class SupplierController {
 
     @GetMapping("/lead-time/{maxLeadTime}")
     @Operation(summary = "Filtrer par délai maximum", description = "Récupère les fournisseurs avec un délai de livraison inférieur ou égal au délai maximum")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_READ')")
     public ApiResponse<List<SupplierResponseDTO>> findByMaxLeadTime(@PathVariable Integer maxLeadTime) {
         log.debug("Requête de filtrage des fournisseurs - Délai maximum: {} jours", maxLeadTime);
         List<SupplierResponseDTO> suppliers = supplierService.findByMaxLeadTime(maxLeadTime);
@@ -110,6 +118,7 @@ public class SupplierController {
 
     @GetMapping("/top-rated")
     @Operation(summary = "Fournisseurs les mieux notés", description = "Récupère tous les fournisseurs triés par note décroissante")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_READ')")
     public ApiResponse<List<SupplierResponseDTO>> findTopRated(
             @PageableDefault(size = 20) Pageable pageable) {
         log.debug("Requête de liste des fournisseurs les mieux notés");
@@ -119,6 +128,7 @@ public class SupplierController {
 
     @GetMapping("/{id}/can-delete")
     @Operation(summary = "Vérifier la suppression possible", description = "Vérifie si un fournisseur peut être supprimé (pas de commandes actives)")
+    @PreAuthorize("@securityExpressions.hasPermission('SUPPLIER_READ')")
     public ApiResponse<Boolean> canBeDeleted(@PathVariable Long id) {
         log.debug("Requête de vérification de suppression du fournisseur ID: {}", id);
         boolean canDelete = supplierService.canBeDeleted(id);

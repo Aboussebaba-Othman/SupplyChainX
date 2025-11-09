@@ -26,13 +26,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Production Orders", description = "API de gestion des ordres de production")
-@PreAuthorize("@securityExpressions.hasProductionAccess()")
 public class ProductionOrderController {
 
     private final ProductionOrderService productionOrderService;
 
     @PostMapping
     @Operation(summary = "Créer un nouvel ordre de production", description = "Crée un nouvel ordre de production avec statut PLANIFIE")
+    @PreAuthorize("@securityExpressions.hasAnyPermission('PRODUCTION_ORDER_CREATE')")
     public ResponseEntity<ProductionOrderResponseDTO> createProductionOrder(@Valid @RequestBody ProductionOrderRequestDTO requestDTO) {
         log.info("Requête de création d'ordre de production: {}", requestDTO.getOrderNumber());
         ProductionOrderResponseDTO response = productionOrderService.createProductionOrder(requestDTO);
@@ -41,6 +41,7 @@ public class ProductionOrderController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Récupérer un ordre de production par ID", description = "Récupère les détails d'un ordre de production par son identifiant")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_READ')")
     public ResponseEntity<ProductionOrderResponseDTO> getProductionOrderById(@PathVariable Long id) {
         log.info("Requête de récupération de l'ordre de production ID: {}", id);
         ProductionOrderResponseDTO response = productionOrderService.getProductionOrderById(id);
@@ -49,6 +50,7 @@ public class ProductionOrderController {
 
     @GetMapping("/order-number/{orderNumber}")
     @Operation(summary = "Récupérer un ordre de production par numéro", description = "Récupère les détails d'un ordre de production par son numéro unique")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_READ')")
     public ResponseEntity<ProductionOrderResponseDTO> getProductionOrderByOrderNumber(@PathVariable String orderNumber) {
         log.info("Requête de récupération de l'ordre de production avec le numéro: {}", orderNumber);
         ProductionOrderResponseDTO response = productionOrderService.getProductionOrderByOrderNumber(orderNumber);
@@ -57,6 +59,7 @@ public class ProductionOrderController {
 
     @GetMapping
     @Operation(summary = "Récupérer tous les ordres de production", description = "Récupère la liste paginée de tous les ordres de production")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_READ')")
     public ResponseEntity<Page<ProductionOrderResponseDTO>> getAllProductionOrders(
             @PageableDefault(size = 20, sort = "startDate") Pageable pageable) {
         log.info("Requête de récupération de tous les ordres de production - Page: {}, Size: {}", 
@@ -67,6 +70,7 @@ public class ProductionOrderController {
 
     @GetMapping("/status/{status}")
     @Operation(summary = "Récupérer les ordres de production par statut", description = "Récupère tous les ordres de production d'un statut spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_READ')")
     public ResponseEntity<Page<ProductionOrderResponseDTO>> getProductionOrdersByStatus(
             @PathVariable ProductionOrderStatus status,
             @PageableDefault(size = 20, sort = "startDate") Pageable pageable) {
@@ -77,6 +81,7 @@ public class ProductionOrderController {
 
     @GetMapping("/product/{productId}")
     @Operation(summary = "Récupérer les ordres de production par produit", description = "Récupère tous les ordres de production pour un produit spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_READ')")
     public ResponseEntity<Page<ProductionOrderResponseDTO>> getProductionOrdersByProduct(
             @PathVariable Long productId,
             @PageableDefault(size = 20, sort = "startDate") Pageable pageable) {
@@ -87,6 +92,7 @@ public class ProductionOrderController {
 
     @GetMapping("/delayed")
     @Operation(summary = "Récupérer les ordres de production retardés", description = "Récupère tous les ordres de production en cours et en retard")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_READ')")
     public ResponseEntity<List<ProductionOrderResponseDTO>> getDelayedProductionOrders() {
         log.info("Requête de récupération des ordres de production retardés");
         List<ProductionOrderResponseDTO> response = productionOrderService.getDelayedProductionOrders();
@@ -95,6 +101,7 @@ public class ProductionOrderController {
 
     @GetMapping("/date-range")
     @Operation(summary = "Récupérer les ordres de production par période", description = "Récupère les ordres de production planifiés entre deux dates")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_READ')")
     public ResponseEntity<Page<ProductionOrderResponseDTO>> getProductionOrdersByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
@@ -106,6 +113,7 @@ public class ProductionOrderController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Mettre à jour un ordre de production", description = "Met à jour les informations d'un ordre de production (sauf s'il est terminé ou annulé)")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_UPDATE')")
     public ResponseEntity<ProductionOrderResponseDTO> updateProductionOrder(
             @PathVariable Long id,
             @Valid @RequestBody ProductionOrderRequestDTO requestDTO) {
@@ -116,6 +124,7 @@ public class ProductionOrderController {
 
     @PatchMapping("/{id}/start")
     @Operation(summary = "Démarrer la production", description = "Démarre la production d'un ordre (vérifie la disponibilité des matières premières)")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_START')")
     public ResponseEntity<ProductionOrderResponseDTO> startProduction(@PathVariable Long id) {
         log.info("Requête de démarrage de la production pour l'ordre ID: {}", id);
         ProductionOrderResponseDTO response = productionOrderService.startProduction(id);
@@ -124,6 +133,7 @@ public class ProductionOrderController {
 
     @PatchMapping("/{id}/complete")
     @Operation(summary = "Terminer la production", description = "Termine la production (consomme les matières premières et ajoute les produits finis au stock)")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_COMPLETE')")
     public ResponseEntity<ProductionOrderResponseDTO> completeProduction(@PathVariable Long id) {
         log.info("Requête de finalisation de la production pour l'ordre ID: {}", id);
         ProductionOrderResponseDTO response = productionOrderService.completeProduction(id);
@@ -132,6 +142,7 @@ public class ProductionOrderController {
 
     @PatchMapping("/{id}/cancel")
     @Operation(summary = "Annuler un ordre de production", description = "Annule un ordre de production (sauf s'il est déjà terminé)")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_CANCEL')")
     public ResponseEntity<ProductionOrderResponseDTO> cancelProductionOrder(@PathVariable Long id) {
         log.info("Requête d'annulation de l'ordre de production ID: {}", id);
         ProductionOrderResponseDTO response = productionOrderService.cancelProductionOrder(id);
@@ -140,6 +151,7 @@ public class ProductionOrderController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Supprimer un ordre de production", description = "Supprime un ordre de production (uniquement si planifié ou annulé)")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCTION_ORDER_DELETE')")
     public ResponseEntity<Void> deleteProductionOrder(@PathVariable Long id) {
         log.info("Requête de suppression de l'ordre de production ID: {}", id);
         productionOrderService.deleteProductionOrder(id);

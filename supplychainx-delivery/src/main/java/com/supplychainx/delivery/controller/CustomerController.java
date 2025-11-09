@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/delivery/customers")
 @RequiredArgsConstructor
 @Slf4j
-@PreAuthorize("@securityExpressions.hasDeliveryAccess()")
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -28,6 +27,7 @@ public class CustomerController {
      * Créer un nouveau client
      * POST /api/delivery/customers
      */
+    @PreAuthorize("@securityExpressions.hasPermission('CUSTOMER_CREATE')")
     @PostMapping
     public ResponseEntity<CustomerResponseDTO> create(@Valid @RequestBody CustomerRequestDTO requestDTO) {
         log.info("REST request to create Customer : {}", requestDTO.getCode());
@@ -39,6 +39,7 @@ public class CustomerController {
      * Mettre à jour un client existant
      * PUT /api/delivery/customers/{id}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('CUSTOMER_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<CustomerResponseDTO> update(
             @PathVariable Long id,
@@ -52,6 +53,7 @@ public class CustomerController {
      * Récupérer un client par ID
      * GET /api/delivery/customers/{id}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('CUSTOMER_READ')")
     @GetMapping("/{id}")
     public ResponseEntity<CustomerResponseDTO> getById(@PathVariable Long id) {
         log.info("REST request to get Customer : {}", id);
@@ -63,6 +65,7 @@ public class CustomerController {
      * Récupérer un client par code
      * GET /api/delivery/customers/code/{code}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('CUSTOMER_READ')")
     @GetMapping("/code/{code}")
     public ResponseEntity<CustomerResponseDTO> getByCode(@PathVariable String code) {
         log.info("REST request to get Customer by code : {}", code);
@@ -74,6 +77,7 @@ public class CustomerController {
      * Récupérer tous les clients avec pagination
      * GET /api/delivery/customers
      */
+    @PreAuthorize("@securityExpressions.hasPermission('CUSTOMER_READ')")
     @GetMapping
     public ResponseEntity<Page<CustomerResponseDTO>> getAll(
             @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -86,6 +90,7 @@ public class CustomerController {
      * Rechercher des clients par mot-clé
      * GET /api/delivery/customers/search?keyword=xxx
      */
+    @PreAuthorize("@securityExpressions.hasPermission('CUSTOMER_READ')")
     @GetMapping("/search")
     public ResponseEntity<Page<CustomerResponseDTO>> search(
             @RequestParam String keyword,
@@ -99,6 +104,7 @@ public class CustomerController {
      * Récupérer les clients par ville
      * GET /api/delivery/customers/city/{city}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('CUSTOMER_READ')")
     @GetMapping("/city/{city}")
     public ResponseEntity<Page<CustomerResponseDTO>> getByCity(
             @PathVariable String city,
@@ -112,6 +118,7 @@ public class CustomerController {
      * Récupérer les clients par pays
      * GET /api/delivery/customers/country/{country}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('CUSTOMER_READ')")
     @GetMapping("/country/{country}")
     public ResponseEntity<Page<CustomerResponseDTO>> getByCountry(
             @PathVariable String country,
@@ -125,6 +132,7 @@ public class CustomerController {
      * Supprimer un client
      * DELETE /api/delivery/customers/{id}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('CUSTOMER_DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("REST request to delete Customer : {}", id);

@@ -24,7 +24,6 @@ import java.util.List;
 @RequestMapping("/api/delivery/deliveries")
 @RequiredArgsConstructor
 @Slf4j
-@PreAuthorize("@securityExpressions.hasDeliveryAccess()")
 public class DeliveryController {
 
     private final DeliveryService deliveryService;
@@ -33,6 +32,7 @@ public class DeliveryController {
      * Créer une nouvelle livraison
      * POST /api/delivery/deliveries
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_CREATE')")
     @PostMapping
     public ResponseEntity<DeliveryResponseDTO> create(@Valid @RequestBody DeliveryRequestDTO requestDTO) {
         log.info("REST request to create Delivery : {}", requestDTO.getDeliveryNumber());
@@ -44,6 +44,7 @@ public class DeliveryController {
      * Mettre à jour une livraison existante
      * PUT /api/delivery/deliveries/{id}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<DeliveryResponseDTO> update(
             @PathVariable Long id,
@@ -57,6 +58,7 @@ public class DeliveryController {
      * Récupérer une livraison par ID
      * GET /api/delivery/deliveries/{id}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_READ')")
     @GetMapping("/{id}")
     public ResponseEntity<DeliveryResponseDTO> getById(@PathVariable Long id) {
         log.info("REST request to get Delivery : {}", id);
@@ -68,6 +70,7 @@ public class DeliveryController {
      * Récupérer une livraison par numéro
      * GET /api/delivery/deliveries/number/{deliveryNumber}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_READ')")
     @GetMapping("/number/{deliveryNumber}")
     public ResponseEntity<DeliveryResponseDTO> getByDeliveryNumber(@PathVariable String deliveryNumber) {
         log.info("REST request to get Delivery by number : {}", deliveryNumber);
@@ -79,6 +82,7 @@ public class DeliveryController {
      * Récupérer une livraison par numéro de suivi
      * GET /api/delivery/deliveries/tracking/{trackingNumber}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_READ')")
     @GetMapping("/tracking/{trackingNumber}")
     public ResponseEntity<DeliveryResponseDTO> getByTrackingNumber(@PathVariable String trackingNumber) {
         log.info("REST request to get Delivery by tracking number : {}", trackingNumber);
@@ -90,6 +94,7 @@ public class DeliveryController {
      * Récupérer la livraison d'une commande
      * GET /api/delivery/deliveries/order/{deliveryOrderId}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_READ')")
     @GetMapping("/order/{deliveryOrderId}")
     public ResponseEntity<DeliveryResponseDTO> getByDeliveryOrder(@PathVariable Long deliveryOrderId) {
         log.info("REST request to get Delivery by order : {}", deliveryOrderId);
@@ -101,6 +106,7 @@ public class DeliveryController {
      * Récupérer toutes les livraisons avec pagination
      * GET /api/delivery/deliveries
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_READ')")
     @GetMapping
     public ResponseEntity<Page<DeliveryResponseDTO>> getAll(
             @PageableDefault(size = 20, sort = "deliveryDate", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -113,6 +119,7 @@ public class DeliveryController {
      * Récupérer les livraisons par statut
      * GET /api/delivery/deliveries/status/{status}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_READ')")
     @GetMapping("/status/{status}")
     public ResponseEntity<Page<DeliveryResponseDTO>> getByStatus(
             @PathVariable DeliveryStatus status,
@@ -127,6 +134,7 @@ public class DeliveryController {
      * GET /api/delivery/deliveries/date/{date}
      */
     @GetMapping("/date/{date}")
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_READ')")
     public ResponseEntity<List<DeliveryResponseDTO>> getByDeliveryDate(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.info("REST request to get Deliveries by date : {}", date);
@@ -139,6 +147,7 @@ public class DeliveryController {
      * GET /api/delivery/deliveries/delayed
      */
     @GetMapping("/delayed")
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_READ')")
     public ResponseEntity<List<DeliveryResponseDTO>> getDelayedDeliveries() {
         log.info("REST request to get delayed Deliveries");
         List<DeliveryResponseDTO> response = deliveryService.getDelayedDeliveries();
@@ -149,6 +158,7 @@ public class DeliveryController {
      * Récupérer les livraisons actives d'un chauffeur
      * GET /api/delivery/deliveries/driver/{driver}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_READ')")
     @GetMapping("/driver/{driver}")
     public ResponseEntity<List<DeliveryResponseDTO>> getActiveDeliveriesByDriver(@PathVariable String driver) {
         log.info("REST request to get active Deliveries by driver : {}", driver);
@@ -160,6 +170,7 @@ public class DeliveryController {
      * Changer le statut d'une livraison
      * PATCH /api/delivery/deliveries/{id}/status
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_STATUS_UPDATE')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<DeliveryResponseDTO> updateStatus(
             @PathVariable Long id,
@@ -173,6 +184,7 @@ public class DeliveryController {
      * Marquer une livraison comme livrée
      * PATCH /api/delivery/deliveries/{id}/deliver
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_COMPLETE')")
     @PatchMapping("/{id}/deliver")
     public ResponseEntity<DeliveryResponseDTO> markAsDelivered(@PathVariable Long id) {
         log.info("REST request to mark Delivery as delivered : {}", id);
@@ -184,6 +196,7 @@ public class DeliveryController {
      * Supprimer une livraison
      * DELETE /api/delivery/deliveries/{id}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("REST request to delete Delivery : {}", id);

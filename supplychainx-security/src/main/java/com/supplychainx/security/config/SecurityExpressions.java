@@ -3,18 +3,54 @@ package com.supplychainx.security.config;
 import com.supplychainx.common.enums.Role;
 import com.supplychainx.security.entity.User;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-/**
- * Expressions de sécurité personnalisées pour le contrôle d'accès par module
- * Utilisées avec @PreAuthorize("@securityExpressions.hasSupplyAccess()")
- * 
- * @author SupplyChainX Team
- * @version 1.1.0
- */
+import java.util.Arrays;
+
+
 @Component("securityExpressions")
 public class SecurityExpressions {
+    
+
+    public boolean hasPermission(String permissionName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+        
+        String authority = "PERM_" + permissionName;
+        
+        return authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch(auth -> auth.equals(authority));
+    }
+    
+    /**
+     * Vérifie si l'utilisateur a au moins une des permissions spécifiées
+     * Usage: @PreAuthorize("@securityExpressions.hasAnyPermission('SUPPLIER_CREATE', 'SUPPLIER_UPDATE')")
+     * 
+     * @param permissionNames les noms des permissions
+     * @return true si l'utilisateur a au moins une des permissions
+     */
+    public boolean hasAnyPermission(String... permissionNames) {
+        return Arrays.stream(permissionNames)
+                .anyMatch(this::hasPermission);
+    }
+    
+    /**
+     * Vérifie si l'utilisateur a toutes les permissions spécifiées
+     * Usage: @PreAuthorize("@securityExpressions.hasAllPermissions('SUPPLIER_READ', 'SUPPLIER_UPDATE')")
+     * 
+     * @param permissionNames les noms des permissions
+     * @return true si l'utilisateur a toutes les permissions
+     */
+    public boolean hasAllPermissions(String... permissionNames) {
+        return Arrays.stream(permissionNames)
+                .allMatch(this::hasPermission);
+    }
     
     /**
      * Vérifie si l'utilisateur connecté a accès au module Supply
@@ -37,12 +73,7 @@ public class SecurityExpressions {
         
         return false;
     }
-    
-    /**
-     * Vérifie si l'utilisateur connecté a accès au module Production
-     * 
-     * @return true si l'utilisateur a accès au module Production
-     */
+
     public boolean hasProductionAccess() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         

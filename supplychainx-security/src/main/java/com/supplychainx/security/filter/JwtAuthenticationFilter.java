@@ -19,12 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/**
- * Filtre JWT pour l'authentification des requêtes
- * 
- * @author SupplyChainX Team
- * @version 1.1.0
- */
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -80,12 +75,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
     
-    /**
-     * Extrait le token JWT du header Authorization
-     * 
-     * @param request la requête HTTP
-     * @return le token JWT ou null s'il n'existe pas
-     */
+    @Override
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
+        String path = request.getRequestURI();
+        // Ne pas appliquer le filtre sur les endpoints publics
+        return path.startsWith("/api/auth/") ||
+               path.startsWith("/test/") ||
+               path.startsWith("/h2-console/") ||
+               path.startsWith("/swagger-ui/") ||
+               path.startsWith("/v3/api-docs/") ||
+               path.equals("/swagger-ui.html") ||
+               path.equals("/actuator/health");
+    }
+  
     private String extractTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader(jwtProperties.getHeaderString());
         

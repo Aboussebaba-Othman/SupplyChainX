@@ -20,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Lignes de Commande", description = "API de gestion des lignes de commande d'approvisionnement")
-@PreAuthorize("@securityExpressions.hasSupplyAccess()")
 public class SupplyOrderLineController {
 
     private final SupplyOrderLineService supplyOrderLineService;
@@ -29,6 +28,7 @@ public class SupplyOrderLineController {
     @PostMapping("/order/{orderId}")
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Ajouter une ligne à une commande", description = "Ajoute une nouvelle ligne à une commande d'approvisionnement existante")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_UPDATE')")
     public ApiResponse<SupplyOrderLineResponseDTO> create(
             @PathVariable Long orderId,
             @Valid @RequestBody SupplyOrderLineRequestDTO requestDTO) {
@@ -40,6 +40,7 @@ public class SupplyOrderLineController {
     // Mettre à jour une ligne de commande
     @PutMapping("/{lineId}")
     @Operation(summary = "Mettre à jour une ligne", description = "Met à jour une ligne de commande existante")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_UPDATE')")
     public ApiResponse<SupplyOrderLineResponseDTO> update(
             @PathVariable Long lineId,
             @Valid @RequestBody SupplyOrderLineRequestDTO requestDTO) {
@@ -52,6 +53,7 @@ public class SupplyOrderLineController {
     @DeleteMapping("/{lineId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Supprimer une ligne", description = "Supprime une ligne de commande si ce n'est pas la dernière")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_DELETE')")
     public void delete(@PathVariable Long lineId) {
         log.info("Requête de suppression de la ligne ID: {}", lineId);
         supplyOrderLineService.delete(lineId);
@@ -60,6 +62,7 @@ public class SupplyOrderLineController {
     // Consulter une ligne par ID
     @GetMapping("/{lineId}")
     @Operation(summary = "Consulter une ligne par ID", description = "Récupère les détails d'une ligne de commande par son ID")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<SupplyOrderLineResponseDTO> findById(@PathVariable Long lineId) {
         log.debug("Requête de consultation de la ligne ID: {}", lineId);
         SupplyOrderLineResponseDTO line = supplyOrderLineService.findById(lineId);
@@ -69,6 +72,7 @@ public class SupplyOrderLineController {
     // Lister toutes les lignes d'une commande
     @GetMapping("/order/{orderId}")
     @Operation(summary = "Lignes d'une commande", description = "Récupère toutes les lignes d'une commande spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<List<SupplyOrderLineResponseDTO>> findBySupplyOrder(@PathVariable Long orderId) {
         log.debug("Requête de liste des lignes de la commande ID: {}", orderId);
         List<SupplyOrderLineResponseDTO> lines = supplyOrderLineService.findBySupplyOrder(orderId);
@@ -78,6 +82,7 @@ public class SupplyOrderLineController {
     // Lister toutes les lignes contenant une matière première
     @GetMapping("/material/{materialId}")
     @Operation(summary = "Lignes d'une matière première", description = "Récupère toutes les lignes de commande contenant une matière première spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<List<SupplyOrderLineResponseDTO>> findByMaterial(@PathVariable Long materialId) {
         log.debug("Requête de liste des lignes pour la matière ID: {}", materialId);
         List<SupplyOrderLineResponseDTO> lines = supplyOrderLineService.findByMaterial(materialId);
@@ -87,6 +92,7 @@ public class SupplyOrderLineController {
     // Récupérer une ligne spécifique d'une commande pour une matière
     @GetMapping("/order/{orderId}/material/{materialId}")
     @Operation(summary = "Ligne spécifique", description = "Récupère la ligne d'une commande pour une matière première spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<SupplyOrderLineResponseDTO> findBySupplyOrderAndMaterial(
             @PathVariable Long orderId,
             @PathVariable Long materialId) {
@@ -98,6 +104,7 @@ public class SupplyOrderLineController {
     // Calculer la quantité totale commandée pour une matière
     @GetMapping("/material/{materialId}/total-quantity")
     @Operation(summary = "Quantité totale commandée", description = "Calcule la quantité totale commandée pour une matière première dans les commandes actives")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<Integer> sumQuantityByMaterialInActiveOrders(@PathVariable Long materialId) {
         log.debug("Requête de calcul de la quantité totale pour la matière ID: {}", materialId);
         Integer totalQuantity = supplyOrderLineService.sumQuantityByMaterialInActiveOrders(materialId);
@@ -107,6 +114,7 @@ public class SupplyOrderLineController {
     // Calculer le montant total d'une commande
     @GetMapping("/order/{orderId}/total-amount")
     @Operation(summary = "Montant total d'une commande", description = "Calcule le montant total des lignes d'une commande")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<Double> sumTotalAmountByOrder(@PathVariable Long orderId) {
         log.debug("Requête de calcul du montant total de la commande ID: {}", orderId);
         Double totalAmount = supplyOrderLineService.sumTotalAmountByOrder(orderId);
@@ -116,6 +124,7 @@ public class SupplyOrderLineController {
     // Vérifier si une matière a des lignes actives
     @GetMapping("/material/{materialId}/has-active")
     @Operation(summary = "Vérifier lignes actives", description = "Vérifie si une matière première a des lignes de commande actives")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<Boolean> materialHasActiveOrderLines(@PathVariable Long materialId) {
         log.debug("Requête de vérification des lignes actives pour la matière ID: {}", materialId);
         boolean hasActive = supplyOrderLineService.materialHasActiveOrderLines(materialId);

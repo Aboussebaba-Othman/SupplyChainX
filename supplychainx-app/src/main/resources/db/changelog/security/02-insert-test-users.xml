@@ -7,14 +7,14 @@
 
     <!-- 
         Insertion de 10 utilisateurs de test avec BCrypt password = "password123"
-        Hash: $2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW
+        Hash: $2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im
     -->
     <changeSet id="002-insert-test-users" author="supplychainx">
         
         <!-- 1. ADMIN -->
         <insert tableName="users">
             <column name="username" value="admin"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="admin@supplychainx.com"/>
             <column name="first_name" value="Admin"/>
             <column name="last_name" value="System"/>
@@ -30,7 +30,7 @@
         <!-- 2. GESTIONNAIRE_APPROVISIONNEMENT (Supply Module) -->
         <insert tableName="users">
             <column name="username" value="supply_manager"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="supply.manager@supplychainx.com"/>
             <column name="first_name" value="Sarah"/>
             <column name="last_name" value="Martin"/>
@@ -46,7 +46,7 @@
         <!-- 3. RESPONSABLE_ACHATS (Supply Module) -->
         <insert tableName="users">
             <column name="username" value="purchase_manager"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="purchase.manager@supplychainx.com"/>
             <column name="first_name" value="Marc"/>
             <column name="last_name" value="Dubois"/>
@@ -62,7 +62,7 @@
         <!-- 4. SUPERVISEUR_LOGISTIQUE (Supply Module) -->
         <insert tableName="users">
             <column name="username" value="logistics_supervisor"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="logistics.supervisor@supplychainx.com"/>
             <column name="first_name" value="Claire"/>
             <column name="last_name" value="Bernard"/>
@@ -78,7 +78,7 @@
         <!-- 5. CHEF_PRODUCTION (Production Module) -->
         <insert tableName="users">
             <column name="username" value="production_manager"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="production.manager@supplychainx.com"/>
             <column name="first_name" value="Jean"/>
             <column name="last_name" value="Leroy"/>
@@ -94,7 +94,7 @@
         <!-- 6. PLANIFICATEUR (Production Module) -->
         <insert tableName="users">
             <column name="username" value="planner"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="planner@supplychainx.com"/>
             <column name="first_name" value="Sophie"/>
             <column name="last_name" value="Moreau"/>
@@ -110,7 +110,7 @@
         <!-- 7. SUPERVISEUR_PRODUCTION (Production Module) -->
         <insert tableName="users">
             <column name="username" value="production_supervisor"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="production.supervisor@supplychainx.com"/>
             <column name="first_name" value="Pierre"/>
             <column name="last_name" value="Durand"/>
@@ -126,7 +126,7 @@
         <!-- 8. GESTIONNAIRE_COMMERCIAL (Delivery Module) -->
         <insert tableName="users">
             <column name="username" value="sales_manager"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="sales.manager@supplychainx.com"/>
             <column name="first_name" value="Marie"/>
             <column name="last_name" value="Petit"/>
@@ -142,7 +142,7 @@
         <!-- 9. RESPONSABLE_LOGISTIQUE (Delivery Module) -->
         <insert tableName="users">
             <column name="username" value="delivery_logistics"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="delivery.logistics@supplychainx.com"/>
             <column name="first_name" value="Thomas"/>
             <column name="last_name" value="Roux"/>
@@ -158,7 +158,7 @@
         <!-- 10. SUPERVISEUR_LIVRAISONS (Delivery Module) -->
         <insert tableName="users">
             <column name="username" value="delivery_supervisor"/>
-            <column name="password" value="$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5GyYVq3Fl7VjW"/>
+            <column name="password" value="$2a$12$tNNgS6gzMJQYVK/f17BTN.BPi3wDOICLRizk0GIL5c05sUQRLz6Im"/>
             <column name="email" value="delivery.supervisor@supplychainx.com"/>
             <column name="first_name" value="Julie"/>
             <column name="last_name" value="Simon"/>

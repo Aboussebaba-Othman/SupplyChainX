@@ -44,6 +44,7 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
@@ -54,3 +55,11 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+
+# Configuration JWT
+jwt:
+  secret: MySecretKeyForJWTTokenGenerationAndValidationSupplyChainX2024
+  expiration: 86400000  # 24 heures en millisecondes
+  refresh-expiration: 604800000  # 7 jours en millisecondes
+  header-string: Authorization
+  token-prefix: "Bearer "

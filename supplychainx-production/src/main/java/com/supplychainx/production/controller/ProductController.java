@@ -23,13 +23,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 @Tag(name = "Products", description = "API de gestion des produits finis")
-@PreAuthorize("@securityExpressions.hasProductionAccess()")
 public class ProductController {
 
     private final ProductService productService;
 
     @PostMapping
     @Operation(summary = "Créer un nouveau produit", description = "Crée un nouveau produit avec validation du code unique")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_CREATE')")
     public ResponseEntity<ProductResponseDTO> createProduct(@Valid @RequestBody ProductRequestDTO requestDTO) {
         log.info("Requête de création de produit: {}", requestDTO.getCode());
         ProductResponseDTO response = productService.createProduct(requestDTO);
@@ -38,6 +38,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Récupérer un produit par ID", description = "Récupère les détails d'un produit par son identifiant")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable Long id) {
         log.info("Requête de récupération du produit ID: {}", id);
         ProductResponseDTO response = productService.getProductById(id);
@@ -46,6 +47,7 @@ public class ProductController {
 
     @GetMapping("/code/{code}")
     @Operation(summary = "Récupérer un produit par code", description = "Récupère les détails d'un produit par son code unique")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<ProductResponseDTO> getProductByCode(@PathVariable String code) {
         log.info("Requête de récupération du produit avec le code: {}", code);
         ProductResponseDTO response = productService.getProductByCode(code);
@@ -54,6 +56,7 @@ public class ProductController {
 
     @GetMapping
     @Operation(summary = "Récupérer tous les produits", description = "Récupère la liste paginée de tous les produits")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<Page<ProductResponseDTO>> getAllProducts(
             @PageableDefault(size = 20, sort = "name") Pageable pageable) {
         log.info("Requête de récupération de tous les produits - Page: {}, Size: {}", 
@@ -64,6 +67,7 @@ public class ProductController {
 
     @GetMapping("/search")
     @Operation(summary = "Rechercher des produits par nom", description = "Recherche des produits dont le nom contient la chaîne spécifiée")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<Page<ProductResponseDTO>> searchProductsByName(
             @RequestParam String name,
             @PageableDefault(size = 20, sort = "name") Pageable pageable) {
@@ -74,6 +78,7 @@ public class ProductController {
 
     @GetMapping("/category/{category}")
     @Operation(summary = "Récupérer les produits par catégorie", description = "Récupère tous les produits d'une catégorie spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<Page<ProductResponseDTO>> getProductsByCategory(
             @PathVariable String category,
             @PageableDefault(size = 20, sort = "name") Pageable pageable) {
@@ -84,6 +89,7 @@ public class ProductController {
 
     @GetMapping("/low-stock")
     @Operation(summary = "Récupérer les produits en stock bas", description = "Récupère les produits dont le stock est inférieur au stock minimum")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<Page<ProductResponseDTO>> getLowStockProducts(
             @PageableDefault(size = 20, sort = "stock") Pageable pageable) {
         log.info("Requête de récupération des produits en stock bas");
@@ -93,6 +99,7 @@ public class ProductController {
 
     @GetMapping("/low-stock/count")
     @Operation(summary = "Compter les produits en stock bas", description = "Retourne le nombre de produits en stock bas")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<Map<String, Long>> countLowStockProducts() {
         log.info("Requête de comptage des produits en stock bas");
         Long count = productService.countLowStockProducts();
@@ -101,6 +108,7 @@ public class ProductController {
 
     @GetMapping("/inventory/value")
     @Operation(summary = "Calculer la valeur totale de l'inventaire", description = "Calcule la valeur totale de tous les produits en stock")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<Map<String, Double>> calculateTotalInventoryValue() {
         log.info("Requête de calcul de la valeur totale de l'inventaire");
         Double totalValue = productService.calculateTotalInventoryValue();
@@ -109,6 +117,7 @@ public class ProductController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Mettre à jour un produit", description = "Met à jour les informations d'un produit existant")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_UPDATE')")
     public ResponseEntity<ProductResponseDTO> updateProduct(
             @PathVariable Long id,
             @Valid @RequestBody ProductRequestDTO requestDTO) {
@@ -119,6 +128,7 @@ public class ProductController {
 
     @PatchMapping("/{id}/add-stock")
     @Operation(summary = "Ajouter du stock", description = "Ajoute une quantité au stock d'un produit")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_UPDATE')")
     public ResponseEntity<ProductResponseDTO> addStock(
             @PathVariable Long id,
             @RequestParam Double quantity) {
@@ -129,6 +139,7 @@ public class ProductController {
 
     @PatchMapping("/{id}/reduce-stock")
     @Operation(summary = "Réduire le stock", description = "Réduit le stock d'un produit (avec validation de disponibilité)")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_UPDATE')")
     public ResponseEntity<ProductResponseDTO> reduceStock(
             @PathVariable Long id,
             @RequestParam Double quantity) {
@@ -139,6 +150,7 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Supprimer un produit", description = "Supprime un produit (si non utilisé dans des ordres de production)")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_DELETE')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         log.info("Requête de suppression du produit ID: {}", id);
         productService.deleteProduct(id);
