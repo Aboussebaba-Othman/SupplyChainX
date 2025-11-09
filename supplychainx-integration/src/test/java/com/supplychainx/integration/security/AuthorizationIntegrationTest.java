@@ -1,5 +1,6 @@
 package com.supplychainx.integration.security;
 
+import com.jayway.jsonpath.JsonPath;
 import com.supplychainx.integration.config.IntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -152,12 +153,10 @@ class AuthorizationIntegrationTest extends IntegrationTest {
                     "name": "Auth Test Product",
                     "description": "Product for auth tests",
                     "category": "Test",
-                    "unit": "piece",
-                    "productionCost": 30.00,
-                    "sellingPrice": 70.00,
+                    "cost": 30.00,
                     "productionTime": 60,
-                    "stock": 100,
-                    "stockMin": 20
+                    "stock": 100.0,
+                    "stockMin": 20.0
                 }
                 """;
 
@@ -240,13 +239,12 @@ class AuthorizationIntegrationTest extends IntegrationTest {
                 {
                     "code": "PROD-FORBIDDEN-001",
                     "name": "Forbidden Product",
+                    "description": "Product for forbidden test",
                     "category": "Test",
-                    "unit": "piece",
-                    "productionCost": 10.00,
-                    "sellingPrice": 20.00,
+                    "cost": 10.00,
                     "productionTime": 30,
-                    "stock": 50,
-                    "stockMin": 10
+                    "stock": 50.0,
+                    "stockMin": 10.0
                 }
                 """;
 
@@ -294,9 +292,6 @@ class AuthorizationIntegrationTest extends IntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        String response = result.getResponse().getContentAsString();
-        int tokenStart = response.indexOf("\"token\":\"") + 9;
-        int tokenEnd = response.indexOf("\"", tokenStart);
-        return response.substring(tokenStart, tokenEnd);
+        return JsonPath.read(result.getResponse().getContentAsString(), "$.token");
     }
 }
