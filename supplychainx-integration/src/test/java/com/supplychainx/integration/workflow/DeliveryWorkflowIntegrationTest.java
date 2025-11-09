@@ -35,6 +35,7 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
     // Instance variables will be shared across all test methods with PER_CLASS lifecycle
     private String authToken;
     private String productionToken;
+    private String logisticToken;
     private Long productId;
     private Long customerId;
     private Long deliveryOrderId;
@@ -90,12 +91,10 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
                     "name": "Product for Delivery Test",
                     "description": "Test product for delivery workflow",
                     "category": "Electronics",
-                    "unit": "piece",
-                    "productionCost": 50.00,
-                    "sellingPrice": 120.00,
                     "productionTime": 60,
-                    "stock": 100,
-                    "stockMin": 20
+                    "cost": 50.00,
+                    "stock": 100.0,
+                    "stockMin": 20.0
                 }
                 """;
 
@@ -104,8 +103,8 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(productRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.code").value("PROD-DELIVERY-TEST-001"))
-                .andExpect(jsonPath("$.data.stock").value(100))
+                .andExpect(jsonPath("$.code").value("PROD-DELIVERY-TEST-001"))
+                .andExpect(jsonPath("$.stock").value(100.0))
                 .andReturn();
 
         productId = extractId(result.getResponse().getContentAsString());
@@ -134,8 +133,8 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(customerRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.code").value("CUST-TEST-001"))
-                .andExpect(jsonPath("$.data.name").value("Test Customer Corp"))
+                .andExpect(jsonPath("$.code").value("CUST-TEST-001"))
+                .andExpect(jsonPath("$.name").value("Test Customer Corp"))
                 .andReturn();
 
         customerId = extractId(result.getResponse().getContentAsString());
@@ -150,9 +149,12 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
                 {
                     "orderNumber": "DO-TEST-001",
                     "customerId": %d,
-                    "orderDate": "2025-11-09",
-                    "requestedDeliveryDate": "2025-11-12",
-                    "status": "EN_ATTENTE",
+                    "orderDate": "2025-11-09T09:00:00",
+                    "expectedDeliveryDate": "2025-11-12",
+                    "deliveryAddress": "123 Test Avenue",
+                    "deliveryCity": "Test City",
+                    "deliveryPostalCode": "12345",
+                    "status": "EN_PREPARATION",
                     "orderLines": [
                         {
                             "productId": %d,
@@ -168,8 +170,8 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(orderRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.orderNumber").value("DO-TEST-001"))
-                .andExpect(jsonPath("$.data.status").value("EN_ATTENTE"))
+                .andExpect(jsonPath("$.orderNumber").value("DO-TEST-001"))
+                .andExpect(jsonPath("$.status").value("EN_PREPARATION"))
                 .andReturn();
 
         deliveryOrderId = extractId(result.getResponse().getContentAsString());
@@ -183,32 +185,58 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
         mockMvc.perform(get("/api/delivery/orders/" + deliveryOrderId)
                         .header("Authorization", "Bearer " + authToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.totalAmount").value(1800.00)); // 15 * 120.00 = 1800
+                .andExpect(jsonPath("$.totalAmount").value(1800.00)); // 15 * 120.00 = 1800
     }
 
     @Test
     @Order(6)
-    @DisplayName("Step 6: Create delivery")
-    void step6_createDelivery() throws Exception {
+    @DisplayName("Step 6: Authenticate as logistics manager")
+    void step6_authenticateAsLogisticsManager() throws Exception {
+        String loginRequest = """
+                {
+                    "username": "delivery_logistics",
+                    "password": "password123"
+                }
+                """;
+
+        MvcResult result = mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginRequest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").exists())
+                .andExpect(jsonPath("$.user.role").value("RESPONSABLE_LOGISTIQUE"))
+                .andReturn();
+
+        logisticToken = JsonPath.read(result.getResponse().getContentAsString(), "$.token");
+        Assertions.assertNotNull(logisticToken);
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("Step 7: Create delivery")
+    void step7_createDelivery() throws Exception {
         String deliveryRequest = String.format("""
                 {
                     "deliveryNumber": "DEL-TEST-001",
                     "deliveryOrderId": %d,
                     "vehicle": "Truck-001",
                     "driver": "John Driver",
-                    "plannedDeliveryDate": "2025-11-12",
-                    "status": "PLANIFIEE"
+                    "driverPhone": "+212600111222",
+                    "status": "PLANIFIEE",
+                    "deliveryDate": "2025-11-12",
+                    "cost": 25.5,
+                    "trackingNumber": "TRK-TEST-001"
                 }
                 """, deliveryOrderId);
 
         MvcResult result = mockMvc.perform(post("/api/delivery/deliveries")
-                        .header("Authorization", "Bearer " + authToken)
+                        .header("Authorization", "Bearer " + logisticToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(deliveryRequest))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.deliveryNumber").value("DEL-TEST-001"))
-                .andExpect(jsonPath("$.data.status").value("PLANIFIEE"))
-                .andExpect(jsonPath("$.data.driver").value("John Driver"))
+                .andExpect(jsonPath("$.deliveryNumber").value("DEL-TEST-001"))
+                .andExpect(jsonPath("$.status").value("PLANIFIEE"))
+                .andExpect(jsonPath("$.driver").value("John Driver"))
                 .andReturn();
 
         deliveryId = extractId(result.getResponse().getContentAsString());
@@ -216,87 +244,94 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Order(7)
-    @DisplayName("Step 7: Change delivery status to EN_COURS")
-    void step7_changeDeliveryStatusToInProgress() throws Exception {
+    @Order(8)
+    @DisplayName("Step 8: Change delivery status to EN_COURS")
+    void step8_changeDeliveryStatusToInProgress() throws Exception {
         mockMvc.perform(patch("/api/delivery/deliveries/" + deliveryId + "/status")
-                        .header("Authorization", "Bearer " + authToken)
+                        .header("Authorization", "Bearer " + logisticToken)
                         .param("status", "EN_COURS"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.status").value("EN_COURS"));
-    }
-
-    @Test
-    @Order(8)
-    @DisplayName("Step 8: Complete delivery (reduce product stock)")
-    void step8_completeDelivery() throws Exception {
-        mockMvc.perform(patch("/api/delivery/deliveries/" + deliveryId + "/deliver")
-                        .header("Authorization", "Bearer " + authToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.status").value("LIVREE"));
+                .andExpect(jsonPath("$.status").value("EN_COURS"));
     }
 
     @Test
     @Order(9)
-    @DisplayName("Step 9: Verify product stock decreased")
-    void step9_verifyProductStockDecreased() throws Exception {
+    @DisplayName("Step 9: Complete delivery (mark as LIVREE)")
+    void step9_completeDelivery() throws Exception {
+        mockMvc.perform(patch("/api/delivery/deliveries/" + deliveryId + "/status")
+                        .header("Authorization", "Bearer " + logisticToken)
+                        .param("status", "LIVREE"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("LIVREE"));
+    }
+
+    @Test
+    @Order(10)
+    @DisplayName("Step 10: Verify product stock decreased")
+    void step10_verifyProductStockDecreased() throws Exception {
         // Stock should decrease by 15 units
         // Initial: 100, After: 85
         mockMvc.perform(get("/api/production/products/" + productId)
                         .header("Authorization", "Bearer " + productionToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.stock").value(85));
-    }
-
-    @Test
-    @Order(10)
-    @DisplayName("Step 10: Verify delivery order status updated")
-    void step10_verifyDeliveryOrderStatus() throws Exception {
-        mockMvc.perform(get("/api/delivery/orders/" + deliveryOrderId)
-                        .header("Authorization", "Bearer " + authToken))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.status").value("LIVREE"));
+                .andExpect(jsonPath("$.stock").value(85.0));
     }
 
     @Test
     @Order(11)
-    @DisplayName("Step 11: Verify complete delivery workflow")
-    void step11_verifyCompleteWorkflow() throws Exception {
+    @DisplayName("Step 11: Verify delivery order status updated")
+    void step11_verifyDeliveryOrderStatus() throws Exception {
+        mockMvc.perform(get("/api/delivery/orders/" + deliveryOrderId)
+                        .header("Authorization", "Bearer " + authToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("LIVREE"));
+    }
+
+    @Test
+    @Order(12)
+    @DisplayName("Step 12: Verify complete delivery workflow")
+    void step12_verifyCompleteWorkflow() throws Exception {
         // Verify customer
         mockMvc.perform(get("/api/delivery/customers/" + customerId)
                         .header("Authorization", "Bearer " + authToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.code").value("CUST-TEST-001"));
+                .andExpect(jsonPath("$.code").value("CUST-TEST-001"));
 
         // Verify delivery order
         mockMvc.perform(get("/api/delivery/orders/" + deliveryOrderId)
                         .header("Authorization", "Bearer " + authToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.status").value("LIVREE"))
-                .andExpect(jsonPath("$.data.totalAmount").value(1800.00));
+                .andExpect(jsonPath("$.status").value("LIVREE"))
+                .andExpect(jsonPath("$.totalAmount").value(1800.00));
 
         // Verify delivery
         mockMvc.perform(get("/api/delivery/deliveries/" + deliveryId)
                         .header("Authorization", "Bearer " + authToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.status").value("LIVREE"))
-                .andExpect(jsonPath("$.data.driver").value("John Driver"));
+                .andExpect(jsonPath("$.status").value("LIVREE"))
+                .andExpect(jsonPath("$.driver").value("John Driver"));
 
         // Verify product stock
         mockMvc.perform(get("/api/production/products/" + productId)
                         .header("Authorization", "Bearer " + productionToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.stock").value(85));
+                .andExpect(jsonPath("$.stock").value(85.0));
     }
 
     // Helper methods
     private Long extractId(String jsonResponse) {
         try {
-            // Extract ID from $.data.id path (API responses wrap data in "data" field)
-            Integer id = JsonPath.read(jsonResponse, "$.data.id");
+            // Try direct ID path first (Production/Delivery modules return DTOs directly)
+            Integer id = JsonPath.read(jsonResponse, "$.id");
             return id != null ? id.longValue() : null;
         } catch (Exception e) {
-            return null;
+            try {
+                // Fall back to wrapped response (Supply module uses ApiResponse wrapper)
+                Integer id = JsonPath.read(jsonResponse, "$.data.id");
+                return id != null ? id.longValue() : null;
+            } catch (Exception e2) {
+                return null;
+            }
         }
     }
 }
