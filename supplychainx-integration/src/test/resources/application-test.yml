@@ -1,20 +1,22 @@
 spring:
-  datasource:
-    # Configuration will be overridden by TestContainers
-    url: jdbc:tc:mysql:8.0:///test_db
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+  # Datasource configuration is provided dynamically by TestContainers via @DynamicPropertySource
+  # in the IntegrationTest base class. Do not hardcode datasource values here.
   
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
   
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml
+    drop-first: false
+    default-schema: test_supplychainx_db
+    liquibase-schema: test_supplychainx_db
 
 jwt:
   secret: test-secret-key-for-integration-tests-minimum-256-bits-long
@@ -23,6 +25,7 @@ jwt:
 
 logging:
   level:
-    com.supplychainx: DEBUG
-    org.springframework.security: DEBUG
-    org.hibernate.SQL: DEBUG
+    com.supplychainx: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    liquibase: INFO

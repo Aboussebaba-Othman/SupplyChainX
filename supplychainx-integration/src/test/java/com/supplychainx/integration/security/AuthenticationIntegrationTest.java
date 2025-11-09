@@ -10,9 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Tests d'intégration pour l'authentification JWT
- */
+
 @DisplayName("Integration Tests - Authentication")
 class AuthenticationIntegrationTest extends IntegrationTest {
 
@@ -37,8 +35,8 @@ class AuthenticationIntegrationTest extends IntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
                 .andExpect(jsonPath("$.type").value("Bearer"))
-                .andExpect(jsonPath("$.username").value("admin"))
-                .andExpect(jsonPath("$.role").value("ADMIN"));
+                .andExpect(jsonPath("$.user.username").value("admin"))
+                .andExpect(jsonPath("$.user.role").value("ADMIN"));
     }
 
     @Test
@@ -94,8 +92,8 @@ class AuthenticationIntegrationTest extends IntegrationTest {
                         .content(loginRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
-                .andExpect(jsonPath("$.username").value("supply_manager"))
-                .andExpect(jsonPath("$.role").value("GESTIONNAIRE_APPROVISIONNEMENT"));
+                .andExpect(jsonPath("$.user.username").value("supply_manager"))
+                .andExpect(jsonPath("$.user.role").value("GESTIONNAIRE_APPROVISIONNEMENT"));
     }
 
     @Test
