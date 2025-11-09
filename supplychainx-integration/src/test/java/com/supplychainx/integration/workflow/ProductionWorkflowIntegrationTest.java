@@ -25,17 +25,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @DisplayName("Integration Tests - Production Workflow E2E")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class ProductionWorkflowIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    private static String authToken;
-    private static String supplyToken;
-    private static Long rawMaterialId;
-    private static Long productId;
-    private static Long bomId;
-    private static Long productionOrderId;
+    // Use instance variables with PER_CLASS lifecycle to maintain state across ordered tests  
+    private String authToken;
+    private String supplyToken;
+    private Long rawMaterialId;
+    private Long productId;
+    private Long bomId;
+    private Long productionOrderId;
 
     @Test
     @Order(1)

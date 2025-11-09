@@ -26,16 +26,18 @@ import static org.hamcrest.Matchers.*;
  */
 @DisplayName("Integration Tests - Supply Workflow E2E")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SupplyWorkflowIntegrationTest extends IntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    private static String authToken;
-    private static Long supplierId;
-    private static Long materialId;
-    private static Long supplyOrderId;
-    private static Long orderLineId;
+    // Use instance variables with PER_CLASS lifecycle to maintain state across ordered tests
+    private String authToken;
+    private Long supplierId;
+    private Long materialId;
+    private Long supplyOrderId;
+    private Long orderLineId;
 
     @Test
     @Order(1)
