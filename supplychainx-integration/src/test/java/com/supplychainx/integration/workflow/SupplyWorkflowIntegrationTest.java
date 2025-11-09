@@ -55,7 +55,7 @@ class SupplyWorkflowIntegrationTest extends IntegrationTest {
                         .content(loginRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
-                .andExpect(jsonPath("$.role").value("GESTIONNAIRE_APPROVISIONNEMENT"))
+                .andExpect(jsonPath("$.user.role").value("GESTIONNAIRE_APPROVISIONNEMENT"))
                 .andReturn();
 
         // Extract token

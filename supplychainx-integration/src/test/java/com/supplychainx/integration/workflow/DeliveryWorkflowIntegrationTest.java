@@ -53,7 +53,7 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
                         .content(loginRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
-                .andExpect(jsonPath("$.role").value("GESTIONNAIRE_COMMERCIAL"))
+                .andExpect(jsonPath("$.user.role").value("GESTIONNAIRE_COMMERCIAL"))
                 .andReturn();
 
         authToken = extractToken(result.getResponse().getContentAsString());

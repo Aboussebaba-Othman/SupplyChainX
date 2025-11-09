@@ -53,7 +53,7 @@ class ProductionWorkflowIntegrationTest extends IntegrationTest {
                         .content(loginRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.token").exists())
-                .andExpect(jsonPath("$.role").value("CHEF_PRODUCTION"))
+                .andExpect(jsonPath("$.user.role").value("CHEF_PRODUCTION"))
                 .andReturn();
 
         authToken = extractToken(result.getResponse().getContentAsString());
