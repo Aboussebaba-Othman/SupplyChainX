@@ -98,6 +98,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>com.supplychainx.SupplyChainXApplication</mainClass>
+                    <classifier>exec</classifier>
                 </configuration>
             </plugin>
         </plugins>
