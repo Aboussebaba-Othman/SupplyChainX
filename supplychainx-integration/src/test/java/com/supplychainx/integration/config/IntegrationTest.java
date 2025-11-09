@@ -1,8 +1,10 @@
 package com.supplychainx.integration.config;
 
+import com.supplychainx.SupplyChainXApplication;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
@@ -21,6 +23,7 @@ import org.testcontainers.utility.DockerImageName;
  * </pre>
  */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(classes = SupplyChainXApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Testcontainers

@@ -8,9 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-/**
- * Configuration de base pour les tests d'intégration avec TestContainers
- */
+
 @TestConfiguration
 @ActiveProfiles("test")
 public class IntegrationTestConfig {
