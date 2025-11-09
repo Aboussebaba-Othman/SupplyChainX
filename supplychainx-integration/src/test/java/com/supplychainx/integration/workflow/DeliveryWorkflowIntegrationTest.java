@@ -1,5 +1,6 @@
 package com.supplychainx.integration.workflow;
 
+import com.jayway.jsonpath.JsonPath;
 import com.supplychainx.integration.config.IntegrationTest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    // Use instance variables with PER_CLASS lifecycle to maintain state across ordered tests
+    // Instance variables will be shared across all test methods with PER_CLASS lifecycle
     private String authToken;
     private String productionToken;
     private Long productId;
@@ -58,7 +59,7 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
                 .andExpect(jsonPath("$.user.role").value("GESTIONNAIRE_COMMERCIAL"))
                 .andReturn();
 
-        authToken = extractToken(result.getResponse().getContentAsString());
+        authToken = JsonPath.read(result.getResponse().getContentAsString(), "$.token");
         Assertions.assertNotNull(authToken);
     }
 
@@ -80,7 +81,7 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        productionToken = extractToken(loginResult.getResponse().getContentAsString());
+        productionToken = JsonPath.read(loginResult.getResponse().getContentAsString(), "$.token");
 
         // Create product
         String productRequest = """
@@ -289,24 +290,11 @@ class DeliveryWorkflowIntegrationTest extends IntegrationTest {
     }
 
     // Helper methods
-    private String extractToken(String jsonResponse) {
-        try {
-            int tokenStart = jsonResponse.indexOf("\"token\":\"") + 9;
-            int tokenEnd = jsonResponse.indexOf("\"", tokenStart);
-            return jsonResponse.substring(tokenStart, tokenEnd);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
     private Long extractId(String jsonResponse) {
         try {
-            int idStart = jsonResponse.indexOf("\"id\":") + 5;
-            int idEnd = jsonResponse.indexOf(",", idStart);
-            if (idEnd == -1) {
-                idEnd = jsonResponse.indexOf("}", idStart);
-            }
-            return Long.parseLong(jsonResponse.substring(idStart, idEnd).trim());
+            // Extract ID from $.data.id path (API responses wrap data in "data" field)
+            Integer id = JsonPath.read(jsonResponse, "$.data.id");
+            return id != null ? id.longValue() : null;
         } catch (Exception e) {
             return null;
         }
