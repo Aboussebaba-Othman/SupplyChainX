@@ -21,14 +21,6 @@
             <groupId>com.supplychainx</groupId>
             <artifactId>supplychainx-common</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.supplychainx</groupId>
-            <artifactId>supplychainx-supply</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.supplychainx</groupId>
-            <artifactId>supplychainx-production</artifactId>
-        </dependency>
         
         <!-- Spring Boot Starters -->
         <dependency>
@@ -105,13 +97,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.supplychainx.audit.SupplyChainXAuditApplication</mainClass>
-                </configuration>
             </plugin>
         </plugins>
     </build>

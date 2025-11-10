@@ -44,6 +44,11 @@
             <artifactId>supplychainx-delivery</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-audit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Spring Boot Starters -->
         <dependency>
