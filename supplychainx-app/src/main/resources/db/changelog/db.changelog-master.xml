@@ -27,4 +27,8 @@
     <include file="db/changelog/delivery/03-create-delivery-order-lines-table.xml"/>
     <include file="db/changelog/delivery/04-create-deliveries-table.xml"/>
 
+    <!-- Module Audit -->
+    <include file="db/changelog/audit/001-create-audit-logs-table.xml"/>
+    <include file="db/changelog/audit/002-create-stock-alerts-table.xml"/>
+
 </databaseChangeLog>
