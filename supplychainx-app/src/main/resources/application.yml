@@ -40,8 +40,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME:your-email@gmail.com}
-    password: ${MAIL_PASSWORD:your-app-password}
+    username: ${MAIL_USERNAME:paino49sukuna@gmail.com}
+    password: ${MAIL_PASSWORD:bwue cppd svwj jwdm}
     properties:
       mail:
         smtp:
@@ -80,3 +80,17 @@ jwt:
   refresh-expiration: 604800000  # 7 jours en millisecondes
   header-string: Authorization
   token-prefix: "Bearer "
+
+# Configuration Audit Module
+app:
+  alert:
+    email:
+      enabled: ${ALERT_EMAIL_ENABLED:false}  # Par défaut désactivé, activer avec variable d'environnement
+      to: ${ALERT_EMAIL_TO:admin@supplychainx.com}
+  scheduler:
+    stock-check:
+      cron: "0 0 6-18/6 * * *"  # Toutes les 6 heures (6h, 12h, 18h)
+    email-alerts:
+      cron: "0 0/30 * * * *"  # Toutes les 30 minutes
+    cleanup:
+      cron: "0 0 2 * * SUN"  # Dimanche à 2h du matin
