@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="002-create-stock-alerts-table" author="supplychainx">
+        <createTable tableName="stock_alerts">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="alert_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="entity_name" type="VARCHAR(255)"/>
+            <column name="message" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="current_stock" type="INT"/>
+            <column name="minimum_stock" type="INT"/>
+            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resolved" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="resolved_at" type="TIMESTAMP"/>
+            <column name="resolved_by" type="VARCHAR(100)"/>
+            <column name="resolution_comment" type="TEXT"/>
+            <column name="email_sent" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email_sent_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+            <column name="created_by" type="VARCHAR(100)"/>
+            <column name="updated_by" type="VARCHAR(100)"/>
+        </createTable>
+
+        <!-- Indexes pour améliorer les performances -->
+        <createIndex tableName="stock_alerts" indexName="idx_alert_type">
+            <column name="alert_type"/>
+        </createIndex>
+
+        <createIndex tableName="stock_alerts" indexName="idx_alert_entity_type">
+            <column name="entity_type"/>
+        </createIndex>
+
+        <createIndex tableName="stock_alerts" indexName="idx_alert_entity">
+            <column name="entity_type"/>
+            <column name="entity_id"/>
+        </createIndex>
+
+        <createIndex tableName="stock_alerts" indexName="idx_alert_resolved">
+            <column name="resolved"/>
+        </createIndex>
+
+        <createIndex tableName="stock_alerts" indexName="idx_alert_email_sent">
+            <column name="email_sent"/>
+        </createIndex>
+
+        <createIndex tableName="stock_alerts" indexName="idx_alert_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <!-- Index composé pour recherche rapide des alertes non résolues -->
+        <createIndex tableName="stock_alerts" indexName="idx_alert_type_resolved">
+            <column name="alert_type"/>
+            <column name="resolved"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="stock_alerts"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
