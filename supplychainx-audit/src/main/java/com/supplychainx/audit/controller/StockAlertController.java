@@ -5,6 +5,7 @@ import com.supplychainx.audit.dto.request.StockAlertRequestDTO;
 import com.supplychainx.audit.dto.response.StockAlertResponseDTO;
 import com.supplychainx.audit.enums.AlertType;
 import com.supplychainx.audit.enums.EntityType;
+import com.supplychainx.audit.scheduler.StockAlertScheduler;
 import com.supplychainx.audit.service.StockAlertService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,6 +32,7 @@ import java.util.Map;
 public class StockAlertController {
 
     private final StockAlertService stockAlertService;
+    private final StockAlertScheduler stockAlertScheduler;
 
     @PostMapping
     @Operation(summary = "Créer une nouvelle alerte de stock")
@@ -166,5 +168,25 @@ public class StockAlertController {
     public ResponseEntity<Long> countCriticalUnresolvedAlerts() {
         long count = stockAlertService.countCriticalUnresolvedAlerts();
         return ResponseEntity.ok(count);
+    }
+
+    @PostMapping("/trigger/stock-check")
+    @Operation(summary = "Déclencher manuellement la vérification des stocks (pour tests)")
+    public ResponseEntity<Map<String, String>> triggerStockCheck() {
+        stockAlertScheduler.checkLowStockLevels();
+        return ResponseEntity.ok(Map.of(
+            "status", "success",
+            "message", "Stock check triggered successfully. Alerts will be created for low stock items."
+        ));
+    }
+
+    @PostMapping("/trigger/send-emails")
+    @Operation(summary = "Déclencher manuellement l'envoi des emails (pour tests)")
+    public ResponseEntity<Map<String, String>> triggerSendEmails() {
+        stockAlertScheduler.sendPendingAlertEmails();
+        return ResponseEntity.ok(Map.of(
+            "status", "success",
+            "message", "Email sending triggered successfully. Check logs for details."
+        ));
     }
 }

@@ -96,7 +96,7 @@ docker/mysql/init/
 # Run with local IDE, connect to Docker MySQL
 mvn spring-boot:run -pl supplychainx-app -am
 ```
-
+²
 Application will connect to MySQL at `localhost:3306`
 
 ### Production Mode (Docker)

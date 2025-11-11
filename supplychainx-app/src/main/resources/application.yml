@@ -86,10 +86,10 @@ app:
   alert:
     email:
       enabled: ${ALERT_EMAIL_ENABLED:false}  # Par défaut désactivé, activer avec variable d'environnement
-      to: ${ALERT_EMAIL_TO:admin@supplychainx.com}
+      to: ${ALERT_EMAIL_TO:aboussebaba.othman@gmail.com}
   scheduler:
     stock-check:
-      cron: "0 0 6-18/6 * * *"  # Toutes les 6 heures (6h, 12h, 18h)
+      cron: "0 0 */2 * * *"  # Toutes les 2 heures (0h, 2h, 4h, 6h, 8h, 10h, 12h, 14h, 16h, 18h, 20h, 22h)
     email-alerts:
       cron: "0 0/30 * * * *"  # Toutes les 30 minutes
     cleanup:
