@@ -1,0 +1,41 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:mysql://mysql:3306/supplychainx_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:supplychainx_user}
+    password: ${DB_PASSWORD:supplychainx_pass}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        use_sql_comments: false
+
+  liquibase:
+    enabled: true
+
+logging:
+  level:
+    root: WARN
+    com.supplychainx: INFO
+    org.hibernate.SQL: WARN
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+  file:
+    name: /app/logs/supplychainx.log
+    max-size: 10MB
+    max-history: 30
+
+app:
+  alert:
+    email:
+      enabled: ${ALERT_EMAIL_ENABLED:true}
+      to: ${ALERT_EMAIL_TO:admin@supplychainx.com}
