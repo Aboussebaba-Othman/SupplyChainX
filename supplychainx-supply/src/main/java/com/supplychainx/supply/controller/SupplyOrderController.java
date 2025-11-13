@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -34,6 +35,7 @@ public class SupplyOrderController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Créer une commande", description = "Crée une nouvelle commande d'approvisionnement avec ses lignes")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_CREATE')")
     public ApiResponse<SupplyOrderResponseDTO> create(@Valid @RequestBody SupplyOrderRequestDTO requestDTO) {
         log.info("Requête de création d'une commande - Numéro: {}", requestDTO.getOrderNumber());
         SupplyOrderResponseDTO order = supplyOrderService.create(requestDTO);
@@ -43,6 +45,7 @@ public class SupplyOrderController {
     // US14: Mettre à jour une commande
     @PutMapping("/{id}")
     @Operation(summary = "Mettre à jour une commande", description = "Met à jour une commande d'approvisionnement si elle n'est pas reçue ou annulée")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_UPDATE')")
     public ApiResponse<SupplyOrderResponseDTO> update(
             @PathVariable Long id,
             @Valid @RequestBody SupplyOrderRequestDTO requestDTO) {
@@ -55,6 +58,7 @@ public class SupplyOrderController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Supprimer une commande", description = "Supprime une commande si elle n'est pas reçue")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_DELETE')")
     public void delete(@PathVariable Long id) {
         log.info("Requête de suppression de la commande ID: {}", id);
         supplyOrderService.delete(id);
@@ -63,6 +67,7 @@ public class SupplyOrderController {
     // US16: Consulter une commande par ID
     @GetMapping("/{id}")
     @Operation(summary = "Consulter une commande par ID", description = "Récupère les détails d'une commande par son ID")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<SupplyOrderResponseDTO> findById(@PathVariable Long id) {
         log.debug("Requête de consultation de la commande ID: {}", id);
         SupplyOrderResponseDTO order = supplyOrderService.findById(id);
@@ -72,6 +77,7 @@ public class SupplyOrderController {
     // Consulter une commande par numéro
     @GetMapping("/number/{orderNumber}")
     @Operation(summary = "Consulter une commande par numéro", description = "Récupère les détails d'une commande par son numéro")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<SupplyOrderResponseDTO> findByOrderNumber(@PathVariable String orderNumber) {
         log.debug("Requête de consultation de la commande numéro: {}", orderNumber);
         SupplyOrderResponseDTO order = supplyOrderService.findByOrderNumber(orderNumber);
@@ -81,6 +87,7 @@ public class SupplyOrderController {
     // US17: Lister toutes les commandes avec pagination
     @GetMapping
     @Operation(summary = "Lister toutes les commandes", description = "Récupère la liste de toutes les commandes avec pagination")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<PageResponse<SupplyOrderResponseDTO>> findAll(
             @PageableDefault(size = 20, sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable) {
         log.debug("Requête de liste de toutes les commandes - Page: {}", pageable.getPageNumber());
@@ -91,6 +98,7 @@ public class SupplyOrderController {
     // Filtrer par statut
     @GetMapping("/status/{status}")
     @Operation(summary = "Filtrer par statut", description = "Récupère les commandes ayant un statut spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<List<SupplyOrderResponseDTO>> findByStatus(
             @PathVariable SupplyOrderStatus status,
             @PageableDefault(size = 20, sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -102,6 +110,7 @@ public class SupplyOrderController {
     // Filtrer par fournisseur
     @GetMapping("/supplier/{supplierId}")
     @Operation(summary = "Commandes d'un fournisseur", description = "Récupère les commandes d'un fournisseur spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<List<SupplyOrderResponseDTO>> findBySupplier(
             @PathVariable Long supplierId,
             @PageableDefault(size = 20, sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -113,6 +122,7 @@ public class SupplyOrderController {
     // Filtrer par fournisseur et statut
     @GetMapping("/supplier/{supplierId}/status/{status}")
     @Operation(summary = "Commandes d'un fournisseur par statut", description = "Récupère les commandes d'un fournisseur avec un statut spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<List<SupplyOrderResponseDTO>> findBySupplierAndStatus(
             @PathVariable Long supplierId,
             @PathVariable SupplyOrderStatus status,
@@ -125,6 +135,7 @@ public class SupplyOrderController {
     // Filtrer par plage de dates
     @GetMapping("/date-range")
     @Operation(summary = "Commandes par période", description = "Récupère les commandes entre deux dates")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<List<SupplyOrderResponseDTO>> findByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
@@ -137,6 +148,7 @@ public class SupplyOrderController {
     // Lister les commandes en retard
     @GetMapping("/delayed")
     @Operation(summary = "Commandes en retard", description = "Récupère les commandes EN_COURS dont la date de livraison prévue est dépassée")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<List<SupplyOrderResponseDTO>> findDelayedOrders() {
         log.debug("Requête de liste des commandes en retard");
         List<SupplyOrderResponseDTO> orders = supplyOrderService.findDelayedOrders();
@@ -146,6 +158,7 @@ public class SupplyOrderController {
     // Lister les commandes récentes
     @GetMapping("/recent")
     @Operation(summary = "Commandes récentes", description = "Récupère les dernières commandes créées")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<List<SupplyOrderResponseDTO>> findRecentOrders(
             @PageableDefault(size = 10, sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable) {
         log.debug("Requête de liste des commandes récentes");
@@ -156,6 +169,7 @@ public class SupplyOrderController {
     // Mettre à jour le statut d'une commande
     @PatchMapping("/{id}/status")
     @Operation(summary = "Changer le statut", description = "Met à jour le statut d'une commande avec validation des transitions")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_APPROVE')")
     public ApiResponse<SupplyOrderResponseDTO> updateStatus(
             @PathVariable Long id,
             @RequestParam SupplyOrderStatus status) {
@@ -167,6 +181,7 @@ public class SupplyOrderController {
     // Recevoir une commande
     @PatchMapping("/{id}/receive")
     @Operation(summary = "Recevoir une commande", description = "Marque une commande comme reçue et met à jour le stock des matières premières")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_RECEIVE')")
     public ApiResponse<SupplyOrderResponseDTO> receiveOrder(
             @PathVariable Long id,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate actualDeliveryDate) {
@@ -178,6 +193,7 @@ public class SupplyOrderController {
     // Annuler une commande
     @PatchMapping("/{id}/cancel")
     @Operation(summary = "Annuler une commande", description = "Annule une commande si elle n'est pas déjà reçue")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_DELETE')")
     public ApiResponse<SupplyOrderResponseDTO> cancelOrder(@PathVariable Long id) {
         log.info("Requête d'annulation de la commande ID: {}", id);
         SupplyOrderResponseDTO order = supplyOrderService.cancelOrder(id);
@@ -187,6 +203,7 @@ public class SupplyOrderController {
     // Compter les commandes actives d'un fournisseur
     @GetMapping("/supplier/{supplierId}/active-count")
     @Operation(summary = "Compter les commandes actives", description = "Compte les commandes actives (EN_ATTENTE + EN_COURS) d'un fournisseur")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<Long> countActiveOrdersBySupplier(@PathVariable Long supplierId) {
         log.debug("Requête de comptage des commandes actives du fournisseur ID: {}", supplierId);
         Long count = supplyOrderService.countActiveOrdersBySupplier(supplierId);
@@ -196,6 +213,7 @@ public class SupplyOrderController {
     // Calculer le montant total par statut
     @GetMapping("/total-amount/status/{status}")
     @Operation(summary = "Montant total par statut", description = "Calcule le montant total des commandes pour un statut donné")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<Double> sumTotalAmountByStatus(@PathVariable SupplyOrderStatus status) {
         log.debug("Requête de calcul du montant total pour le statut: {}", status);
         Double totalAmount = supplyOrderService.sumTotalAmountByStatus(status);
@@ -205,6 +223,7 @@ public class SupplyOrderController {
     // Vérifier si une commande peut être supprimée
     @GetMapping("/{id}/can-delete")
     @Operation(summary = "Vérifier la suppression possible", description = "Vérifie si une commande peut être supprimée (statut != RECUE)")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<Boolean> canBeDeleted(@PathVariable Long id) {
         log.debug("Requête de vérification de suppression de la commande ID: {}", id);
         boolean canDelete = supplyOrderService.canBeDeleted(id);
@@ -214,6 +233,7 @@ public class SupplyOrderController {
     // Vérifier si une commande peut être modifiée
     @GetMapping("/{id}/can-modify")
     @Operation(summary = "Vérifier la modification possible", description = "Vérifie si une commande peut être modifiée (statut != RECUE/ANNULEE)")
+    @PreAuthorize("@securityExpressions.hasPermission('PURCHASE_ORDER_READ')")
     public ApiResponse<Boolean> canBeModified(@PathVariable Long id) {
         log.debug("Requête de vérification de modification de la commande ID: {}", id);
         boolean canModify = supplyOrderService.canBeModified(id);

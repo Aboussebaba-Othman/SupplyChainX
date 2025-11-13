@@ -1,0 +1,31 @@
+spring:
+  # Datasource configuration is provided dynamically by TestContainers via @DynamicPropertySource
+  # in the IntegrationTest base class. Do not hardcode datasource values here.
+  
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    drop-first: false
+    default-schema: test_supplychainx_db
+    liquibase-schema: test_supplychainx_db
+
+jwt:
+  secret: test-secret-key-for-integration-tests-minimum-256-bits-long
+  expiration: 3600000 # 1 hour
+  refresh-expiration: 86400000 # 24 hours
+
+logging:
+  level:
+    com.supplychainx: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    liquibase: INFO

@@ -14,6 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public class DeliveryOrderController {
      * Créer une nouvelle commande
      * POST /api/delivery/orders
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_CREATE')")
     @PostMapping
     public ResponseEntity<DeliveryOrderResponseDTO> create(@Valid @RequestBody DeliveryOrderRequestDTO requestDTO) {
         log.info("REST request to create DeliveryOrder : {}", requestDTO.getOrderNumber());
@@ -42,6 +44,7 @@ public class DeliveryOrderController {
      * Mettre à jour une commande existante
      * PUT /api/delivery/orders/{id}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_UPDATE')")
     @PutMapping("/{id}")
     public ResponseEntity<DeliveryOrderResponseDTO> update(
             @PathVariable Long id,
@@ -55,6 +58,7 @@ public class DeliveryOrderController {
      * Récupérer une commande par ID
      * GET /api/delivery/orders/{id}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_READ')")
     @GetMapping("/{id}")
     public ResponseEntity<DeliveryOrderResponseDTO> getById(@PathVariable Long id) {
         log.info("REST request to get DeliveryOrder : {}", id);
@@ -66,6 +70,7 @@ public class DeliveryOrderController {
      * Récupérer une commande par numéro
      * GET /api/delivery/orders/number/{orderNumber}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_READ')")
     @GetMapping("/number/{orderNumber}")
     public ResponseEntity<DeliveryOrderResponseDTO> getByOrderNumber(@PathVariable String orderNumber) {
         log.info("REST request to get DeliveryOrder by number : {}", orderNumber);
@@ -77,6 +82,7 @@ public class DeliveryOrderController {
      * Récupérer toutes les commandes avec pagination
      * GET /api/delivery/orders
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_READ')")
     @GetMapping
     public ResponseEntity<Page<DeliveryOrderResponseDTO>> getAll(
             @PageableDefault(size = 20, sort = "orderDate", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -89,6 +95,7 @@ public class DeliveryOrderController {
      * Récupérer les commandes par statut
      * GET /api/delivery/orders/status/{status}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_READ')")
     @GetMapping("/status/{status}")
     public ResponseEntity<Page<DeliveryOrderResponseDTO>> getByStatus(
             @PathVariable OrderStatus status,
@@ -102,6 +109,7 @@ public class DeliveryOrderController {
      * Récupérer les commandes d'un client
      * GET /api/delivery/orders/customer/{customerId}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_READ')")
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<Page<DeliveryOrderResponseDTO>> getByCustomer(
             @PathVariable Long customerId,
@@ -115,6 +123,7 @@ public class DeliveryOrderController {
      * Récupérer les commandes entre deux dates
      * GET /api/delivery/orders/date-range?startDate=2024-01-01&endDate=2024-12-31
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_READ')")
     @GetMapping("/date-range")
     public ResponseEntity<Page<DeliveryOrderResponseDTO>> getByDateRange(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
@@ -129,6 +138,7 @@ public class DeliveryOrderController {
      * Récupérer les commandes en retard
      * GET /api/delivery/orders/delayed
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_READ')")
     @GetMapping("/delayed")
     public ResponseEntity<List<DeliveryOrderResponseDTO>> getDelayedOrders() {
         log.info("REST request to get delayed DeliveryOrders");
@@ -140,6 +150,7 @@ public class DeliveryOrderController {
      * Changer le statut d'une commande
      * PATCH /api/delivery/orders/{id}/status
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_VALIDATE')")
     @PatchMapping("/{id}/status")
     public ResponseEntity<DeliveryOrderResponseDTO> updateStatus(
             @PathVariable Long id,
@@ -153,6 +164,7 @@ public class DeliveryOrderController {
      * Supprimer une commande
      * DELETE /api/delivery/orders/{id}
      */
+    @PreAuthorize("@securityExpressions.hasPermission('DELIVERY_ORDER_DELETE')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("REST request to delete DeliveryOrder : {}", id);

@@ -34,7 +34,7 @@ services:
       PMA_PASSWORD: rootpassword
       UPLOAD_LIMIT: 300M
     ports:
-      - "8080:80"
+      - "8082:80"
     depends_on:
       mysql:
         condition: service_healthy

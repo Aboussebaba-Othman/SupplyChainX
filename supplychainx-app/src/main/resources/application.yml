@@ -36,6 +36,23 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
     default-schema: supplychainx_db
 
+  # Configuration Email/SMTP (pour le module audit)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:paino49sukuna@gmail.com}
+    password: ${MAIL_PASSWORD:bwue cppd svwj jwdm}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 # Configuration Logging
 logging:
   level:
@@ -44,6 +61,7 @@ logging:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
@@ -54,3 +72,25 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+
+# Configuration JWT
+jwt:
+  secret: MySecretKeyForJWTTokenGenerationAndValidationSupplyChainX2024
+  expiration: 86400000  # 24 heures en millisecondes
+  refresh-expiration: 604800000  # 7 jours en millisecondes
+  header-string: Authorization
+  token-prefix: "Bearer "
+
+# Configuration Audit Module
+app:
+  alert:
+    email:
+      enabled: ${ALERT_EMAIL_ENABLED:false}  # Par défaut désactivé, activer avec variable d'environnement
+      to: ${ALERT_EMAIL_TO:aboussebaba.othman@gmail.com}
+  scheduler:
+    stock-check:
+      cron: "0 0 */2 * * *"  # Toutes les 2 heures (0h, 2h, 4h, 6h, 8h, 10h, 12h, 14h, 16h, 18h, 20h, 22h)
+    email-alerts:
+      cron: "0 0/30 * * * *"  # Toutes les 30 minutes
+    cleanup:
+      cron: "0 0 2 * * SUN"  # Dimanche à 2h du matin

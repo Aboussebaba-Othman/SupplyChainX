@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class BillOfMaterialController {
 
     @PostMapping
     @Operation(summary = "Créer une nouvelle nomenclature", description = "Crée une nouvelle nomenclature liant un produit à une matière première")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_CREATE')")
     public ResponseEntity<BillOfMaterialResponseDTO> createBillOfMaterial(@Valid @RequestBody BillOfMaterialRequestDTO requestDTO) {
         log.info("Requête de création de nomenclature pour produit ID: {} et matière première ID: {}", 
                  requestDTO.getProductId(), requestDTO.getRawMaterialId());
@@ -35,6 +37,7 @@ public class BillOfMaterialController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Récupérer une nomenclature par ID", description = "Récupère les détails d'une nomenclature par son identifiant")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<BillOfMaterialResponseDTO> getBillOfMaterialById(@PathVariable Long id) {
         log.info("Requête de récupération de la nomenclature ID: {}", id);
         BillOfMaterialResponseDTO response = billOfMaterialService.getBillOfMaterialById(id);
@@ -43,6 +46,7 @@ public class BillOfMaterialController {
 
     @GetMapping
     @Operation(summary = "Récupérer toutes les nomenclatures", description = "Récupère la liste de toutes les nomenclatures")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<List<BillOfMaterialResponseDTO>> getAllBillOfMaterials() {
         log.info("Requête de récupération de toutes les nomenclatures");
         List<BillOfMaterialResponseDTO> response = billOfMaterialService.getAllBillOfMaterials();
@@ -51,6 +55,7 @@ public class BillOfMaterialController {
 
     @GetMapping("/product/{productId}")
     @Operation(summary = "Récupérer les nomenclatures par produit", description = "Récupère toutes les nomenclatures (recette) d'un produit spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<List<BillOfMaterialResponseDTO>> getBillOfMaterialsByProduct(@PathVariable Long productId) {
         log.info("Requête de récupération des nomenclatures pour le produit ID: {}", productId);
         List<BillOfMaterialResponseDTO> response = billOfMaterialService.getBillOfMaterialsByProduct(productId);
@@ -59,6 +64,7 @@ public class BillOfMaterialController {
 
     @GetMapping("/raw-material/{rawMaterialId}")
     @Operation(summary = "Récupérer les nomenclatures par matière première", description = "Récupère toutes les nomenclatures utilisant une matière première spécifique")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<List<BillOfMaterialResponseDTO>> getBillOfMaterialsByRawMaterial(@PathVariable Long rawMaterialId) {
         log.info("Requête de récupération des nomenclatures pour la matière première ID: {}", rawMaterialId);
         List<BillOfMaterialResponseDTO> response = billOfMaterialService.getBillOfMaterialsByRawMaterial(rawMaterialId);
@@ -67,6 +73,7 @@ public class BillOfMaterialController {
 
     @GetMapping("/product/{productId}/total-quantity")
     @Operation(summary = "Calculer la quantité totale de matières premières", description = "Calcule la quantité totale de matières premières nécessaires pour un produit")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_READ')")
     public ResponseEntity<Map<String, Double>> getTotalRawMaterialQuantityForProduct(@PathVariable Long productId) {
         log.info("Requête de calcul de la quantité totale de matières premières pour le produit ID: {}", productId);
         Double totalQuantity = billOfMaterialService.getTotalRawMaterialQuantityForProduct(productId);
@@ -75,6 +82,7 @@ public class BillOfMaterialController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Mettre à jour une nomenclature", description = "Met à jour les informations d'une nomenclature existante")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_UPDATE')")
     public ResponseEntity<BillOfMaterialResponseDTO> updateBillOfMaterial(
             @PathVariable Long id,
             @Valid @RequestBody BillOfMaterialRequestDTO requestDTO) {
@@ -85,6 +93,7 @@ public class BillOfMaterialController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Supprimer une nomenclature", description = "Supprime une nomenclature")
+    @PreAuthorize("@securityExpressions.hasPermission('PRODUCT_DELETE')")
     public ResponseEntity<Void> deleteBillOfMaterial(@PathVariable Long id) {
         log.info("Requête de suppression de la nomenclature ID: {}", id);
         billOfMaterialService.deleteBillOfMaterial(id);

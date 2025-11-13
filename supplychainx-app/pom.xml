@@ -26,6 +26,11 @@
         </dependency>
         <dependency>
             <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
             <artifactId>supplychainx-supply</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -37,6 +42,11 @@
         <dependency>
             <groupId>com.supplychainx</groupId>
             <artifactId>supplychainx-delivery</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-audit</artifactId>
             <version>${project.version}</version>
         </dependency>
 
@@ -93,6 +103,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <mainClass>com.supplychainx.SupplyChainXApplication</mainClass>
+                    <classifier>exec</classifier>
                 </configuration>
             </plugin>
         </plugins>

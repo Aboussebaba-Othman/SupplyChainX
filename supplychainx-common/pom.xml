@@ -67,6 +67,12 @@
             <artifactId>spring-security-crypto</artifactId>
         </dependency>
         
+        <!-- Spring Security Core for exception handling -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+        </dependency>
+        
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
