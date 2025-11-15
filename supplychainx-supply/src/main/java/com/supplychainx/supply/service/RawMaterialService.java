@@ -154,9 +154,9 @@ public class RawMaterialService {
     }
 
     @Transactional
-    public RawMaterialResponseDTO addStock(Long id, Integer quantity) {
+    public RawMaterialResponseDTO addStock(Long id, int quantity) {
         log.info("Ajout de {} unités au stock de la matière première ID: {}", quantity, id);
-        if (quantity == null || quantity <= 0) {
+        if (quantity == 0 || quantity <= 0) {
             throw new BusinessException("La quantité à ajouter doit être supérieure à 0");
         }
         RawMaterial material = rawMaterialRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Matière première non trouvée avec l'ID: " + id));

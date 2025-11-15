@@ -28,6 +28,7 @@
         <module>supplychainx-audit</module>
         <module>supplychainx-app</module>
         <module>supplychainx-integration</module>
+        <module>supplychainx-coverage-report</module>
     </modules>
     
     <properties>
@@ -51,12 +52,17 @@
         <sonar.host.url>http://localhost:9000</sonar.host.url>
         <sonar.projectKey>supplychainx</sonar.projectKey>
         <sonar.projectName>SupplyChainX</sonar.projectName>
+        <sonar.moduleKey>${project.artifactId}</sonar.moduleKey>
         <sonar.language>java</sonar.language>
         <sonar.sourceEncoding>UTF-8</sonar.sourceEncoding>
         <sonar.java.source>17</sonar.java.source>
         
         <!-- SonarQube coverage -->
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${maven.multiModuleProjectDirectory}/supplychainx-coverage-report/target/site/jacoco-aggregate/jacoco.xml,
+            ${maven.multiModuleProjectDirectory}/supplychainx-supply/target/site/jacoco/jacoco.xml,
+            ${maven.multiModuleProjectDirectory}/supplychainx-production/target/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.coverage.exclusions>
             **/dto/**,

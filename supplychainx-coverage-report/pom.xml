@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.supplychainx</groupId>
+        <artifactId>supplychainx-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>supplychainx-coverage-report</artifactId>
+    <name>SupplyChainX Coverage Report Aggregator</name>
+    <description>Aggregate JaCoCo coverage reports from all modules including integration tests</description>
+
+    <dependencies>
+        <!-- Include all modules to aggregate their coverage -->
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-security</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-supply</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-production</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-delivery</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-audit</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-app</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.supplychainx</groupId>
+            <artifactId>supplychainx-integration</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- JaCoCo plugin for aggregated report -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <!-- Aggregate execution data from all modules -->
+                    <execution>
+                        <id>report-aggregate</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <title>SupplyChainX Aggregated Coverage Report</title>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate</outputDirectory>
+                            <dataFileIncludes>
+                                <dataFileInclude>**/jacoco.exec</dataFileInclude>
+                            </dataFileIncludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
