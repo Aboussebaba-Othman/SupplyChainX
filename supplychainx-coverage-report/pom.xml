@@ -80,6 +80,13 @@
                             <dataFileIncludes>
                                 <dataFileInclude>**/jacoco.exec</dataFileInclude>
                             </dataFileIncludes>
+                            <excludes>
+                                <exclude>**/dto/**/*</exclude>
+                                <exclude>**/entity/**/*</exclude>
+                                <exclude>**/mapper/**/*</exclude>
+                                <exclude>**/config/**/*</exclude>
+                                <exclude>**/SupplyChainXApplication.class</exclude>
+                            </excludes>
                         </configuration>
                     </execution>
                 </executions>

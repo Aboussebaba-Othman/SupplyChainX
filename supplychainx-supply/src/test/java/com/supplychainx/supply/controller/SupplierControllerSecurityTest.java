@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -72,7 +71,6 @@ class SupplierControllerSecurityTest {
             PageResponse<SupplierResponseDTO> pageResponse = PageResponse.of(suppliers, 0, 10, 2, 1);
             when(supplierService.findAll(any(Pageable.class))).thenReturn(pageResponse);
 
-            // Act & Assert
             mockMvc.perform(get("/api/suppliers"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.content").isArray())
@@ -97,9 +95,6 @@ class SupplierControllerSecurityTest {
         }
     }
 
-    // ==================================================================================
-    //                          TESTS - GET SUPPLIER BY ID
-    // ==================================================================================
 
     @Nested
     @DisplayName("GET /api/suppliers/{id} - Récupérer un fournisseur")
@@ -109,11 +104,9 @@ class SupplierControllerSecurityTest {
         @DisplayName("✅ Avec PERM_SUPPLIER_READ → 200 OK")
         @WithMockUser(username = "user", authorities = {"PERM_SUPPLIER_READ"})
         void testGetSupplierById_WithPermission_ShouldSucceed() throws Exception {
-            // Arrange
             SupplierResponseDTO supplier = createSupplierResponse(1L, "Supplier A");
             when(supplierService.findById(1L)).thenReturn(supplier);
 
-            // Act & Assert
             mockMvc.perform(get("/api/suppliers/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.id").value(1))
@@ -129,9 +122,7 @@ class SupplierControllerSecurityTest {
         }
     }
 
-    // ==================================================================================
-    //                          TESTS - CREATE SUPPLIER
-    // ==================================================================================
+
 
     @Nested
     @DisplayName("POST /api/suppliers - Créer un fournisseur")
@@ -141,12 +132,10 @@ class SupplierControllerSecurityTest {
         @DisplayName("✅ Avec PERM_SUPPLIER_CREATE → 201 Created")
         @WithMockUser(username = "user", authorities = {"PERM_SUPPLIER_CREATE"})
         void testCreateSupplier_WithPermission_ShouldSucceed() throws Exception {
-            // Arrange
             SupplierRequestDTO request = createSupplierRequest("New Supplier");
             SupplierResponseDTO response = createSupplierResponse(3L, "New Supplier");
             when(supplierService.create(any(SupplierRequestDTO.class))).thenReturn(response);
 
-            // Act & Assert
             mockMvc.perform(post("/api/suppliers")
                     .with(csrf()).contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request)))
@@ -180,9 +169,7 @@ class SupplierControllerSecurityTest {
         }
     }
 
-    // ==================================================================================
-    //                          TESTS - UPDATE SUPPLIER
-    // ==================================================================================
+ 
 
     @Nested
     @DisplayName("PUT /api/suppliers/{id} - Mettre à jour un fournisseur")
@@ -192,13 +179,11 @@ class SupplierControllerSecurityTest {
         @DisplayName("✅ Avec PERM_SUPPLIER_UPDATE → 200 OK")
         @WithMockUser(username = "user", authorities = {"PERM_SUPPLIER_UPDATE"})
         void testUpdateSupplier_WithPermission_ShouldSucceed() throws Exception {
-            // Arrange
             SupplierRequestDTO request = createSupplierRequest("Updated Supplier");
             SupplierResponseDTO response = createSupplierResponse(1L, "Updated Supplier");
             when(supplierService.update(anyLong(), any(SupplierRequestDTO.class)))
                 .thenReturn(response);
 
-            // Act & Assert
             mockMvc.perform(put("/api/suppliers/1")
                     .with(csrf()).contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(request)))
@@ -220,9 +205,7 @@ class SupplierControllerSecurityTest {
         }
     }
 
-    // ==================================================================================
-    //                          TESTS - DELETE SUPPLIER
-    // ==================================================================================
+
 
     @Nested
     @DisplayName("DELETE /api/suppliers/{id} - Supprimer un fournisseur")
@@ -245,9 +228,7 @@ class SupplierControllerSecurityTest {
         }
     }
 
-    // ==================================================================================
-    //                          TESTS - MULTIPLE PERMISSIONS (hasAnyPermission)
-    // ==================================================================================
+
 
     @Nested
     @DisplayName("Tests avec hasAnyPermission")
@@ -257,7 +238,6 @@ class SupplierControllerSecurityTest {
         @DisplayName("✅ Avec PERM_SUPPLIER_READ → 200 OK")
         @WithMockUser(username = "user", authorities = {"PERM_SUPPLIER_READ"})
         void testWithAnyPermission_HasOne_ShouldSucceed() throws Exception {
-            // Si un endpoint utilise hasPermission('SUPPLIER_READ')
             SupplierResponseDTO supplier = createSupplierResponse(1L, "Supplier A");
             when(supplierService.findById(1L)).thenReturn(supplier);
 
@@ -274,9 +254,6 @@ class SupplierControllerSecurityTest {
         }
     }
 
-    // ==================================================================================
-    //                          TESTS - ROLE-BASED (ADMIN)
-    // ==================================================================================
 
     @Nested
     @DisplayName("Tests avec rôle ADMIN")
@@ -309,9 +286,6 @@ class SupplierControllerSecurityTest {
         }
     }
 
-    // ==================================================================================
-    //                              HELPER METHODS
-    // ==================================================================================
 
     private SupplierResponseDTO createSupplierResponse(Long id, String name) {
         return SupplierResponseDTO.builder()

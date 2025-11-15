@@ -132,7 +132,6 @@ class SupplierServiceTest {
     @DisplayName("Should update supplier successfully")
     void shouldUpdateSupplierSuccessfully() {
     when(supplierRepository.findById(1L)).thenReturn(Optional.of(supplier));
-    // make these lenient as update flow may not call both existence checks depending on DTO values
     lenient().when(supplierRepository.existsByCode(anyString())).thenReturn(false);
     lenient().when(supplierRepository.existsByEmail(anyString())).thenReturn(false);
         when(supplierRepository.save(any(Supplier.class))).thenReturn(supplier);
