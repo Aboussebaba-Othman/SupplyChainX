@@ -320,9 +320,9 @@ class SupplyOrderServiceTest {
         supplyOrder.setStatus(SupplyOrderStatus.EN_ATTENTE);
         when(supplyOrderRepository.findById(1L)).thenReturn(Optional.of(supplyOrder));
 
-        assertThrows(BusinessException.class, () -> {
-            supplyOrderService.receiveOrder(1L, LocalDate.now());
-        });
+        LocalDate receiveDate = LocalDate.now();
+        // keep the lambda to a single expression to satisfy java:S5778 (only one invocation that may throw)
+        assertThrows(BusinessException.class, () -> supplyOrderService.receiveOrder(1L, receiveDate));
 
         verify(supplyOrderRepository).findById(1L);
         verify(supplyOrderRepository, never()).save(any(SupplyOrder.class));

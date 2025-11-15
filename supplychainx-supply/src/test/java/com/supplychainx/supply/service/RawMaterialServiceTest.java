@@ -1,6 +1,8 @@
 package com.supplychainx.supply.service;
 
+import com.supplychainx.common.exception.BusinessException;
 import com.supplychainx.common.exception.DuplicateResourceException;
+import com.supplychainx.common.exception.InsufficientStockException;
 import com.supplychainx.common.exception.ResourceNotFoundException;
 import com.supplychainx.supply.dto.request.RawMaterialRequestDTO;
 import com.supplychainx.supply.dto.response.RawMaterialResponseDTO;
@@ -16,11 +18,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -94,9 +97,7 @@ class RawMaterialServiceTest {
     void shouldThrowExceptionWhenCreatingDuplicateRawMaterial() {
         when(rawMaterialRepository.existsByCode(anyString())).thenReturn(true);
 
-        assertThrows(DuplicateResourceException.class, () -> {
-            rawMaterialService.create(requestDTO);
-        });
+        assertThrows(DuplicateResourceException.class, () -> rawMaterialService.create(requestDTO));
 
         verify(rawMaterialRepository).existsByCode("RM001");
         verify(rawMaterialRepository, never()).save(any(RawMaterial.class));
@@ -121,9 +122,7 @@ class RawMaterialServiceTest {
     void shouldThrowExceptionWhenRawMaterialNotFound() {
         when(rawMaterialRepository.findById(999L)).thenReturn(Optional.empty());
 
-        assertThrows(ResourceNotFoundException.class, () -> {
-            rawMaterialService.findById(999L);
-        });
+        assertThrows(ResourceNotFoundException.class, () -> rawMaterialService.findById(999L));
 
         verify(rawMaterialRepository).findById(999L);
     }
@@ -139,5 +138,75 @@ class RawMaterialServiceTest {
         verify(rawMaterialRepository).findById(1L);
         verify(rawMaterialRepository).isUsedInOrders(1L);
         verify(rawMaterialRepository).delete(rawMaterial);
+    }
+
+    @Test
+    @DisplayName("addStock should increase stock and return DTO")
+    void addStockShouldIncreaseStock() {
+        when(rawMaterialRepository.findById(1L)).thenReturn(Optional.of(rawMaterial));
+        when(rawMaterialRepository.save(any(RawMaterial.class))).thenAnswer(i -> i.getArgument(0));
+        when(rawMaterialMapper.toResponseDTO(any(RawMaterial.class))).thenReturn(responseDTO);
+
+        RawMaterialResponseDTO result = rawMaterialService.addStock(1L, 50);
+
+        assertNotNull(result);
+        verify(rawMaterialRepository).findById(1L);
+        verify(rawMaterialRepository).save(any(RawMaterial.class));
+    }
+
+    @Test
+    @DisplayName("addStock with non-positive quantity should throw BusinessException")
+    void addStockWithInvalidQuantityShouldThrow() {
+        assertThrows(BusinessException.class, () -> rawMaterialService.addStock(1L, 0));
+        assertThrows(BusinessException.class, () -> rawMaterialService.addStock(1L, -5));
+    }
+
+    @Test
+    @DisplayName("reduceStock should decrease stock and return DTO")
+    void reduceStockShouldDecreaseStock() {
+        when(rawMaterialRepository.findById(1L)).thenReturn(Optional.of(rawMaterial));
+        when(rawMaterialRepository.save(any(RawMaterial.class))).thenAnswer(i -> i.getArgument(0));
+        when(rawMaterialMapper.toResponseDTO(any(RawMaterial.class))).thenReturn(responseDTO);
+
+        RawMaterialResponseDTO result = rawMaterialService.reduceStock(1L, 20);
+
+        assertNotNull(result);
+        verify(rawMaterialRepository).findById(1L);
+        verify(rawMaterialRepository).save(any(RawMaterial.class));
+    }
+
+    @Test
+    @DisplayName("reduceStock with insufficient stock should throw InsufficientStockException")
+    void reduceStockInsufficientShouldThrow() {
+        when(rawMaterialRepository.findById(1L)).thenReturn(Optional.of(rawMaterial));
+
+        assertThrows(InsufficientStockException.class, () -> rawMaterialService.reduceStock(1L, 200));
+        verify(rawMaterialRepository).findById(1L);
+        verify(rawMaterialRepository, never()).save(any(RawMaterial.class));
+    }
+
+    @Test
+    @DisplayName("findBySupplier should throw when supplier not found")
+    void findBySupplierShouldThrowWhenSupplierNotFound() {
+        when(supplierRepository.existsById(anyLong())).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> rawMaterialService.findBySupplier(2L));
+        verify(supplierRepository).existsById(2L);
+        verify(rawMaterialRepository, never()).findBySupplier(anyLong());
+    }
+
+    @Test
+    @DisplayName("findBySupplier should return materials when supplier exists")
+    void findBySupplierShouldReturnMaterials() {
+        when(supplierRepository.existsById(1L)).thenReturn(true);
+        when(rawMaterialRepository.findBySupplier(1L)).thenReturn(Arrays.asList(rawMaterial));
+        when(rawMaterialMapper.toResponseDTOList(anyList())).thenReturn(Arrays.asList(responseDTO));
+
+        List<RawMaterialResponseDTO> result = rawMaterialService.findBySupplier(1L);
+
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        verify(supplierRepository).existsById(1L);
+        verify(rawMaterialRepository).findBySupplier(1L);
     }
 }
