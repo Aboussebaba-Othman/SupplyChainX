@@ -49,8 +49,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf 
 RUN groupadd -r spring && useradd -r -g spring spring
 
 # Copy JAR from builder stage
-// Copy the repackaged executable jar produced by the Spring Boot repackage
-COPY --from=builder /build/supplychainx-app/target/*-exec.jar app.jar
+# Copy the repackaged executable jar produced by the Spring Boot build
+COPY --from=builder /build/supplychainx-app/target/supplychainx-app-*.jar app.jar
 
 # Change ownership
 RUN chown spring:spring app.jar
