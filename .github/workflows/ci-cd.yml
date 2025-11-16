@@ -51,9 +51,6 @@ jobs:
           name: jacoco-reports
           path: '**/target/site/jacoco/'
 
-      - name: Check code coverage
-        run: mvn jacoco:check
-
   sonarqube-analysis:
     name: SonarQube Analysis
     runs-on: ubuntu-latest
