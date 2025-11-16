@@ -1,0 +1,1570 @@
+{
+  "info": {
+    "_postman_id": "supplychainx-complete-v2",
+    "name": "SupplyChainX - API Complete par Rôle",
+    "description": "Collection organisée par rôle avec données de test complètes. Authentifiez-vous d'abord avec le rôle approprié.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8081",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "supply_manager_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "purchase_manager_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "logistics_supervisor_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "production_manager_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "production_supervisor_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "planner_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "sales_manager_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "delivery_supervisor_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 AUTHENTICATION",
+      "item": [
+        {
+          "name": "Login - ADMIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('admin_token', jsonData.accessToken);",
+                  "    console.log('Admin token saved');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "ADMIN - Accès complet à tous les modules"
+          }
+        },
+        {
+          "name": "Login - GESTIONNAIRE_APPROVISIONNEMENT",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('supply_manager_token', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"supply_manager\",\n  \"password\": \"supply123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "US3-US12: CRUD Fournisseurs & Matières Premières"
+          }
+        },
+        {
+          "name": "Login - RESPONSABLE_ACHATS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('purchase_manager_token', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"purchase_manager\",\n  \"password\": \"purchase123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "US7, US13-US15: Recherche Fournisseurs + CRUD Commandes Approvisionnement"
+          }
+        },
+        {
+          "name": "Login - SUPERVISEUR_LOGISTIQUE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('logistics_supervisor_token', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"logistics_supervisor\",\n  \"password\": \"logistics123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "US6, US11-US12, US16-US17: Consultation & Suivi (read-only)"
+          }
+        },
+        {
+          "name": "Login - CHEF_PRODUCTION",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('production_manager_token', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"production_manager\",\n  \"password\": \"production123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "US18-US20, US23-US25: CRUD Produits & Ordres Production"
+          }
+        },
+        {
+          "name": "Login - PLANIFICATEUR",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('planner_token', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"planner\",\n  \"password\": \"planner123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "US28-US29: Vérification disponibilité & calcul temps production"
+          }
+        },
+        {
+          "name": "Login - SUPERVISEUR_PRODUCTION",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('production_supervisor_token', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"production_supervisor\",\n  \"password\": \"prodsup123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "US21-US22, US26-US27: Consultation Produits & Suivi Ordres"
+          }
+        },
+        {
+          "name": "Login - GESTIONNAIRE_COMMERCIAL",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('sales_manager_token', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"sales_manager\",\n  \"password\": \"sales123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "US30-US37: CRUD Clients & Commandes Clients"
+          }
+        },
+        {
+          "name": "Login - SUPERVISEUR_LIVRAISONS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('delivery_supervisor_token', jsonData.accessToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"delivery_supervisor\",\n  \"password\": \"delivery123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "US38-US40: Consultation & Suivi Commandes + Création Livraisons"
+          }
+        },
+        {
+          "name": "Get Current User Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "me"]
+            }
+          }
+        }
+      ],
+      "description": "Authentification pour tous les rôles du système"
+    },
+    {
+      "name": "👤 US1-US2: GESTION UTILISATEURS (ADMIN)",
+      "item": [
+        {
+          "name": "US1: Créer utilisateur avec rôle",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"nouveau_user\",\n  \"email\": \"nouveau@supplychainx.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"Nouveau\",\n  \"lastName\": \"Utilisateur\",\n  \"role\": \"GESTIONNAIRE_APPROVISIONNEMENT\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "US1: Créer un compte avec rôle spécifique"
+          }
+        },
+        {
+          "name": "US2: Modifier rôle utilisateur",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"RESPONSABLE_ACHATS\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users/1/role",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "1", "role"]
+            },
+            "description": "US2: Modifier le rôle d'un utilisateur existant"
+          }
+        }
+      ],
+      "description": "Gestion des utilisateurs - Admin uniquement"
+    },
+    {
+      "name": "📦 US3-US7: FOURNISSEURS (Approvisionnement)",
+      "item": [
+        {
+          "name": "US3: Ajouter un fournisseur",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supply_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"FORN-001\",\n  \"name\": \"Fournisseur Acier SA\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@fournisseur-acier.fr\",\n  \"phone\": \"+33123456789\",\n  \"address\": \"15 Rue de l'Industrie, 75001 Paris, France\",\n  \"rating\": 4.5,\n  \"leadTime\": 7\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/suppliers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers"]
+            },
+            "description": "US3: Ajouter fournisseur avec toutes ses informations (GESTIONNAIRE_APPROVISIONNEMENT)"
+          }
+        },
+        {
+          "name": "US4: Modifier un fournisseur",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supply_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"FORN-001\",\n  \"name\": \"Fournisseur Acier Premium SA\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@fournisseur-acier.fr\",\n  \"phone\": \"+33123456789\",\n  \"address\": \"15 Rue de l'Industrie, 75001 Paris, France\",\n  \"rating\": 5.0,\n  \"leadTime\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/suppliers/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers", "1"]
+            },
+            "description": "US4: Modifier un fournisseur existant (GESTIONNAIRE_APPROVISIONNEMENT)"
+          }
+        },
+        {
+          "name": "US5: Supprimer fournisseur",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supply_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers", "1"]
+            },
+            "description": "US5: Supprimer fournisseur (si aucune commande active)"
+          }
+        },
+        {
+          "name": "US5: Vérifier si suppression possible",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supply_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers/1/can-delete",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers", "1", "can-delete"]
+            },
+            "description": "Vérifier si le fournisseur peut être supprimé"
+          }
+        },
+        {
+          "name": "US6: Consulter tous les fournisseurs",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logistics_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers?page=0&size=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "US6: Liste de tous les fournisseurs (SUPERVISEUR_LOGISTIQUE)"
+          }
+        },
+        {
+          "name": "US7: Rechercher fournisseur par nom",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{purchase_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers/search?name=Acier",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Acier"
+                }
+              ]
+            },
+            "description": "US7: Rechercher fournisseur par nom (RESPONSABLE_ACHATS)"
+          }
+        }
+      ],
+      "description": "Gestion des fournisseurs"
+    },
+    {
+      "name": "🧱 US8-US12: MATIÈRES PREMIÈRES",
+      "item": [
+        {
+          "name": "US8: Ajouter matière première",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supply_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"MAT-001\",\n  \"name\": \"Acier Inoxydable 304\",\n  \"description\": \"Acier inoxydable de qualité alimentaire\",\n  \"category\": \"METAL\",\n  \"unit\": \"kg\",\n  \"unitPrice\": 8.50,\n  \"stock\": 1500,\n  \"stockMin\": 300,\n  \"supplierId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/raw-materials",
+              "host": ["{{base_url}}"],
+              "path": ["api", "raw-materials"]
+            },
+            "description": "US8: Ajouter nouvelle matière première (GESTIONNAIRE_APPROVISIONNEMENT)"
+          }
+        },
+        {
+          "name": "US9: Modifier matière première",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supply_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"MAT-001\",\n  \"name\": \"Acier Inoxydable 304 Premium\",\n  \"description\": \"Acier inoxydable de qualité alimentaire premium\",\n  \"category\": \"METAL\",\n  \"unit\": \"kg\",\n  \"unitPrice\": 9.00,\n  \"stock\": 1500,\n  \"stockMin\": 300,\n  \"supplierId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/raw-materials/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "raw-materials", "1"]
+            },
+            "description": "US9: Modifier matière première existante"
+          }
+        },
+        {
+          "name": "US10: Supprimer matière première",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{supply_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/raw-materials/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "raw-materials", "1"]
+            },
+            "description": "US10: Supprimer matière première (si non utilisée dans commandes)"
+          }
+        },
+        {
+          "name": "US11: Consulter toutes les matières",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logistics_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/raw-materials?page=0&size=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "raw-materials"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "US11: Liste de toutes les matières premières (SUPERVISEUR_LOGISTIQUE)"
+          }
+        },
+        {
+          "name": "US12: Filtrer matières stock faible",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logistics_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/raw-materials/low-stock",
+              "host": ["{{base_url}}"],
+              "path": ["api", "raw-materials", "low-stock"]
+            },
+            "description": "US12: Matières dont stock < seuil critique (SUPERVISEUR_LOGISTIQUE)"
+          }
+        }
+      ],
+      "description": "Gestion des matières premières"
+    },
+    {
+      "name": "🛒 US13-US17: COMMANDES APPROVISIONNEMENT",
+      "item": [
+        {
+          "name": "US13: Créer commande approvisionnement",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{purchase_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNumber\": \"CMD-APP-2025-001\",\n  \"supplierId\": 1,\n  \"orderDate\": \"2025-11-13\",\n  \"expectedDeliveryDate\": \"2025-11-20\",\n  \"status\": \"EN_ATTENTE\",\n  \"orderLines\": [\n    {\n      \"materialId\": 1,\n      \"quantity\": 500.0,\n      \"unitPrice\": 8.50\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/supply-orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "supply-orders"]
+            },
+            "description": "US13: Créer commande d'approvisionnement (RESPONSABLE_ACHATS)"
+          }
+        },
+        {
+          "name": "US14: Modifier commande existante",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{purchase_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNumber\": \"CMD-APP-2025-001\",\n  \"supplierId\": 1,\n  \"orderDate\": \"2025-11-13\",\n  \"expectedDeliveryDate\": \"2025-11-22\",\n  \"status\": \"EN_ATTENTE\",\n  \"orderLines\": [\n    {\n      \"materialId\": 1,\n      \"quantity\": 600.0,\n      \"unitPrice\": 8.50\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/supply-orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "supply-orders", "1"]
+            },
+            "description": "US14: Modifier commande existante"
+          }
+        },
+        {
+          "name": "US15: Supprimer commande non livrée",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{purchase_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/supply-orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "supply-orders", "1"]
+            },
+            "description": "US15: Supprimer commande si pas encore livrée"
+          }
+        },
+        {
+          "name": "US16: Consulter toutes les commandes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logistics_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/supply-orders?page=0&size=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "supply-orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "US16: Liste de toutes les commandes (SUPERVISEUR_LOGISTIQUE)"
+          }
+        },
+        {
+          "name": "US17: Suivre statut commandes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logistics_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/supply-orders/status/EN_COURS",
+              "host": ["{{base_url}}"],
+              "path": ["api", "supply-orders", "status", "EN_COURS"]
+            },
+            "description": "US17: Suivre le statut des commandes (Valeurs: EN_ATTENTE, APPROUVEE, EN_COURS, LIVREE, ANNULEE)"
+          }
+        }
+      ],
+      "description": "Gestion des commandes d'approvisionnement"
+    },
+    {
+      "name": "🏭 US18-US22: PRODUITS FINIS",
+      "item": [
+        {
+          "name": "US18: Ajouter produit fini",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"PROD-001\",\n  \"name\": \"Table Inox Professionnelle\",\n  \"description\": \"Table de travail en acier inoxydable 120x60cm\",\n  \"category\": \"MOBILIER\",\n  \"productionTime\": 180,\n  \"cost\": 250.00,\n  \"stock\": 50,\n  \"stockMin\": 10\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"]
+            },
+            "description": "US18: Ajouter produit avec toutes ses informations (CHEF_PRODUCTION)"
+          }
+        },
+        {
+          "name": "US19: Modifier produit existant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"PROD-001\",\n  \"name\": \"Table Inox Professionnelle Premium\",\n  \"description\": \"Table de travail en acier inoxydable 120x60cm - Qualité Premium\",\n  \"category\": \"MOBILIER\",\n  \"productionTime\": 180,\n  \"cost\": 280.00,\n  \"stock\": 50,\n  \"stockMin\": 10\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/products/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "1"]
+            },
+            "description": "US19: Modifier produit existant"
+          }
+        },
+        {
+          "name": "US20: Supprimer produit",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "1"]
+            },
+            "description": "US20: Supprimer produit (si aucun ordre associé)"
+          }
+        },
+        {
+          "name": "US21: Consulter tous les produits",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products?page=0&size=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "US21: Liste de tous les produits (SUPERVISEUR_PRODUCTION)"
+          }
+        },
+        {
+          "name": "US22: Rechercher produit par nom",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/search?name=Table",
+              "host": ["{{base_url}}"],
+              "path": ["api", "products", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Table"
+                }
+              ]
+            },
+            "description": "US22: Rechercher produit par nom"
+          }
+        }
+      ],
+      "description": "Gestion des produits finis"
+    },
+    {
+      "name": "⚙️ US23-US27: ORDRES DE PRODUCTION",
+      "item": [
+        {
+          "name": "US23: Créer ordre de production",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNumber\": \"PROD-2025-001\",\n  \"productId\": 1,\n  \"quantity\": 20,\n  \"plannedStartDate\": \"2025-11-15\",\n  \"plannedEndDate\": \"2025-11-22\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/production-orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "production-orders"]
+            },
+            "description": "US23: Créer ordre de production (CHEF_PRODUCTION)"
+          }
+        },
+        {
+          "name": "US24: Modifier ordre existant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNumber\": \"PROD-2025-001\",\n  \"productId\": 1,\n  \"quantity\": 25,\n  \"plannedStartDate\": \"2025-11-15\",\n  \"plannedEndDate\": \"2025-11-23\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/production-orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "production-orders", "1"]
+            },
+            "description": "US24: Modifier ordre existant"
+          }
+        },
+        {
+          "name": "US25: Annuler ordre non commencé",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/production-orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "production-orders", "1"]
+            },
+            "description": "US25: Annuler ordre si non commencé (statut EN_ATTENTE uniquement)"
+          }
+        },
+        {
+          "name": "US26: Consulter tous les ordres",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/production-orders?page=0&size=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "production-orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "US26: Liste de tous les ordres (SUPERVISEUR_PRODUCTION)"
+          }
+        },
+        {
+          "name": "US27: Suivre statut ordres",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{production_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/production-orders/status/EN_COURS",
+              "host": ["{{base_url}}"],
+              "path": ["api", "production-orders", "status", "EN_COURS"]
+            },
+            "description": "US27: Suivre le statut des ordres (Valeurs: EN_ATTENTE, EN_COURS, TERMINE, ANNULE)"
+          }
+        }
+      ],
+      "description": "Gestion des ordres de production"
+    },
+    {
+      "name": "📊 US28-US29: PLANIFICATION",
+      "item": [
+        {
+          "name": "US28: Vérifier disponibilité matières",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{planner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNumber\": \"PROD-2025-001\",\n  \"productId\": 1,\n  \"quantity\": 20,\n  \"plannedStartDate\": \"2025-11-15\",\n  \"plannedEndDate\": \"2025-11-22\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/production-orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "production-orders"]
+            },
+            "description": "US28: Vérification automatique des matières lors de la création d'ordre (PLANIFICATEUR)"
+          }
+        },
+        {
+          "name": "US29: Voir temps estimé production",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{planner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/production-orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "production-orders", "1"]
+            },
+            "description": "US29: Le temps estimé est calculé automatiquement (champ estimatedTime dans la réponse)"
+          }
+        }
+      ],
+      "description": "Planification et ordonnancement - Calculs automatiques"
+    },
+    {
+      "name": "👥 US30-US34: CLIENTS",
+      "item": [
+        {
+          "name": "US30: Ajouter un client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sales_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CLI-001\",\n  \"name\": \"Restaurant Le Gourmet\",\n  \"contact\": \"Marie Dubois\",\n  \"phone\": \"+33145678901\",\n  \"email\": \"contact@legourmet.fr\",\n  \"address\": \"25 Avenue des Champs\",\n  \"city\": \"Paris\",\n  \"postalCode\": \"75008\",\n  \"country\": \"France\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/customers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "customers"]
+            },
+            "description": "US30: Ajouter client avec toutes ses informations (GESTIONNAIRE_COMMERCIAL)"
+          }
+        },
+        {
+          "name": "US31: Modifier client existant",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sales_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CLI-001\",\n  \"name\": \"Restaurant Le Gourmet Premium\",\n  \"contact\": \"Marie Dubois\",\n  \"phone\": \"+33145678901\",\n  \"email\": \"contact@legourmet.fr\",\n  \"address\": \"25 Avenue des Champs\",\n  \"city\": \"Paris\",\n  \"postalCode\": \"75008\",\n  \"country\": \"France\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/customers/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "customers", "1"]
+            },
+            "description": "US31: Modifier client existant"
+          }
+        },
+        {
+          "name": "US32: Supprimer client",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sales_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/customers/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "customers", "1"]
+            },
+            "description": "US32: Supprimer client (si aucune commande active)"
+          }
+        },
+        {
+          "name": "US33: Consulter tous les clients",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sales_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/customers?page=0&size=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "customers"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "US33: Liste de tous les clients (GESTIONNAIRE_COMMERCIAL)"
+          }
+        },
+        {
+          "name": "US34: Rechercher client par nom",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sales_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/customers/search?name=Gourmet",
+              "host": ["{{base_url}}"],
+              "path": ["api", "customers", "search"],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "Gourmet"
+                }
+              ]
+            },
+            "description": "US34: Rechercher client par nom"
+          }
+        }
+      ],
+      "description": "Gestion des clients"
+    },
+    {
+      "name": "📋 US35-US39: COMMANDES CLIENTS",
+      "item": [
+        {
+          "name": "US35: Créer commande client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sales_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNumber\": \"CMD-CLI-2025-001\",\n  \"customerId\": 1,\n  \"orderDate\": \"2025-11-13\",\n  \"expectedDeliveryDate\": \"2025-11-20\",\n  \"deliveryAddress\": \"25 Avenue des Champs\",\n  \"deliveryCity\": \"Paris\",\n  \"deliveryPostalCode\": \"75008\",\n  \"status\": \"EN_PREPARATION\",\n  \"orderLines\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 5.0,\n      \"unitPrice\": 350.00\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/delivery-orders",
+              "host": ["{{base_url}}"],
+              "path": ["api", "delivery-orders"]
+            },
+            "description": "US35: Créer commande client (GESTIONNAIRE_COMMERCIAL)"
+          }
+        },
+        {
+          "name": "US36: Modifier commande existante",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sales_manager_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderNumber\": \"CMD-CLI-2025-001\",\n  \"customerId\": 1,\n  \"orderDate\": \"2025-11-13\",\n  \"expectedDeliveryDate\": \"2025-11-22\",\n  \"deliveryAddress\": \"25 Avenue des Champs\",\n  \"deliveryCity\": \"Paris\",\n  \"deliveryPostalCode\": \"75008\",\n  \"status\": \"EN_PREPARATION\",\n  \"orderLines\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 8.0,\n      \"unitPrice\": 350.00\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/delivery-orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "delivery-orders", "1"]
+            },
+            "description": "US36: Modifier commande existante"
+          }
+        },
+        {
+          "name": "US37: Annuler commande non expédiée",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{sales_manager_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/delivery-orders/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "delivery-orders", "1"]
+            },
+            "description": "US37: Annuler commande si non expédiée"
+          }
+        },
+        {
+          "name": "US38: Consulter toutes les commandes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/delivery-orders?page=0&size=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "delivery-orders"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "US38: Liste de toutes les commandes (SUPERVISEUR_LIVRAISONS)"
+          }
+        },
+        {
+          "name": "US39: Suivre statut commandes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/delivery-orders/status/EN_PREPARATION",
+              "host": ["{{base_url}}"],
+              "path": ["api", "delivery-orders", "status", "EN_PREPARATION"]
+            },
+            "description": "US39: Suivre le statut des commandes (Valeurs: EN_PREPARATION, PRETE, EXPEDIEE, LIVREE, ANNULEE)"
+          }
+        }
+      ],
+      "description": "Gestion des commandes clients"
+    },
+    {
+      "name": "🚚 US40: LIVRAISONS",
+      "item": [
+        {
+          "name": "US40: Créer livraison avec calcul coût",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_supervisor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deliveryNumber\": \"LIV-2025-001\",\n  \"deliveryOrderId\": 1,\n  \"vehicle\": \"Camion 15T - Immat: AB-123-CD\",\n  \"driver\": \"Ahmed Benali\",\n  \"driverPhone\": \"+33612345678\",\n  \"status\": \"PLANIFIEE\",\n  \"deliveryDate\": \"2025-11-20\",\n  \"cost\": 85.50,\n  \"trackingNumber\": \"TRACK-2025-001\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/deliveries",
+              "host": ["{{base_url}}"],
+              "path": ["api", "deliveries"]
+            },
+            "description": "US40: Créer livraison pour une commande avec calcul du coût total (SUPERVISEUR_LIVRAISONS)"
+          }
+        },
+        {
+          "name": "US40: Consulter livraisons",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_supervisor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/deliveries?page=0&size=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "deliveries"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Consulter toutes les livraisons"
+          }
+        },
+        {
+          "name": "US40: Mettre à jour statut livraison",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_supervisor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deliveryNumber\": \"LIV-2025-001\",\n  \"deliveryOrderId\": 1,\n  \"vehicle\": \"Camion 15T - Immat: AB-123-CD\",\n  \"driver\": \"Ahmed Benali\",\n  \"driverPhone\": \"+33612345678\",\n  \"status\": \"EN_COURS\",\n  \"deliveryDate\": \"2025-11-20\",\n  \"cost\": 85.50,\n  \"trackingNumber\": \"TRACK-2025-001\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/deliveries/1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "deliveries", "1"]
+            },
+            "description": "Mettre à jour le statut de la livraison (Valeurs: PLANIFIEE, EN_COURS, LIVREE, ANNULEE)"
+          }
+        }
+      ],
+      "description": "Gestion des livraisons avec calcul des coûts"
+    },
+    {
+      "name": "🔍 TESTS & VÉRIFICATIONS",
+      "item": [
+        {
+          "name": "❌ Test: Sans authentification (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers"]
+            },
+            "description": "Doit retourner 401 Unauthorized"
+          }
+        },
+        {
+          "name": "❌ Test: Token invalide (401)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid_token_xyz"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/suppliers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers"]
+            },
+            "description": "Doit retourner 401 Unauthorized"
+          }
+        },
+        {
+          "name": "❌ Test: Mauvaise permission (403)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{logistics_supervisor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"TEST\",\n  \"name\": \"Test\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/suppliers",
+              "host": ["{{base_url}}"],
+              "path": ["api", "suppliers"]
+            },
+            "description": "SUPERVISEUR_LOGISTIQUE n'a que READ - Doit retourner 403 Forbidden"
+          }
+        },
+        {
+          "name": "✅ Test: Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/actuator/health",
+              "host": ["{{base_url}}"],
+              "path": ["actuator", "health"]
+            },
+            "description": "Vérifier que l'application fonctionne"
+          }
+        }
+      ],
+      "description": "Tests de sécurité et vérifications système"
+    }
+  ]
+}

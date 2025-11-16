@@ -1,5 +1,4 @@
 services:
-  # MySQL Database
   mysql:
     image: mysql:8.0
     container_name: supplychainx-mysql
@@ -8,21 +7,89 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: supplychainx_db
       MYSQL_USER: supplychainx_user
-      MYSQL_PASSWORD: supplychainx_password
+      MYSQL_PASSWORD: supplychainx_pass
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
     networks:
       - supplychainx-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # phpMyAdmin for database management
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: supplychainx-app
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/supplychainx_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: supplychainx_user
+      SPRING_DATASOURCE_PASSWORD: supplychainx_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_LIQUIBASE_ENABLED: "true"
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - supplychainx-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8081/actuator/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 60s
+
+  sonarqube-db:
+    image: postgres:15-alpine
+    container_name: sonarqube-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonarqube
+    volumes:
+      - sonarqube-db-data:/var/lib/postgresql/data
+    networks:
+      - supplychainx-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sonar"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  sonarqube:
+    image: sonarqube:10-community
+    container_name: supplychainx-sonarqube
+    restart: unless-stopped
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube-db:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    ports:
+      - "9000:9000"
+    depends_on:
+      sonarqube-db:
+        condition: service_healthy
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-logs:/opt/sonarqube/logs
+    networks:
+      - supplychainx-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9000/api/system/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+
   phpmyadmin:
     image: phpmyadmin:latest
     container_name: supplychainx-phpmyadmin
@@ -41,44 +108,12 @@ services:
     networks:
       - supplychainx-network
 
-  # Spring Boot Application (uncomment when ready to deploy)
-  # supplychainx-app:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   container_name: supplychainx-app
-  #   restart: unless-stopped
-  #   environment:
-  #     SPRING_PROFILES_ACTIVE: prod
-  #     SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/supplychainx_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-  #     SPRING_DATASOURCE_USERNAME: supplychainx_user
-  #     SPRING_DATASOURCE_PASSWORD: supplychainx_password
-  #   ports:
-  #     - "8090:8090"
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
-  #   networks:
-  #     - supplychainx-network
-  #   volumes:
-  #     - app_logs:/app/logs
-
-  # Mailhog for email testing (optional)
-#  mailhog:
-#    image: mailhog/mailhog:latest
-#    container_name: supplychainx-mailhog
-#    restart: unless-stopped
-#    ports:
-#      - "1025:1025"  # SMTP port
-#      - "8025:8025"  # Web UI
-#    networks:
-#      - supplychainx-network
-
 volumes:
-  mysql_data:
-    driver: local
-  app_logs:
-    driver: local
+  mysql-data:
+  sonarqube-db-data:
+  sonarqube-data:
+  sonarqube-extensions:
+  sonarqube-logs:
 
 networks:
   supplychainx-network:

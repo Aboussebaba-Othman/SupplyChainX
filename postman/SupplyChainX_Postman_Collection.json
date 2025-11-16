@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "supplychainx-minimal-2025",
-    "name": "SupplyChainX - Minimal API Collection",
-    "description": "Minimal valid Postman collection. Run Authentication logins first to populate tokens.",
+    "_postman_id": "supplychainx-complete-2025",
+    "name": "SupplyChainX - Complete API Collection",
+    "description": "Collection complète organisée par rôle. Commencez par vous authentifier avec le rôle approprié.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -18,6 +18,46 @@
     },
     {
       "key": "supply_manager_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "purchase_manager_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "logistics_supervisor_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "production_manager_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "planner_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "production_supervisor_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "sales_manager_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "delivery_logistics_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "delivery_supervisor_token",
       "value": "",
       "type": "string"
     }

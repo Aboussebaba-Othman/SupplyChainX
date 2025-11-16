@@ -10,23 +10,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
 
-/**
- * Tests d'intégration E2E pour le workflow complet du module Supply
- * 
- * Scénario testé:
- * 1. Authentification d'un gestionnaire d'approvisionnement (pour setup: supplier, material)
- * 2. Création d'un fournisseur
- * 3. Création d'une matière première
- * 4. Authentification d'un responsable des achats (pour les commandes)
- * 5. Création d'une commande d'approvisionnement avec ligne
- * 6. Vérification de la ligne de commande
- * 7. Changement du statut de la commande
- * 8. Réception de la commande
- * 9. Vérification de l'augmentation du stock
- * 10. Vérification complète du workflow
- */
 @DisplayName("Integration Tests - Supply Workflow E2E")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -35,9 +19,8 @@ class SupplyWorkflowIntegrationTest extends IntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    // Instance variables will be shared across all test methods with PER_CLASS lifecycle
-    private String supplyManagerToken;  // For supplier and material creation
-    private String purchaseManagerToken; // For purchase orders
+    private String supplyManagerToken; 
+    private String purchaseManagerToken; 
     private Long supplierId;
     private Long materialId;
     private Long supplyOrderId;
@@ -47,7 +30,6 @@ class SupplyWorkflowIntegrationTest extends IntegrationTest {
     @Order(1)
     @DisplayName("Step 1: Authenticate as supply manager (for supplier/material setup)")
     void step1_authenticateAsSupplyManager() throws Exception {
-        // Given
         String loginRequest = """
                 {
                     "username": "supply_manager",
@@ -55,7 +37,6 @@ class SupplyWorkflowIntegrationTest extends IntegrationTest {
                 }
                 """;
 
-        // When & Then
         MvcResult result = mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginRequest))
@@ -64,7 +45,6 @@ class SupplyWorkflowIntegrationTest extends IntegrationTest {
                 .andExpect(jsonPath("$.user.role").value("GESTIONNAIRE_APPROVISIONNEMENT"))
                 .andReturn();
 
-        // Extract token using JsonPath
         String response = result.getResponse().getContentAsString();
         supplyManagerToken = JsonPath.read(response, "$.token");
         
@@ -221,8 +201,7 @@ class SupplyWorkflowIntegrationTest extends IntegrationTest {
             orderLineId = null;
         }
         
-        // Since orderLineId might be null, we skip the verification if extraction failed
-        // This test will verify through the total amount endpoint instead
+
     }
 
     @Test
@@ -298,7 +277,6 @@ class SupplyWorkflowIntegrationTest extends IntegrationTest {
     // Helper methods
     private Long extractId(String jsonResponse) {
         try {
-            // Extract ID from $.data.id path (API responses wrap data in "data" field)
             Integer id = JsonPath.read(jsonResponse, "$.data.id");
             return id != null ? id.longValue() : null;
         } catch (Exception e) {

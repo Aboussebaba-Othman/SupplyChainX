@@ -1,18 +1,20 @@
 package com.supplychainx.supply;
 
-import org.springframework.boot.SpringBootConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
- * Configuration de test pour le module Supply
+ * Lightweight test configuration for the supply module.
+ * Keep this as a plain @Configuration to avoid triggering full
+ * Spring Boot auto-configuration during @WebMvcTest slices. Tests
+ * explicitly import this class when they need to register module
+ * beans or component scanning.
  */
-@SpringBootConfiguration
-@EnableAutoConfiguration
+@Configuration
 @ComponentScan(basePackages = {
-    "com.supplychainx.supply",
-    "com.supplychainx.security",
-    "com.supplychainx.common"
+    // Limit component scanning to the supply module for lightweight test contexts.
+    "com.supplychainx.supply"
 })
 public class TestConfiguration {
+
 }
