@@ -15,6 +15,7 @@ COPY supplychainx-delivery/pom.xml supplychainx-delivery/
 COPY supplychainx-audit/pom.xml supplychainx-audit/
 COPY supplychainx-app/pom.xml supplychainx-app/
 COPY supplychainx-integration/pom.xml supplychainx-integration/
+COPY supplychainx-coverage-report/pom.xml supplychainx-coverage-report/
 
 # Download dependencies (cached layer)
 RUN mvn dependency:go-offline -B
@@ -41,14 +42,15 @@ LABEL description="SupplyChainX Backend Application"
 
 WORKDIR /app
 
-# Install wget for health check
-RUN apk add --no-cache wget
+# Install wget for health check (using apt for Debian-based image)
+RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
-RUN addgroup -S spring && adduser -S spring -G spring
+RUN groupadd -r spring && useradd -r -g spring spring
 
 # Copy JAR from builder stage
-COPY --from=builder /build/supplychainx-app/target/supplychainx-app-*.jar app.jar
+// Copy the repackaged executable jar produced by the Spring Boot repackage
+COPY --from=builder /build/supplychainx-app/target/*-exec.jar app.jar
 
 # Change ownership
 RUN chown spring:spring app.jar
