@@ -189,6 +189,9 @@ public class ProductionOrderService {
             throw new BusinessException("Matières premières insuffisantes pour démarrer la production");
         }
 
+        // Consommer les matières premières dès le démarrage de la production
+        consumeRawMaterials(productionOrder);
+
         // Mettre à jour le statut et la date de début
         productionOrder.setStatus(ProductionOrderStatus.EN_PRODUCTION);
         productionOrder.setStartDate(LocalDate.now());
@@ -211,10 +214,7 @@ public class ProductionOrderService {
             throw new BusinessException("Seuls les ordres en production peuvent être terminés. Statut actuel: " + productionOrder.getStatus());
         }
 
-        // Consommer les matières premières
-        consumeRawMaterials(productionOrder);
-
-        // Ajouter les produits finis au stock
+        // Ajouter les produits finis au stock (les matières premières ont déjà été consommées au démarrage)
         Product product = productionOrder.getProduct();
         Double currentStock = product.getStock() != null ? product.getStock() : 0.0;
         product.setStock(currentStock + productionOrder.getQuantity());

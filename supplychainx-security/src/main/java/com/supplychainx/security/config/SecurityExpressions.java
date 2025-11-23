@@ -28,35 +28,18 @@ public class SecurityExpressions {
                 .anyMatch(auth -> auth.equals(authority));
     }
     
-    /**
-     * Vérifie si l'utilisateur a au moins une des permissions spécifiées
-     * Usage: @PreAuthorize("@securityExpressions.hasAnyPermission('SUPPLIER_CREATE', 'SUPPLIER_UPDATE')")
-     * 
-     * @param permissionNames les noms des permissions
-     * @return true si l'utilisateur a au moins une des permissions
-     */
+
     public boolean hasAnyPermission(String... permissionNames) {
         return Arrays.stream(permissionNames)
                 .anyMatch(this::hasPermission);
     }
     
-    /**
-     * Vérifie si l'utilisateur a toutes les permissions spécifiées
-     * Usage: @PreAuthorize("@securityExpressions.hasAllPermissions('SUPPLIER_READ', 'SUPPLIER_UPDATE')")
-     * 
-     * @param permissionNames les noms des permissions
-     * @return true si l'utilisateur a toutes les permissions
-     */
+
     public boolean hasAllPermissions(String... permissionNames) {
         return Arrays.stream(permissionNames)
                 .allMatch(this::hasPermission);
     }
-    
-    /**
-     * Vérifie si l'utilisateur connecté a accès au module Supply
-     * 
-     * @return true si l'utilisateur a accès au module Supply
-     */
+
     public boolean hasSupplyAccess() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
@@ -90,12 +73,7 @@ public class SecurityExpressions {
         
         return false;
     }
-    
-    /**
-     * Vérifie si l'utilisateur connecté a accès au module Delivery
-     * 
-     * @return true si l'utilisateur a accès au module Delivery
-     */
+
     public boolean hasDeliveryAccess() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
@@ -113,11 +91,7 @@ public class SecurityExpressions {
         return false;
     }
     
-    /**
-     * Vérifie si l'utilisateur connecté est un administrateur
-     * 
-     * @return true si l'utilisateur est admin
-     */
+
     public boolean isAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
@@ -134,12 +108,7 @@ public class SecurityExpressions {
         
         return false;
     }
-    
-    /**
-     * Vérifie si l'utilisateur peut gérer les utilisateurs (admin uniquement)
-     * 
-     * @return true si l'utilisateur peut gérer les utilisateurs
-     */
+
     public boolean canManageUsers() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         

@@ -33,9 +33,7 @@ public class UserService implements UserDetailsService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Load user by username for Spring Security
-     */
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Loading user by username: {}", username);
@@ -43,9 +41,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
-    /**
-     * Create a new user
-     */
+
     public UserResponseDTO createUser(UserRequestDTO dto) {
         log.info("Creating new user: {}", dto.getUsername());
 
@@ -79,9 +75,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toResponseDTO(savedUser);
     }
 
-    /**
-     * Get user by ID
-     */
+
     @Transactional(readOnly = true)
     public UserResponseDTO getUserById(Long id) {
         log.debug("Fetching user by ID: {}", id);
@@ -90,9 +84,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toResponseDTO(user);
     }
 
-    /**
-     * Get user by username
-     */
+
     @Transactional(readOnly = true)
     public UserResponseDTO getUserByUsername(String username) {
         log.debug("Fetching user by username: {}", username);
@@ -101,9 +93,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toResponseDTO(user);
     }
 
-    /**
-     * Get all users
-     */
+
     @Transactional(readOnly = true)
     public List<UserResponseDTO> getAllUsers() {
         log.debug("Fetching all users");
@@ -112,9 +102,7 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Get users by role
-     */
+
     @Transactional(readOnly = true)
     public List<UserResponseDTO> getUsersByRole(Role role) {
         log.debug("Fetching users by role: {}", role);
@@ -123,9 +111,7 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Search users
-     */
+
     @Transactional(readOnly = true)
     public List<UserResponseDTO> searchUsers(String search) {
         log.debug("Searching users with term: {}", search);
@@ -134,9 +120,7 @@ public class UserService implements UserDetailsService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Update user information
-     */
+
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         log.info("Updating user ID: {}", id);
 
@@ -167,9 +151,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toResponseDTO(updatedUser);
     }
 
-    /**
-     * Change user password
-     */
+
     public void changePassword(Long id, ChangePasswordRequestDTO dto) {
         log.info("Changing password for user ID: {}", id);
 
@@ -193,9 +175,7 @@ public class UserService implements UserDetailsService {
         log.info("Password changed successfully for user ID: {}", id);
     }
 
-    /**
-     * Change user role (admin only)
-     */
+
     public UserResponseDTO changeRole(Long id, Role newRole) {
         log.info("Changing role for user ID: {} to {}", id, newRole);
 
@@ -209,9 +189,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toResponseDTO(updatedUser);
     }
 
-    /**
-     * Enable user account
-     */
+
     public UserResponseDTO enableUser(Long id) {
         log.info("Enabling user ID: {}", id);
 
@@ -225,9 +203,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toResponseDTO(updatedUser);
     }
 
-    /**
-     * Disable user account
-     */
+
     public UserResponseDTO disableUser(Long id) {
         log.info("Disabling user ID: {}", id);
 
@@ -241,9 +217,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toResponseDTO(updatedUser);
     }
 
-    /**
-     * Lock user account
-     */
+
     public UserResponseDTO lockUser(Long id) {
         log.info("Locking user ID: {}", id);
 
@@ -257,9 +231,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toResponseDTO(updatedUser);
     }
 
-    /**
-     * Unlock user account
-     */
+
     public UserResponseDTO unlockUser(Long id) {
         log.info("Unlocking user ID: {}", id);
 
@@ -273,9 +245,7 @@ public class UserService implements UserDetailsService {
         return userMapper.toResponseDTO(updatedUser);
     }
 
-    /**
-     * Delete user
-     */
+
     public void deleteUser(Long id) {
         log.info("Deleting user ID: {}", id);
 
@@ -287,9 +257,7 @@ public class UserService implements UserDetailsService {
         log.info("User deleted successfully - ID: {}", id);
     }
 
-    /**
-     * Update last login timestamp
-     */
+
     public void updateLastLogin(String username) {
         log.debug("Updating last login for user: {}", username);
         
@@ -300,9 +268,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
     }
 
-    /**
-     * Handle failed login attempt
-     */
+
     public void handleFailedLogin(String username) {
         log.warn("Failed login attempt for user: {}", username);
         
@@ -316,26 +282,20 @@ public class UserService implements UserDetailsService {
         });
     }
 
-    /**
-     * Get user entity by username (for internal use)
-     */
+
     @Transactional(readOnly = true)
     public User getUserEntityByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
     }
     
-    /**
-     * Check if username exists
-     */
+
     @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
     
-    /**
-     * Check if email exists
-     */
+
     @Transactional(readOnly = true)
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);

@@ -27,13 +27,7 @@ public class AuthenticationService {
     private final JwtTokenService jwtTokenService;
     private final UserMapper userMapper;
     
-    /**
-     * Authentifie un utilisateur et génère les tokens JWT
-     * 
-     * @param loginRequest les identifiants de connexion
-     * @return la réponse d'authentification avec les tokens
-     * @throws BadCredentialsException si les identifiants sont invalides
-     */
+
     @Transactional
     public AuthenticationResponseDTO login(LoginRequestDTO loginRequest) {
         log.info("Tentative de connexion pour l'utilisateur: {}", loginRequest.getUsername());
@@ -114,13 +108,7 @@ public class AuthenticationService {
                 .build();
     }
     
-    /**
-     * Rafraîchit le token d'accès à partir d'un refresh token
-     * 
-     * @param refreshToken le refresh token
-     * @return la nouvelle réponse d'authentification avec les nouveaux tokens
-     * @throws BadCredentialsException si le refresh token est invalide
-     */
+
     @Transactional(readOnly = true)
     public AuthenticationResponseDTO refreshToken(String refreshToken) {
         log.debug("Tentative de rafraîchissement du token");

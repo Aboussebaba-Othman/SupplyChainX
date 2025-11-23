@@ -8,9 +8,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-/**
- * Mapper pour convertir entre entités AuditLog et DTOs
- */
+
 @Mapper(componentModel = "spring")
 public interface AuditLogMapper {
 

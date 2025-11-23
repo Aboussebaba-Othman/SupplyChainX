@@ -8,9 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO pour créer un log d'audit
- */
 @Data
 @Builder
 @NoArgsConstructor

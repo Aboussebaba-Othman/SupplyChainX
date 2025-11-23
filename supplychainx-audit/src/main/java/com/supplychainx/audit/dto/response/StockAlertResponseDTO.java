@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO de réponse pour une alerte de stock
- */
+
 @Data
 @Builder
 @NoArgsConstructor

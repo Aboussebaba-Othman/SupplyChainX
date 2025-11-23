@@ -22,9 +22,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Controller REST pour gérer les alertes de stock
- */
+
 @RestController
 @RequestMapping("/api/audit/alerts")
 @RequiredArgsConstructor

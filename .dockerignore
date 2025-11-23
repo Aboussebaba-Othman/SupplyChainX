@@ -27,10 +27,16 @@ Thumbs.db
 # Maven
 .mvn/wrapper/maven-wrapper.jar
 
-# Docker
+# Docker files
 docker-compose.yml
 Dockerfile
-.dockerignore
+
+# PID & runtime files
+app.pid
+
+# Scripts
+start-app.sh
+
 
 # Documentation
 *.md

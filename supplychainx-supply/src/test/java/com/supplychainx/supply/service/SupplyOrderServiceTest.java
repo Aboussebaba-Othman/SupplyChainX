@@ -135,7 +135,7 @@ class SupplyOrderServiceTest {
         assertEquals("SO001", result.getOrderNumber());
         verify(supplyOrderRepository).existsByOrderNumber("SO001");
         verify(supplierRepository).findById(1L);
-        verify(rawMaterialRepository).findById(1L);
+        verify(rawMaterialRepository, times(2)).findById(1L); // Called twice: in create and validateOrderQuantities
         verify(supplyOrderRepository).save(any(SupplyOrder.class));
     }
 

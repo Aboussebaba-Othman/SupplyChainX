@@ -19,9 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-/**
- * Scheduler pour vérifier automatiquement les stocks et envoyer des alertes
- */
+
 @Component
 @RequiredArgsConstructor
 @Slf4j

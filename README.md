@@ -672,13 +672,10 @@ mvn clean install -DskipTests
 **Othman Aboussebaba**
 - GitHub: [@Aboussebaba-Othman](https://github.com/Aboussebaba-Othman)
 
-## 📜 License
 
-Ce projet est sous licence MIT.
 
-## 🙏 Remerciements
 
-- Spring Boot Team
+- Spring Boot
 - MySQL
 - MapStruct
 - Liquibase

@@ -1,8 +1,6 @@
 package com.supplychainx.audit.enums;
 
-/**
- * Types d'entités auditées dans le système
- */
+
 public enum EntityType {
     // Module Approvisionnement
     SUPPLIER,

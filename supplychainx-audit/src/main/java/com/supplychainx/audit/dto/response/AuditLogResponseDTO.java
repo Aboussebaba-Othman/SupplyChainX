@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/**
- * DTO de réponse pour un log d'audit
- */
+
 @Data
 @Builder
 @NoArgsConstructor

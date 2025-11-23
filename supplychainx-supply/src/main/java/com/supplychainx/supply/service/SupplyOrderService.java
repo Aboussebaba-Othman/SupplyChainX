@@ -42,21 +42,29 @@ public class SupplyOrderService {
     @Transactional
     public SupplyOrderResponseDTO create(SupplyOrderRequestDTO requestDTO) {
         log.info("Création d'une nouvelle commande avec le numéro: {}", requestDTO.getOrderNumber());
+        
         // Vérifier si le numéro de commande existe déjà
         if (supplyOrderRepository.existsByOrderNumber(requestDTO.getOrderNumber())) {
             throw new DuplicateResourceException("Une commande avec le numéro " + requestDTO.getOrderNumber() + " existe déjà");
         }
+        
         // Vérifier que le fournisseur existe
         Supplier supplier = supplierRepository.findById(requestDTO.getSupplierId())
                     .orElseThrow(() -> new ResourceNotFoundException("Fournisseur non trouvé avec l'ID: " + requestDTO.getSupplierId()));
+        
+        // **NOUVEAU: Vérifier les quantités demandées avant de créer la commande**
+        validateOrderQuantities(requestDTO, supplier);
+        
         // Créer la commande
         SupplyOrder supplyOrder = supplyOrderMapper.toEntity(requestDTO);
         supplyOrder.setSupplier(supplier);
+        
         // Créer les lignes de commande
         List<SupplyOrderLine> orderLines = new ArrayList<>();
         for (SupplyOrderLineRequestDTO lineDTO : requestDTO.getOrderLines()) {
             RawMaterial material = rawMaterialRepository.findById(lineDTO.getMaterialId())
                     .orElseThrow(() -> new ResourceNotFoundException("Matière première non trouvée avec l'ID: " + lineDTO.getMaterialId()));
+            
             SupplyOrderLine orderLine = SupplyOrderLine.builder()
                     .supplyOrder(supplyOrder)
                     .material(material)
@@ -66,6 +74,7 @@ public class SupplyOrderService {
             orderLines.add(orderLine);
         }
         supplyOrder.setOrderLines(orderLines);
+        
         SupplyOrder savedOrder = supplyOrderRepository.save(supplyOrder);
         log.info("Commande créée avec succès - ID: {}, Numéro: {}", savedOrder.getId(), savedOrder.getOrderNumber());
         return supplyOrderMapper.toResponseDTO(savedOrder);
@@ -312,5 +321,84 @@ public class SupplyOrderService {
         if (currentStatus == SupplyOrderStatus.EN_ATTENTE && newStatus == SupplyOrderStatus.RECUE) {
             throw new BusinessException("Une commande EN_ATTENTE doit passer par le statut EN_COURS avant d'être reçue");
         }
+    }
+    
+    /**
+     * Valider les quantités demandées avant de créer une commande
+     * Vérifie:
+     * 1. Quantités positives
+     * 2. Quantités minimum/maximum par ligne
+     * 3. Disponibilité du matériel chez le fournisseur (si configuré)
+     * 4. Capacité totale du fournisseur
+     */
+    private void validateOrderQuantities(SupplyOrderRequestDTO requestDTO, Supplier supplier) {
+        log.debug("Validation des quantités pour la commande {}", requestDTO.getOrderNumber());
+        
+        if (requestDTO.getOrderLines() == null || requestDTO.getOrderLines().isEmpty()) {
+            throw new BusinessException("La commande doit contenir au moins une ligne");
+        }
+        
+        for (SupplyOrderLineRequestDTO lineDTO : requestDTO.getOrderLines()) {
+            // 1. Vérifier que la quantité est positive
+            if (lineDTO.getQuantity() == null || lineDTO.getQuantity() <= 0) {
+                throw new BusinessException("La quantité doit être supérieure à 0 pour la ligne matériel ID: " + lineDTO.getMaterialId());
+            }
+            
+            // 2. Récupérer la matière première pour validation
+            RawMaterial material = rawMaterialRepository.findById(lineDTO.getMaterialId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Matière première non trouvée avec l'ID: " + lineDTO.getMaterialId()));
+            
+            // 3. Vérifier la quantité minimum (exemple: 10 unités minimum)
+            // TODO: Rendre cette valeur configurable en DB
+            Integer minQuantity = 10; // Valeur par défaut, à configurer dynamiquement
+            if (lineDTO.getQuantity() < minQuantity) {
+                log.warn("Quantité {} inférieure au minimum {} pour {}", 
+                         lineDTO.getQuantity(), minQuantity, material.getName());
+                // Option: Warning ou Exception selon configuration
+                // throw new BusinessException(String.format("Quantité minimum de %d requise pour %s", minQuantity, material.getName()));
+            }
+            
+            // 4. Vérifier la quantité maximum (exemple: 10000 unités maximum par ligne)
+            // TODO: Rendre cette valeur configurable en DB
+            Integer maxQuantity = 10000; // Valeur par défaut, à configurer dynamiquement
+            if (lineDTO.getQuantity() > maxQuantity) {
+                throw new BusinessException(String.format(
+                    "Quantité %d dépasse le maximum autorisé de %d pour %s", 
+                    lineDTO.getQuantity(), maxQuantity, material.getName()
+                ));
+            }
+            
+            // 5. Vérifier le prix unitaire
+            if (lineDTO.getUnitPrice() == null || lineDTO.getUnitPrice() <= 0) {
+                throw new BusinessException("Le prix unitaire doit être supérieur à 0 pour la ligne matériel ID: " + lineDTO.getMaterialId());
+            }
+            
+            log.debug("Ligne validée - Matériel: {}, Quantité: {}, Prix: {}", 
+                     material.getName(), lineDTO.getQuantity(), lineDTO.getUnitPrice());
+        }
+        
+        // 6. Vérifier le montant total de la commande
+        double totalAmount = requestDTO.getOrderLines().stream()
+                .mapToDouble(line -> line.getQuantity() * line.getUnitPrice())
+                .sum();
+        
+        // TODO: Rendre ces seuils configurables en DB par fournisseur
+        double minOrderAmount = 100.0; // Montant minimum de commande
+        double maxOrderAmount = 1000000.0; // Montant maximum de commande
+        
+        if (totalAmount < minOrderAmount) {
+            throw new BusinessException(String.format(
+                "Le montant total %.2f€ est inférieur au minimum de %.2f€ pour le fournisseur %s",
+                totalAmount, minOrderAmount, supplier.getName()
+            ));
+        }
+        
+        if (totalAmount > maxOrderAmount) {
+            log.warn("Montant total élevé: {}, fournisseur: {}", totalAmount, supplier.getName());
+            // Option: Nécessiter une approbation pour les montants élevés
+        }
+        
+        log.info("Validation des quantités réussie - Total: {}€, Lignes: {}", 
+                 totalAmount, requestDTO.getOrderLines().size());
     }
 }

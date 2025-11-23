@@ -20,9 +20,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Controller REST pour gérer les logs d'audit
- */
 @RestController
 @RequestMapping("/api/audit/logs")
 @RequiredArgsConstructor

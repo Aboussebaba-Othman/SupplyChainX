@@ -5,12 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO pour le rafraîchissement du token
- * 
- * @author SupplyChainX Team
- * @version 1.1.0
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

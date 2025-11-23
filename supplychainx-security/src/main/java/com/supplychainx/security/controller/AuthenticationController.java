@@ -28,13 +28,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final UserService userService;
     private final UserMapper userMapper;
-    
-    /**
-     * Authentifie un utilisateur et retourne un token JWT
-     * 
-     * @param loginRequest les identifiants de connexion
-     * @return la réponse d'authentification avec le token
-     */
+
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDTO> login(
             @Valid @RequestBody LoginRequestDTO loginRequest) {
@@ -46,13 +40,7 @@ public class AuthenticationController {
         
         return ResponseEntity.ok(response);
     }
-    
-    /**
-     * Enregistre un nouvel utilisateur
-     * 
-     * @param userRequest les informations de l'utilisateur à créer
-     * @return la réponse d'authentification avec le token
-     */
+
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponseDTO> register(
             @Valid @RequestBody UserRequestDTO userRequest) {
@@ -64,13 +52,7 @@ public class AuthenticationController {
         
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-    
-    /**
-     * Rafraîchit le token d'accès à partir d'un refresh token
-     * 
-     * @param refreshTokenRequest le refresh token
-     * @return la nouvelle réponse d'authentification avec les nouveaux tokens
-     */
+
     @PostMapping("/refresh-token")
     public ResponseEntity<AuthenticationResponseDTO> refreshToken(
             @Valid @RequestBody RefreshTokenRequestDTO refreshTokenRequest) {
@@ -82,12 +64,7 @@ public class AuthenticationController {
         
         return ResponseEntity.ok(response);
     }
-    
-    /**
-     * Récupère les informations de l'utilisateur connecté
-     * 
-     * @return les informations de l'utilisateur
-     */
+
     @GetMapping("/me")
     public ResponseEntity<UserResponseDTO> getCurrentUser() {
         log.info("GET /api/auth/me - Récupération des informations de l'utilisateur connecté");
@@ -104,13 +81,7 @@ public class AuthenticationController {
         
         return ResponseEntity.ok(userResponse);
     }
-    
-    /**
-     * Vérifie si un nom d'utilisateur est disponible
-     * 
-     * @param username le nom d'utilisateur à vérifier
-     * @return true si le nom d'utilisateur est disponible
-     */
+
     @GetMapping("/check-username")
     public ResponseEntity<Boolean> checkUsernameAvailability(
             @RequestParam String username) {
@@ -122,13 +93,7 @@ public class AuthenticationController {
         
         return ResponseEntity.ok(available);
     }
-    
-    /**
-     * Vérifie si un email est disponible
-     * 
-     * @param email l'email à vérifier
-     * @return true si l'email est disponible
-     */
+
     @GetMapping("/check-email")
     public ResponseEntity<Boolean> checkEmailAvailability(
             @RequestParam String email) {

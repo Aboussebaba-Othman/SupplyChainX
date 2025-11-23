@@ -38,3 +38,5 @@ build/
 .env.*.local
 .backup
 *.log
+
+README-DOCKER

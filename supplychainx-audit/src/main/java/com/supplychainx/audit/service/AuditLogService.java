@@ -18,9 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Service pour gérer les logs d'audit
- */
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -29,9 +27,7 @@ public class AuditLogService {
     private final AuditLogRepository auditLogRepository;
     private final AuditLogMapper auditLogMapper;
 
-    /**
-     * Créer un nouveau log d'audit
-     */
+
     @Transactional
     public AuditLogResponseDTO createAuditLog(AuditLogRequestDTO requestDTO) {
         log.debug("Creating audit log for {} {} by {}",

@@ -7,9 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO for password change requests
- */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

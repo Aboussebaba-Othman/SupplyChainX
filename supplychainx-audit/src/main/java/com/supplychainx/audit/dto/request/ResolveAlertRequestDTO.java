@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
- * DTO pour résoudre une alerte de stock
- */
+
 @Data
 @Builder
 @NoArgsConstructor

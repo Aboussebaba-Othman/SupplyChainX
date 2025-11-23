@@ -14,12 +14,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Point d'entrée pour gérer les erreurs d'authentification JWT
- * 
- * @author SupplyChainX Team
- * @version 1.1.0
- */
 @Slf4j
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
