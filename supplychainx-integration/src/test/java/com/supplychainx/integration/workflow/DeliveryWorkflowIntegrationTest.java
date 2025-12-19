@@ -12,8 +12,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Tests d'intégration E2E pour le workflow complet du module Delivery
- * 
  * Scénario testé:
  * 1. Authentification d'un gestionnaire commercial
  * 2. Création d'un produit (setup avec production manager)

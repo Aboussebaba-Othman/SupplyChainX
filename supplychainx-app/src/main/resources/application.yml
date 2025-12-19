@@ -40,8 +40,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${MAIL_USERNAME:paino49sukuna@gmail.com}
-    password: ${MAIL_PASSWORD:bwue cppd svwj jwdm}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -75,9 +75,9 @@ springdoc:
 
 # Configuration JWT
 jwt:
-  secret: MySecretKeyForJWTTokenGenerationAndValidationSupplyChainX2024
-  expiration: 86400000  # 24 heures en millisecondes
-  refresh-expiration: 604800000  # 7 jours en millisecondes
+  secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}  # 24 heures en millisecondes
+  refresh-expiration: ${JWT_REFRESH_EXPIRATION:604800000}  # 7 jours en millisecondes
   header-string: Authorization
   token-prefix: "Bearer "
 

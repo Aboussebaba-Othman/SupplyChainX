@@ -220,7 +220,6 @@ class DateUtilTest {
         assertEquals(0, days);
     }
 
-    // ========== Format and Parse Round Trip Tests ==========
     
     @Test
     @DisplayName("Should preserve date through format and parse cycle")

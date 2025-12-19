@@ -32,11 +32,15 @@ build/
 ### VS Code ###
 .vscode/
 
-### Environment Variables ###
+### Environment Variables & Secrets ###
 .env
 *.env.local
 .env.*.local
 .backup
 *.log
+application-prod.yml
+application-staging.yml
+**/application-prod.yml
+**/application-staging.yml
 
 README-DOCKER

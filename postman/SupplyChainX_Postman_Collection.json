@@ -1,9 +1,20 @@
 {
   "info": {
-    "_postman_id": "supplychainx-complete-2025",
+    "_postman_id": "supplychainx-api-2025",
     "name": "SupplyChainX - Complete API Collection",
-    "description": "Collection complète organisée par rôle. Commencez par vous authentifier avec le rôle approprié.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    "description": "Collection complète pour tester tous les endpoints de SupplyChainX. Organisée par module : Authentication, Supply, Production, Delivery, Audit.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
   },
   "variable": [
     {
@@ -12,185 +23,64 @@
       "type": "string"
     },
     {
-      "key": "admin_token",
+      "key": "auth_token",
       "value": "",
       "type": "string"
     },
     {
-      "key": "supply_manager_token",
-      "value": "",
+      "key": "supplier_id",
+      "value": "1",
       "type": "string"
     },
     {
-      "key": "purchase_manager_token",
-      "value": "",
+      "key": "raw_material_id",
+      "value": "1",
       "type": "string"
     },
     {
-      "key": "logistics_supervisor_token",
-      "value": "",
+      "key": "supply_order_id",
+      "value": "1",
       "type": "string"
     },
     {
-      "key": "production_manager_token",
-      "value": "",
+      "key": "product_id",
+      "value": "1",
       "type": "string"
     },
     {
-      "key": "planner_token",
-      "value": "",
+      "key": "production_order_id",
+      "value": "1",
       "type": "string"
     },
     {
-      "key": "production_supervisor_token",
-      "value": "",
+      "key": "customer_id",
+      "value": "1",
       "type": "string"
     },
     {
-      "key": "sales_manager_token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "delivery_logistics_token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "delivery_supervisor_token",
-      "value": "",
+      "key": "delivery_order_id",
+      "value": "1",
       "type": "string"
     }
   ],
   "item": [
     {
-      "name": "Authentication",
-      "item": [
-        {
-          "name": "Login - admin",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const r = pm.response.json();",
-                  "  pm.collectionVariables.set('admin_token', r.token);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            }
-          }
-        },
-        {
-          "name": "Login - supply_manager",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const r = pm.response.json();",
-                  "  pm.collectionVariables.set('supply_manager_token', r.token);",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"supply_manager\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
-      "name": "Samples",
-      "item": [
-        {
-          "name": "GET /api/suppliers (sample)",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{supply_manager_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/suppliers",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "suppliers"
-              ]
-            }
-          }
-        }
-      ]
-    },
-    {
       "name": "🔐 Authentication",
+      "description": "Endpoints pour l'authentification et la gestion des utilisateurs",
       "item": [
         {
-          "name": "Login - admin",
+          "name": "Login",
           "event": [
             {
               "listen": "test",
               "script": {
                 "exec": [
                   "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('admin_token', response.token);",
-                  "  console.log('✅ admin_token saved');",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.token) {",
+                  "        pm.collectionVariables.set('auth_token', response.data.token);",
+                  "        console.log('Token saved: ' + response.data.token);",
+                  "    }",
                   "}"
                 ],
                 "type": "text/javascript"
@@ -198,6 +88,9 @@
             }
           ],
           "request": {
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [
               {
@@ -211,431 +104,29 @@
             },
             "url": {
               "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as admin"
-          }
-        },
-        {
-          "name": "Login - supply_manager",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('supply_manager_token', response.token);",
-                  "  console.log('✅ supply_manager_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
             }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"supply_manager\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as supply_manager"
-          }
-        },
-        {
-          "name": "Login - purchase_manager",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('purchase_manager_token', response.token);",
-                  "  console.log('✅ purchase_manager_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"purchase_manager\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as purchase_manager"
-          }
-        },
-        {
-          "name": "Login - logistics_supervisor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('logistics_supervisor_token', response.token);",
-                  "  console.log('✅ logistics_supervisor_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"logistics_supervisor\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as logistics_supervisor"
-          }
-        },
-        {
-          "name": "Login - production_manager",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('production_manager_token', response.token);",
-                  "  console.log('✅ production_manager_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"production_manager\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as production_manager"
-          }
-        },
-        {
-          "name": "Login - planner",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('planner_token', response.token);",
-                  "  console.log('✅ planner_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"planner\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as planner"
-          }
-        },
-        {
-          "name": "Login - production_supervisor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('production_supervisor_token', response.token);",
-                  "  console.log('✅ production_supervisor_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"production_supervisor\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as production_supervisor"
-          }
-        },
-        {
-          "name": "Login - sales_manager",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('sales_manager_token', response.token);",
-                  "  console.log('✅ sales_manager_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"sales_manager\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as sales_manager"
-          }
-        },
-        {
-          "name": "Login - delivery_logistics",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('delivery_logistics_token', response.token);",
-                  "  console.log('✅ delivery_logistics_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"delivery_logistics\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as delivery_logistics"
-          }
-        },
-        {
-          "name": "Login - delivery_supervisor",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "  const response = pm.response.json();",
-                  "  pm.collectionVariables.set('delivery_supervisor_token', response.token);",
-                  "  console.log('✅ delivery_supervisor_token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"delivery_supervisor\",\n  \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login as delivery_supervisor"
-          }
-        },
-        {
-          "name": "Get Current User",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{admin_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/auth/me",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "me"
-              ]
-            },
-            "description": "Get current user info"
           }
         },
         {
           "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.token) {",
+                  "        pm.collectionVariables.set('auth_token', response.data.token);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -646,393 +137,91 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "\"{{admin_token}}\""
+              "raw": "{\n  \"refreshToken\": \"your-refresh-token-here\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/api/auth/refresh-token",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "refresh-token"
-              ]
+              "raw": "{{base_url}}/api/auth/refresh",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
             },
-            "description": "Refresh access token"
+            "url": {
+              "raw": "{{base_url}}/api/auth/change-password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "change-password"]
+            }
           }
         }
-      ],
-      "description": "Auth endpoints"
+      ]
     },
     {
       "name": "📦 Supply Module",
+      "description": "Gestion des fournisseurs, matières premières et commandes d'approvisionnement",
       "item": [
         {
-          "name": "👥 Suppliers",
+          "name": "Suppliers",
           "item": [
             {
-              "name": "GET All Suppliers",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
+              "name": "Create Supplier",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.id) {",
+                      "        pm.collectionVariables.set('supplier_id', response.data.id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
                   }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers"
-                  ]
-                },
-                "description": "SUPPLIER_READ"
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supplier by ID",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{logistics_supervisor_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers",
-                    "1"
-                  ]
                 }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supplier by Code",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers/code/SUP-001",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers",
-                    "code",
-                    "SUP-001"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Suppliers - search",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers/search?name=test",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers",
-                    "search"
-                  ],
-                  "query": [
-                    {
-                      "key": "name",
-                      "value": "test"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Suppliers - top-rated",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers/top-rated",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers",
-                    "top-rated"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "POST Create Supplier",
+              ],
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Content-Type",
                     "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"code\": \"SUP-TEST-001\",\n  \"name\": \"Fournisseur Test\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@fournisseur.com\",\n  \"phone\": \"+33123456789\",\n  \"address\": \"123 Rue Test, Paris, France\",\n  \"rating\": 4.5,\n  \"leadTime\": 7\n}"
+                  "raw": "{\n  \"code\": \"SUP001\",\n  \"name\": \"Fournisseur Premium SA\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@fournisseur-premium.fr\",\n  \"phone\": \"+33 1 23 45 67 89\",\n  \"address\": \"123 Rue du Commerce\",\n  \"rating\": 4.5,\n  \"leadTime\": 7\n}"
                 },
                 "url": {
                   "raw": "{{base_url}}/api/suppliers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers"
-                  ]
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers"]
                 }
-              },
-              "response": []
+              }
             },
             {
-              "name": "PUT Update Supplier",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"code\": \"SUP-001\",\n  \"name\": \"Fournisseur Modifié\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@fournisseur-modifie.com\",\n  \"phone\": \"+33987654321\",\n  \"address\": \"456 Avenue Update, Lyon, France\",\n  \"rating\": 5.0,\n  \"leadTime\": 5\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "DELETE Supplier",
-              "request": {
-                "method": "DELETE",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ],
-          "description": "All supplier endpoints"
-        },
-        {
-          "name": "📦 Raw Materials",
-          "item": [
-            {
-              "name": "GET All Raw Materials",
+              "name": "Get All Suppliers",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
+                "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/raw-materials",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Raw Material by ID",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Raw Material by Code",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/code/RM-001",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "code",
-                    "RM-001"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Raw Materials - category",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/category/metal",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "category",
-                    "metal"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Raw Materials - low-stock",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/low-stock",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "low-stock"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Raw Materials - low-stock paginated",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/low-stock/paginated?page=0&size=10",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "low-stock",
-                    "paginated"
-                  ],
+                  "raw": "{{base_url}}/api/suppliers?page=0&size=20&sort=name,asc",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers"],
                   "query": [
                     {
                       "key": "page",
@@ -1040,873 +229,774 @@
                     },
                     {
                       "key": "size",
-                      "value": "10"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Raw Materials - low-stock count",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/low-stock/count",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "low-stock",
-                    "count"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "PATCH Add Stock",
-              "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/1/add-stock?quantity=50",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "1",
-                    "add-stock"
-                  ],
-                  "query": [
-                    {
-                      "key": "quantity",
-                      "value": "50"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "PATCH Reduce Stock",
-              "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/1/reduce-stock?quantity=10",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "1",
-                    "reduce-stock"
-                  ],
-                  "query": [
-                    {
-                      "key": "quantity",
-                      "value": "10"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Raw Materials by Supplier",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/supplier/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "supplier",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Raw Material can-delete",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{supply_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/1/can-delete",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "1",
-                    "can-delete"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ],
-          "description": "Raw materials endpoints"
-        },
-        {
-          "name": "🧾 Supply Orders",
-          "item": [
-            {
-              "name": "GET All Supply Orders",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supply Order by ID",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supply Order by Number",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/number/PO-001",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "number",
-                    "PO-001"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supply Orders by Status",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/status/PENDING",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "status",
-                    "PENDING"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supply Orders by Supplier",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/supplier/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "supplier",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supply Orders by Supplier + Status",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/supplier/1/status/RECEIVED",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "supplier",
-                    "1",
-                    "status",
-                    "RECEIVED"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supply Orders - date-range",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/date-range?from=2024-01-01&to=2024-12-31",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "date-range"
-                  ],
-                  "query": [
-                    {
-                      "key": "from",
-                      "value": "2024-01-01"
+                      "value": "20"
                     },
                     {
-                      "key": "to",
-                      "value": "2024-12-31"
+                      "key": "sort",
+                      "value": "name,asc"
                     }
                   ]
                 }
-              },
-              "response": []
+              }
             },
             {
-              "name": "GET Delayed Supply Orders",
+              "name": "Get Supplier by ID",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
+                "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/supply-orders/delayed",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "delayed"
-                  ]
+                  "raw": "{{base_url}}/api/suppliers/{{supplier_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers", "{{supplier_id}}"]
                 }
-              },
-              "response": []
+              }
             },
             {
-              "name": "GET Recent Supply Orders",
+              "name": "Get Supplier by Code",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
+                "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/supply-orders/recent",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "recent"
-                  ]
+                  "raw": "{{base_url}}/api/suppliers/code/SUP001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers", "code", "SUP001"]
                 }
-              },
-              "response": []
+              }
             },
             {
-              "name": "GET Supplier Active Count",
+              "name": "Search Suppliers by Name",
               "request": {
                 "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
+                "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/supply-orders/supplier/1/active-count",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "supplier",
-                    "1",
-                    "active-count"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Total Amount by Status",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/total-amount/status/RECEIVED",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "total-amount",
-                    "status",
-                    "RECEIVED"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supply Order can-delete",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/1/can-delete",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "1",
-                    "can-delete"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Supply Order can-modify",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/1/can-modify",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "1",
-                    "can-modify"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "PATCH Update Status (approve/etc)",
-              "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/1/status?status=APPROVED",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "1",
-                    "status"
-                  ],
+                  "raw": "{{base_url}}/api/suppliers/search?name=Premium",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers", "search"],
                   "query": [
                     {
-                      "key": "status",
-                      "value": "APPROVED"
+                      "key": "name",
+                      "value": "Premium"
                     }
                   ]
                 }
-              },
-              "response": []
+              }
             },
             {
-              "name": "PATCH Receive Order",
+              "name": "Get Suppliers by Min Rating",
               "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{logistics_supervisor_token}}"
-                  }
-                ],
+                "method": "GET",
+                "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/supply-orders/1/receive?actualDeliveryDate=2024-11-08",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "1",
-                    "receive"
-                  ],
+                  "raw": "{{base_url}}/api/suppliers/rating/4.0",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers", "rating", "4.0"]
+                }
+              }
+            },
+            {
+              "name": "Get Suppliers by Max Lead Time",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/suppliers/lead-time/10",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers", "lead-time", "10"]
+                }
+              }
+            },
+            {
+              "name": "Get Top Rated Suppliers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/suppliers/top-rated?size=10",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers", "top-rated"],
                   "query": [
                     {
-                      "key": "actualDeliveryDate",
-                      "value": "2024-11-08"
+                      "key": "size",
+                      "value": "10"
                     }
                   ]
                 }
-              },
-              "response": []
+              }
             },
             {
-              "name": "PATCH Cancel Order",
-              "request": {
-                "method": "PATCH",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/1/cancel",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "1",
-                    "cancel"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ],
-          "description": "Supply order endpoints"
-        },
-        {
-          "name": "🔗 Supply Order Lines",
-          "item": [
-            {
-              "name": "POST Add Line to Order",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"materialId\": 1,\n  \"quantity\": 100.0,\n  \"unitPrice\": 25.50\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/supply-order-lines/order/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-order-lines",
-                    "order",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "PUT Update Line",
+              "name": "Update Supplier",
               "request": {
                 "method": "PUT",
                 "header": [
                   {
                     "key": "Content-Type",
                     "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"materialId\": 1,\n  \"quantity\": 150.0,\n  \"unitPrice\": 26.00\n}"
+                  "raw": "{\n  \"code\": \"SUP001\",\n  \"name\": \"Fournisseur Premium SA - Updated\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@fournisseur-premium.fr\",\n  \"phone\": \"+33 1 23 45 67 89\",\n  \"address\": \"456 Avenue du Commerce\",\n  \"rating\": 4.8,\n  \"leadTime\": 5\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/supply-order-lines/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-order-lines",
-                    "1"
-                  ]
+                  "raw": "{{base_url}}/api/suppliers/{{supplier_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers", "{{supplier_id}}"]
                 }
-              },
-              "response": []
+              }
             },
             {
-              "name": "DELETE Line",
+              "name": "Check if Supplier Can Be Deleted",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/suppliers/{{supplier_id}}/can-delete",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers", "{{supplier_id}}", "can-delete"]
+                }
+              }
+            },
+            {
+              "name": "Delete Supplier",
               "request": {
                 "method": "DELETE",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
+                "header": [],
                 "url": {
-                  "raw": "{{base_url}}/api/supply-order-lines/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-order-lines",
-                    "1"
-                  ]
+                  "raw": "{{base_url}}/api/suppliers/{{supplier_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "suppliers", "{{supplier_id}}"]
                 }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Line by ID",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-order-lines/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-order-lines",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Lines by Order",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{purchase_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-order-lines/order/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-order-lines",
-                    "order",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
+              }
             }
-          ],
-          "description": "Supply order lines endpoints"
+          ]
+        },
+        {
+          "name": "Raw Materials",
+          "item": [
+            {
+              "name": "Create Raw Material",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.id) {",
+                      "        pm.collectionVariables.set('raw_material_id', response.data.id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"RM001\",\n  \"name\": \"Acier Inoxydable\",\n  \"stock\": 1000,\n  \"stockMin\": 200,\n  \"unit\": \"kg\",\n  \"unitPrice\": 15.50,\n  \"category\": \"Métaux\",\n  \"supplierIds\": []\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/raw-materials",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "raw-materials"]
+                }
+              }
+            },
+            {
+              "name": "Get All Raw Materials",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/raw-materials?page=0&size=20&sort=name,asc",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "raw-materials"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name,asc"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Raw Material by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/raw-materials/{{raw_material_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "raw-materials", "{{raw_material_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Get Raw Material by Code",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/raw-materials/code/RM001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "raw-materials", "code", "RM001"]
+                }
+              }
+            },
+            {
+              "name": "Search Raw Materials",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/raw-materials/search?keyword=Acier",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "raw-materials", "search"],
+                  "query": [
+                    {
+                      "key": "keyword",
+                      "value": "Acier"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Raw Materials by Category",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/raw-materials/category/Métaux",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "raw-materials", "category", "Métaux"]
+                }
+              }
+            },
+            {
+              "name": "Get Low Stock Raw Materials",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/raw-materials/low-stock",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "raw-materials", "low-stock"]
+                }
+              }
+            },
+            {
+              "name": "Update Raw Material",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"RM001\",\n  \"name\": \"Acier Inoxydable 316L\",\n  \"stock\": 1500,\n  \"stockMin\": 250,\n  \"unit\": \"kg\",\n  \"unitPrice\": 16.00,\n  \"category\": \"Métaux\",\n  \"supplierIds\": []\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/raw-materials/{{raw_material_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "raw-materials", "{{raw_material_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Delete Raw Material",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/raw-materials/{{raw_material_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "raw-materials", "{{raw_material_id}}"]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name": "Supply Orders",
+          "item": [
+            {
+              "name": "Create Supply Order",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.id) {",
+                      "        pm.collectionVariables.set('supply_order_id', response.data.id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orderNumber\": \"SO-2025-001\",\n  \"supplierId\": 1,\n  \"orderDate\": \"2025-01-15\",\n  \"expectedDeliveryDate\": \"2025-01-22\",\n  \"status\": \"EN_ATTENTE\",\n  \"orderLines\": [\n    {\n      \"materialId\": 1,\n      \"quantity\": 500,\n      \"unitPrice\": 15.50\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders"]
+                }
+              }
+            },
+            {
+              "name": "Get All Supply Orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders?page=0&size=20&sort=orderDate,desc",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "orderDate,desc"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Supply Order by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders/{{supply_order_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders", "{{supply_order_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Get Supply Order by Number",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders/number/SO-2025-001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders", "number", "SO-2025-001"]
+                }
+              }
+            },
+            {
+              "name": "Get Supply Orders by Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders/status/EN_ATTENTE",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders", "status", "EN_ATTENTE"]
+                }
+              }
+            },
+            {
+              "name": "Get Supply Orders by Supplier",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders/supplier/{{supplier_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders", "supplier", "{{supplier_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Update Supply Order",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orderNumber\": \"SO-2025-001\",\n  \"supplierId\": 1,\n  \"orderDate\": \"2025-01-15\",\n  \"expectedDeliveryDate\": \"2025-01-20\",\n  \"status\": \"CONFIRMEE\",\n  \"orderLines\": [\n    {\n      \"materialId\": 1,\n      \"quantity\": 600,\n      \"unitPrice\": 15.50\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders/{{supply_order_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders", "{{supply_order_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Receive Supply Order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders/{{supply_order_id}}/receive",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders", "{{supply_order_id}}", "receive"]
+                }
+              }
+            },
+            {
+              "name": "Cancel Supply Order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders/{{supply_order_id}}/cancel",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders", "{{supply_order_id}}", "cancel"]
+                }
+              }
+            },
+            {
+              "name": "Delete Supply Order",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/supply-orders/{{supply_order_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "supply-orders", "{{supply_order_id}}"]
+                }
+              }
+            }
+          ]
         }
-      ],
-      "description": "Supply-related endpoints"
+      ]
     },
     {
       "name": "🏭 Production Module",
+      "description": "Gestion des produits, nomenclatures et ordres de production",
       "item": [
         {
           "name": "Products",
           "item": [
             {
-              "name": "GET All Products",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{production_manager_token}}"
+              "name": "Create Product",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.id) {",
+                      "        pm.collectionVariables.set('product_id', response.data.id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
                   }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/production/products",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "products"
-                  ]
                 }
-              },
-              "response": []
-            },
-            {
-              "name": "GET Product by ID",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{production_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/production/products/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "products",
-                    "1"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "POST Create Product",
+              ],
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Content-Type",
                     "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{production_manager_token}}"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"code\": \"PROD-TEST-001\",\n  \"name\": \"Produit Test\",\n  \"description\": \"Description du produit de test\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 120,\n  \"cost\": 45.50,\n  \"stock\": 100.0,\n  \"stockMin\": 20.0\n}"
+                  "raw": "{\n  \"code\": \"PROD001\",\n  \"name\": \"Table de Bureau Deluxe\",\n  \"description\": \"Table de bureau en acier inoxydable avec plateau en verre\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 120,\n  \"cost\": 250.00,\n  \"stock\": 50,\n  \"stockMin\": 10\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/production/products",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "products"
+                  "raw": "{{base_url}}/api/products",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products"]
+                }
+              }
+            },
+            {
+              "name": "Get All Products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products?page=0&size=20&sort=name,asc",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name,asc"
+                    }
                   ]
                 }
-              },
-              "response": []
+              }
+            },
+            {
+              "name": "Get Product by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products/{{product_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products", "{{product_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Get Product by Code",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products/code/PROD001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products", "code", "PROD001"]
+                }
+              }
+            },
+            {
+              "name": "Search Products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products/search?keyword=Table",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products", "search"],
+                  "query": [
+                    {
+                      "key": "keyword",
+                      "value": "Table"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Products by Category",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products/category/Mobilier",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products", "category", "Mobilier"]
+                }
+              }
+            },
+            {
+              "name": "Get Low Stock Products",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products/low-stock",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products", "low-stock"]
+                }
+              }
+            },
+            {
+              "name": "Update Product",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"PROD001\",\n  \"name\": \"Table de Bureau Deluxe XL\",\n  \"description\": \"Table de bureau en acier inoxydable avec grand plateau en verre\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 150,\n  \"cost\": 280.00,\n  \"stock\": 45,\n  \"stockMin\": 10\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/products/{{product_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products", "{{product_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Delete Product",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/products/{{product_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "products", "{{product_id}}"]
+                }
+              }
             }
           ]
         },
         {
-          "name": "Bills of Material",
+          "name": "Bill of Materials",
           "item": [
             {
-              "name": "GET All BOMs",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{production_manager_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/production/bills-of-material",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "bills-of-material"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "POST Create BOM",
+              "name": "Create BOM",
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Content-Type",
                     "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{production_manager_token}}"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"productId\": 1,\n  \"components\": []\n}"
+                  "raw": "{\n  \"productId\": 1,\n  \"rawMaterialId\": 1,\n  \"quantity\": 25.5,\n  \"unit\": \"kg\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/production/bills-of-material",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "bills-of-material"
+                  "raw": "{{base_url}}/api/bom",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "bom"]
+                }
+              }
+            },
+            {
+              "name": "Get All BOMs",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/bom?page=0&size=20",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "bom"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
                   ]
                 }
-              },
-              "response": []
+              }
+            },
+            {
+              "name": "Get BOM by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/bom/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "bom", "1"]
+                }
+              }
+            },
+            {
+              "name": "Get BOMs by Product",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/bom/product/{{product_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "bom", "product", "{{product_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Get BOMs by Raw Material",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/bom/raw-material/{{raw_material_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "bom", "raw-material", "{{raw_material_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Update BOM",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": 1,\n  \"rawMaterialId\": 1,\n  \"quantity\": 30.0,\n  \"unit\": \"kg\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/bom/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "bom", "1"]
+                }
+              }
+            },
+            {
+              "name": "Delete BOM",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/bom/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "bom", "1"]
+                }
+              }
             }
           ]
         },
@@ -1914,153 +1004,369 @@
           "name": "Production Orders",
           "item": [
             {
-              "name": "GET All Production Orders",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{production_manager_token}}"
+              "name": "Create Production Order",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.data && response.data.id) {",
+                      "        pm.collectionVariables.set('production_order_id', response.data.id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
                   }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/production/production-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "production-orders"
-                  ]
                 }
-              },
-              "response": []
-            },
-            {
-              "name": "POST Create Production Order",
+              ],
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Content-Type",
                     "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{planner_token}}"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"productId\": 1,\n  \"quantity\": 50\n}"
+                  "raw": "{\n  \"orderNumber\": \"PO-2025-001\",\n  \"productId\": 1,\n  \"quantity\": 10,\n  \"status\": \"EN_ATTENTE\",\n  \"startDate\": \"2025-01-20\",\n  \"endDate\": \"2025-01-25\",\n  \"priority\": \"HAUTE\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/production/production-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "production-orders"
-                  ]
+                  "raw": "{{base_url}}/api/production-orders",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders"]
                 }
-              },
-              "response": []
+              }
             },
             {
-              "name": "PUT Start Production Order",
+              "name": "Get All Production Orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders?page=0&size=20&sort=startDate,desc",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "startDate,desc"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Production Order by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders/{{production_order_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "{{production_order_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Get Production Order by Number",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders/number/PO-2025-001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "number", "PO-2025-001"]
+                }
+              }
+            },
+            {
+              "name": "Get Production Orders by Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders/status/EN_ATTENTE",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "status", "EN_ATTENTE"]
+                }
+              }
+            },
+            {
+              "name": "Get Production Orders by Product",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders/product/{{product_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "product", "{{product_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Get Delayed Production Orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders/delayed",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "delayed"]
+                }
+              }
+            },
+            {
+              "name": "Update Production Order",
               "request": {
                 "method": "PUT",
                 "header": [
                   {
-                    "key": "Authorization",
-                    "value": "Bearer {{production_manager_token}}"
+                    "key": "Content-Type",
+                    "value": "application/json"
                   }
                 ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orderNumber\": \"PO-2025-001\",\n  \"productId\": 1,\n  \"quantity\": 15,\n  \"status\": \"EN_PRODUCTION\",\n  \"startDate\": \"2025-01-20\",\n  \"endDate\": \"2025-01-27\",\n  \"priority\": \"HAUTE\"\n}"
+                },
                 "url": {
-                  "raw": "{{base_url}}/api/production/production-orders/1/start",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "production-orders",
-                    "1",
-                    "start"
-                  ]
+                  "raw": "{{base_url}}/api/production-orders/{{production_order_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "{{production_order_id}}"]
                 }
-              },
-              "response": []
+              }
+            },
+            {
+              "name": "Start Production Order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders/{{production_order_id}}/start",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "{{production_order_id}}", "start"]
+                }
+              }
+            },
+            {
+              "name": "Complete Production Order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders/{{production_order_id}}/complete",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "{{production_order_id}}", "complete"]
+                }
+              }
+            },
+            {
+              "name": "Cancel Production Order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders/{{production_order_id}}/cancel",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "{{production_order_id}}", "cancel"]
+                }
+              }
+            },
+            {
+              "name": "Delete Production Order",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/production-orders/{{production_order_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "production-orders", "{{production_order_id}}"]
+                }
+              }
             }
           ]
         }
-      ],
-      "description": "Production endpoints"
+      ]
     },
     {
       "name": "🚚 Delivery Module",
+      "description": "Gestion des clients, commandes et livraisons",
       "item": [
         {
           "name": "Customers",
           "item": [
             {
-              "name": "GET All Customers",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{sales_manager_token}}"
+              "name": "Create Customer",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.id) {",
+                      "        pm.collectionVariables.set('customer_id', response.id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
                   }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/customers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "customers"
-                  ]
                 }
-              },
-              "response": []
-            },
-            {
-              "name": "POST Create Customer",
+              ],
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Content-Type",
                     "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{sales_manager_token}}"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"code\": \"CUST-TEST-001\",\n  \"name\": \"Client Test\",\n  \"contact\": \"Marie Martin\",\n  \"phone\": \"+33123456789\",\n  \"email\": \"client@test.com\",\n  \"address\": \"123 Rue Client, Paris\",\n  \"city\": \"Paris\",\n  \"postalCode\": \"75001\",\n  \"country\": \"France\"\n}"
+                  "raw": "{\n  \"code\": \"CUST001\",\n  \"name\": \"Entreprise Solutions SA\",\n  \"contact\": \"Marie Martin\",\n  \"phone\": \"+33 1 98 76 54 32\",\n  \"email\": \"contact@entreprise-solutions.fr\",\n  \"address\": \"789 Boulevard des Affaires\",\n  \"city\": \"Paris\",\n  \"postalCode\": \"75001\",\n  \"country\": \"France\"\n}"
                 },
                 "url": {
                   "raw": "{{base_url}}/api/delivery/customers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "customers"
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "customers"]
+                }
+              }
+            },
+            {
+              "name": "Get All Customers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/customers?page=0&size=20&sort=name,asc",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "customers"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "name,asc"
+                    }
                   ]
                 }
-              },
-              "response": []
+              }
+            },
+            {
+              "name": "Get Customer by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/customers/{{customer_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "customers", "{{customer_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Get Customer by Code",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/customers/code/CUST001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "customers", "code", "CUST001"]
+                }
+              }
+            },
+            {
+              "name": "Search Customers",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/customers/search?keyword=Entreprise",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "customers", "search"],
+                  "query": [
+                    {
+                      "key": "keyword",
+                      "value": "Entreprise"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Customers by City",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/customers/city/Paris",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "customers", "city", "Paris"]
+                }
+              }
+            },
+            {
+              "name": "Get Customers by Country",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/customers/country/France",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "customers", "country", "France"]
+                }
+              }
+            },
+            {
+              "name": "Update Customer",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"CUST001\",\n  \"name\": \"Entreprise Solutions SA - Updated\",\n  \"contact\": \"Marie Martin\",\n  \"phone\": \"+33 1 98 76 54 32\",\n  \"email\": \"contact@entreprise-solutions.fr\",\n  \"address\": \"789 Boulevard des Affaires - Bureau 200\",\n  \"city\": \"Paris\",\n  \"postalCode\": \"75001\",\n  \"country\": \"France\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/customers/{{customer_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "customers", "{{customer_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Delete Customer",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/customers/{{customer_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "customers", "{{customer_id}}"]
+                }
+              }
             }
           ]
         },
@@ -2068,60 +1374,172 @@
           "name": "Delivery Orders",
           "item": [
             {
-              "name": "GET All Delivery Orders",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{sales_manager_token}}"
+              "name": "Create Delivery Order",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 201) {",
+                      "    const response = pm.response.json();",
+                      "    if (response.id) {",
+                      "        pm.collectionVariables.set('delivery_order_id', response.id);",
+                      "    }",
+                      "}"
+                    ],
+                    "type": "text/javascript"
                   }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "orders"
-                  ]
                 }
-              },
-              "response": []
-            },
-            {
-              "name": "POST Create Delivery Order",
+              ],
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Content-Type",
                     "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{sales_manager_token}}"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"orderNumber\": \"DO-TEST-001\",\n  \"customerId\": 1,\n  \"orderDate\": \"2025-11-08\",\n  \"expectedDeliveryDate\": \"2025-11-15\",\n  \"deliveryAddress\": \"123 Rue Client\",\n  \"deliveryCity\": \"Paris\",\n  \"deliveryPostalCode\": \"75001\",\n  \"status\": \"EN_PREPARATION\",\n  \"orderLines\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 10.0,\n      \"unitPrice\": 99.99\n    }\n  ]\n}"
+                  "raw": "{\n  \"orderNumber\": \"DO-2025-001\",\n  \"customerId\": 1,\n  \"orderDate\": \"2025-01-15\",\n  \"expectedDeliveryDate\": \"2025-01-22\",\n  \"deliveryAddress\": \"789 Boulevard des Affaires\",\n  \"deliveryCity\": \"Paris\",\n  \"deliveryPostalCode\": \"75001\",\n  \"status\": \"EN_ATTENTE\",\n  \"orderLines\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 5,\n      \"unitPrice\": 350.00\n    }\n  ]\n}"
                 },
                 "url": {
                   "raw": "{{base_url}}/api/delivery/orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "orders"
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders"]
+                }
+              }
+            },
+            {
+              "name": "Get All Delivery Orders",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/orders?page=0&size=20&sort=orderDate,desc",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "orderDate,desc"
+                    }
                   ]
                 }
-              },
-              "response": []
+              }
+            },
+            {
+              "name": "Get Delivery Order by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/orders/{{delivery_order_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders", "{{delivery_order_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Get Delivery Order by Number",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/orders/number/DO-2025-001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders", "number", "DO-2025-001"]
+                }
+              }
+            },
+            {
+              "name": "Get Delivery Orders by Customer",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/orders/customer/{{customer_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders", "customer", "{{customer_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Get Delivery Orders by Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/orders/status/EN_ATTENTE",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders", "status", "EN_ATTENTE"]
+                }
+              }
+            },
+            {
+              "name": "Update Delivery Order",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"orderNumber\": \"DO-2025-001\",\n  \"customerId\": 1,\n  \"orderDate\": \"2025-01-15\",\n  \"expectedDeliveryDate\": \"2025-01-20\",\n  \"deliveryAddress\": \"789 Boulevard des Affaires - Bureau 200\",\n  \"deliveryCity\": \"Paris\",\n  \"deliveryPostalCode\": \"75001\",\n  \"status\": \"CONFIRMEE\",\n  \"orderLines\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 7,\n      \"unitPrice\": 350.00\n    }\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/orders/{{delivery_order_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders", "{{delivery_order_id}}"]
+                }
+              }
+            },
+            {
+              "name": "Confirm Delivery Order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/orders/{{delivery_order_id}}/confirm",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders", "{{delivery_order_id}}", "confirm"]
+                }
+              }
+            },
+            {
+              "name": "Cancel Delivery Order",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/orders/{{delivery_order_id}}/cancel",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders", "{{delivery_order_id}}", "cancel"]
+                }
+              }
+            },
+            {
+              "name": "Delete Delivery Order",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/orders/{{delivery_order_id}}",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "orders", "{{delivery_order_id}}"]
+                }
+              }
             }
           ]
         },
@@ -2129,1431 +1547,327 @@
           "name": "Deliveries",
           "item": [
             {
-              "name": "GET All Deliveries",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{delivery_logistics_token}}"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/deliveries",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "deliveries"
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "POST Create Delivery",
+              "name": "Create Delivery",
               "request": {
                 "method": "POST",
                 "header": [
                   {
                     "key": "Content-Type",
                     "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{delivery_logistics_token}}"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"deliveryNumber\": \"DEL-TEST-001\",\n  \"deliveryOrderId\": 1,\n  \"vehicle\": \"Truck 12\",\n  \"driver\": \"Ahmed Benali\",\n  \"driverPhone\": \"+33600111222\",\n  \"status\": \"PLANIFIEE\",\n  \"deliveryDate\": \"2025-11-15\",\n  \"cost\": 25.50,\n  \"trackingNumber\": \"TRK-TEST-001\"\n}"
+                  "raw": "{\n  \"deliveryNumber\": \"DEL-2025-001\",\n  \"deliveryOrderId\": 1,\n  \"vehicle\": \"Camion Mercedes Sprinter\",\n  \"driver\": \"Pierre Dubois\",\n  \"driverPhone\": \"+33 6 12 34 56 78\",\n  \"status\": \"PLANIFIEE\",\n  \"deliveryDate\": \"2025-01-22\",\n  \"cost\": 150.00,\n  \"trackingNumber\": \"TRACK-2025-001\"\n}"
                 },
                 "url": {
                   "raw": "{{base_url}}/api/delivery/deliveries",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "deliveries"
-                  ]
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "deliveries"]
                 }
-              },
-              "response": []
+              }
             },
             {
-              "name": "PUT Update Delivery Status",
+              "name": "Get All Deliveries",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/deliveries?page=0&size=20&sort=deliveryDate,desc",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "deliveries"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "deliveryDate,desc"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Delivery by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/deliveries/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "deliveries", "1"]
+                }
+              }
+            },
+            {
+              "name": "Get Delivery by Number",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/deliveries/number/DEL-2025-001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "deliveries", "number", "DEL-2025-001"]
+                }
+              }
+            },
+            {
+              "name": "Get Delivery by Tracking Number",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/deliveries/tracking/TRACK-2025-001",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "deliveries", "tracking", "TRACK-2025-001"]
+                }
+              }
+            },
+            {
+              "name": "Get Deliveries by Status",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/deliveries/status/PLANIFIEE",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "deliveries", "status", "PLANIFIEE"]
+                }
+              }
+            },
+            {
+              "name": "Update Delivery",
               "request": {
                 "method": "PUT",
                 "header": [
                   {
                     "key": "Content-Type",
                     "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{delivery_logistics_token}}"
                   }
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"status\": \"EN_COURS\"\n}"
+                  "raw": "{\n  \"deliveryNumber\": \"DEL-2025-001\",\n  \"deliveryOrderId\": 1,\n  \"vehicle\": \"Camion Mercedes Sprinter\",\n  \"driver\": \"Pierre Dubois\",\n  \"driverPhone\": \"+33 6 12 34 56 78\",\n  \"status\": \"EN_COURS\",\n  \"deliveryDate\": \"2025-01-22\",\n  \"cost\": 150.00,\n  \"trackingNumber\": \"TRACK-2025-001\"\n}"
                 },
                 "url": {
-                  "raw": "{{base_url}}/api/delivery/deliveries/1/status",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "deliveries",
-                    "1",
-                    "status"
-                  ]
+                  "raw": "{{base_url}}/api/delivery/deliveries/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "deliveries", "1"]
                 }
-              },
-              "response": []
+              }
+            },
+            {
+              "name": "Mark Delivery as Delivered",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/deliveries/1/deliver",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "deliveries", "1", "deliver"]
+                }
+              }
+            },
+            {
+              "name": "Delete Delivery",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/delivery/deliveries/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "delivery", "deliveries", "1"]
+                }
+              }
             }
           ]
-        }
-      ],
-      "description": "Delivery endpoints"
-    },
-    {
-      "name": "🧪 Security Tests",
-      "item": [
-        {
-          "name": "Unauthorized (no token)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/suppliers",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "suppliers"
-              ]
-            }
-          },
-          "description": "Expect 401",
-          "response": []
-        },
-        {
-          "name": "Invalid Token",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer invalid_token_xyz"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/suppliers",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "suppliers"
-              ]
-            }
-          },
-          "description": "Expect 401",
-          "response": []
         }
       ]
     },
     {
-      "name": "🔐 Authentication (French)",
+      "name": "📊 Audit Module",
+      "description": "Gestion des alertes de stock et journaux d'audit",
       "item": [
         {
-          "name": "Login - GESTIONNAIRE_APPROVISIONNEMENT",
-          "event": [
+          "name": "Stock Alerts",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    const response = pm.response.json();",
-                  "    pm.collectionVariables.set('gestionnaire_token', response.token);",
-                  "    console.log('✅ Gestionnaire token saved');",
-                  "}"
+              "name": "Get All Stock Alerts",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/audit/stock-alerts?page=0&size=20",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "stock-alerts"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "20"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Stock Alert by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/audit/stock-alerts/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "stock-alerts", "1"]
+                }
+              }
+            },
+            {
+              "name": "Get Active Stock Alerts",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/audit/stock-alerts/active",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "stock-alerts", "active"]
+                }
+              }
+            },
+            {
+              "name": "Resolve Stock Alert",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
                 ],
-                "type": "text/javascript"
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"resolution\": \"Commande d'approvisionnement créée et confirmée\"\n}"
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/audit/stock-alerts/1/resolve",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "stock-alerts", "1", "resolve"]
+                }
               }
             }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"supply_manager\",\n  \"password\": \"gest123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Full CRUD: Suppliers, Raw Materials"
-          },
-          "response": []
+          ]
         },
         {
-          "name": "Login - RESPONSABLE_ACHATS",
-          "event": [
+          "name": "Audit Logs",
+          "item": [
             {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    const response = pm.response.json();",
-                  "    pm.collectionVariables.set('responsable_achats_token', response.token);",
-                  "    console.log('✅ Responsable Achats token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
+              "name": "Get All Audit Logs",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/audit/logs?page=0&size=50&sort=timestamp,desc",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "logs"],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "50"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "timestamp,desc"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name": "Get Audit Log by ID",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/audit/logs/1",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "logs", "1"]
+                }
+              }
+            },
+            {
+              "name": "Get Audit Logs by User",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/audit/logs/user/admin",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "logs", "user", "admin"]
+                }
+              }
+            },
+            {
+              "name": "Get Audit Logs by Entity Type",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/audit/logs/entity-type/Product",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "logs", "entity-type", "Product"]
+                }
+              }
+            },
+            {
+              "name": "Get Audit Logs by Action",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/audit/logs/action/CREATE",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "logs", "action", "CREATE"]
+                }
+              }
+            },
+            {
+              "name": "Get Audit Logs by Date Range",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/api/audit/logs/date-range?startDate=2025-01-01&endDate=2025-01-31",
+                  "host": ["{{base_url}}"],
+                  "path": ["api", "audit", "logs", "date-range"],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-01-31"
+                    }
+                  ]
+                }
               }
             }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"purchase_manager\",\n  \"password\": \"achats123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "SUPPLIER_READ + Full CRUD Purchase Orders"
-          },
-          "response": []
-        },
-        {
-          "name": "Login - SUPERVISEUR_LOGISTIQUE",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    const response = pm.response.json();",
-                  "    pm.collectionVariables.set('superviseur_logistique_token', response.token);",
-                  "    console.log('✅ Superviseur Logistique token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"superviseur_log\",\n  \"password\": \"super123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Read-only: Suppliers, Purchase Orders, Raw Materials"
-          },
-          "response": []
-        },
-        {
-          "name": "Login - CHEF_PRODUCTION",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "if (pm.response.code === 200) {",
-                  "    const response = pm.response.json();",
-                  "    pm.collectionVariables.set('chef_production_token', response.token);",
-                  "    console.log('✅ Chef Production token saved');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"username\": \"chef_prod\",\n  \"password\": \"prod123\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/login",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Full CRUD: Products, Production Orders, Production Lines"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Current User",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{admin_token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/auth/me",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "me"
-              ]
-            },
-            "description": "Récupère les informations de l'utilisateur connecté (avec ses permissions)"
-          },
-          "response": []
-        },
-        {
-          "name": "Refresh Token",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "\"{{admin_token}}\""
-            },
-            "url": {
-              "raw": "{{base_url}}/api/auth/refresh-token",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "refresh-token"
-              ]
-            },
-            "description": "Rafraîchir le token d'accès"
-          },
-          "response": []
+          ]
         }
-      ],
-      "description": "Endpoints d'authentification pour obtenir les JWT tokens"
-    },
-    {
-      "name": "📦 Supply Chain Module",
-      "item": [
-        {
-          "name": "👥 Suppliers (SUPPLIER_*)",
-          "item": [
-            {
-              "name": "✅ GET All Suppliers (SUPPLIER_READ)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_token}}",
-                    "description": "✅ GESTIONNAIRE_APPROVISIONNEMENT"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers"
-                  ]
-                },
-                "description": "**Permission**: `SUPPLIER_READ`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_APPROVISIONNEMENT\n- ✅ RESPONSABLE_ACHATS\n- ✅ SUPERVISEUR_LOGISTIQUE\n\n**Qui ne peut pas:**\n- ❌ Rôles production/delivery"
-              },
-              "response": []
-            },
-            {
-              "name": "❌ GET All Suppliers (Sans Permission)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_commercial_token}}",
-                    "description": "❌ GESTIONNAIRE_COMMERCIAL (pas de permission supply)"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers"
-                  ]
-                },
-                "description": "**Attendu**: 403 Forbidden\n\nL'utilisateur n'a pas SUPPLIER_READ"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ GET Supplier by ID (SUPPLIER_READ)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{superviseur_logistique_token}}",
-                    "description": "✅ SUPERVISEUR_LOGISTIQUE (read-only)"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers",
-                    "1"
-                  ]
-                },
-                "description": "**Permission**: `SUPPLIER_READ`"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ POST Create Supplier (SUPPLIER_CREATE)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_token}}",
-                    "description": "✅ GESTIONNAIRE_APPROVISIONNEMENT"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"code\": \"SUP-TEST-001\",\n  \"name\": \"Fournisseur Test\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@fournisseur.com\",\n  \"phone\": \"+33123456789\",\n  \"address\": \"123 Rue Test, Paris, France\",\n  \"rating\": 4.5,\n  \"leadTime\": 7\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers"
-                  ]
-                },
-                "description": "**Permission**: `SUPPLIER_CREATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_APPROVISIONNEMENT\n\n**Qui ne peut pas:**\n- ❌ RESPONSABLE_ACHATS (seulement READ)\n- ❌ SUPERVISEUR_LOGISTIQUE (read-only)"
-              },
-              "response": []
-            },
-            {
-              "name": "❌ POST Create Supplier (Sans Permission)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{responsable_achats_token}}",
-                    "description": "❌ RESPONSABLE_ACHATS (pas SUPPLIER_CREATE)"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"code\": \"SUP-TEST-001\",\n  \"name\": \"Fournisseur Test\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@fournisseur.com\",\n  \"phone\": \"+33123456789\",\n  \"address\": \"123 Rue Test, Paris, France\",\n  \"rating\": 4.5,\n  \"leadTime\": 7\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers"
-                  ]
-                },
-                "description": "**Attendu**: 403 Forbidden\n\nRESPONSABLE_ACHATS a seulement SUPPLIER_READ"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ PUT Update Supplier (SUPPLIER_UPDATE)",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_token}}",
-                    "description": "✅ GESTIONNAIRE_APPROVISIONNEMENT"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"code\": \"SUP-001\",\n  \"name\": \"Fournisseur Modifié\",\n  \"contact\": \"Jean Dupont\",\n  \"email\": \"contact@fournisseur-modifie.com\",\n  \"phone\": \"+33987654321\",\n  \"address\": \"456 Avenue Update, Lyon, France\",\n  \"rating\": 5.0,\n  \"leadTime\": 5\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers",
-                    "1"
-                  ]
-                },
-                "description": "**Permission**: `SUPPLIER_UPDATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_APPROVISIONNEMENT\n\n**Qui ne peut pas:**\n- ❌ RESPONSABLE_ACHATS\n- ❌ SUPERVISEUR_LOGISTIQUE"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ DELETE Supplier (SUPPLIER_DELETE)",
-              "request": {
-                "method": "DELETE",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_token}}",
-                    "description": "✅ GESTIONNAIRE_APPROVISIONNEMENT"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/suppliers/1",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "suppliers",
-                    "1"
-                  ]
-                },
-                "description": "**Permission**: `SUPPLIER_DELETE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_APPROVISIONNEMENT\n\n**Qui ne peut pas:**\n- ❌ RESPONSABLE_ACHATS\n- ❌ SUPERVISEUR_LOGISTIQUE"
-              },
-              "response": []
-            }
-          ],
-          "description": "Tests des endpoints Suppliers avec différentes permissions"
-        },
-        {
-          "name": "🛒 Purchase Orders (PURCHASE_ORDER_*)",
-          "item": [
-            {
-              "name": "✅ GET All Purchase Orders (PURCHASE_ORDER_READ)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{responsable_achats_token}}",
-                    "description": "✅ RESPONSABLE_ACHATS"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders"
-                  ]
-                },
-                "description": "**Permission**: `PURCHASE_ORDER_READ`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_APPROVISIONNEMENT (read-only)\n- ✅ RESPONSABLE_ACHATS\n- ✅ SUPERVISEUR_LOGISTIQUE"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ POST Create Purchase Order (PURCHASE_ORDER_CREATE)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{responsable_achats_token}}",
-                    "description": "✅ RESPONSABLE_ACHATS"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"supplierId\": 1,\n  \"orderDate\": \"2024-11-06\",\n  \"items\": [\n    {\n      \"rawMaterialId\": 1,\n      \"quantity\": 100,\n      \"unitPrice\": 25.50\n    }\n  ]\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders"
-                  ]
-                },
-                "description": "**Permission**: `PURCHASE_ORDER_CREATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ RESPONSABLE_ACHATS\n\n**Qui ne peut pas:**\n- ❌ GESTIONNAIRE_APPROVISIONNEMENT (pas cette permission)"
-              },
-              "response": []
-            },
-            {
-              "name": "❌ POST Create Purchase Order (Sans Permission)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_token}}",
-                    "description": "❌ GESTIONNAIRE_APPROVISIONNEMENT (pas PURCHASE_ORDER_CREATE)"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"supplierId\": 1,\n  \"orderDate\": \"2024-11-06\",\n  \"items\": [\n    {\n      \"rawMaterialId\": 1,\n      \"quantity\": 100,\n      \"unitPrice\": 25.50\n    }\n  ]\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders"
-                  ]
-                },
-                "description": "**Attendu**: 403 Forbidden"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ PUT Approve Purchase Order (PURCHASE_ORDER_APPROVE)",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{responsable_achats_token}}",
-                    "description": "✅ RESPONSABLE_ACHATS"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/1/approve",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "1",
-                    "approve"
-                  ]
-                },
-                "description": "**Permission**: `PURCHASE_ORDER_APPROVE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ RESPONSABLE_ACHATS"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ PUT Receive Purchase Order (PURCHASE_ORDER_RECEIVE)",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{superviseur_logistique_token}}",
-                    "description": "✅ SUPERVISEUR_LOGISTIQUE (peut recevoir)"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/supply-orders/1/receive",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "supply-orders",
-                    "1",
-                    "receive"
-                  ]
-                },
-                "description": "**Permission**: `PURCHASE_ORDER_RECEIVE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ RESPONSABLE_ACHATS\n- ✅ SUPERVISEUR_LOGISTIQUE"
-              },
-              "response": []
-            }
-          ],
-          "description": "Tests des endpoints Purchase Orders"
-        },
-        {
-          "name": "📦 Raw Materials (RAW_MATERIAL_*)",
-          "item": [
-            {
-              "name": "✅ GET All Raw Materials (RAW_MATERIAL_READ)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_token}}",
-                    "description": "✅ GESTIONNAIRE_APPROVISIONNEMENT"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials"
-                  ]
-                },
-                "description": "**Permission**: `RAW_MATERIAL_READ`\n\n**Tous les rôles supply peuvent lire**"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ POST Create Raw Material (RAW_MATERIAL_CREATE)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_token}}",
-                    "description": "✅ GESTIONNAIRE_APPROVISIONNEMENT"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"code\": \"RM-TEST-001\",\n  \"name\": \"Acier Inoxydable\",\n  \"category\": \"Metal\",\n  \"unit\": \"kg\",\n  \"unitPrice\": 25.50,\n  \"stock\": 100.0,\n  \"stockMin\": 20.0,\n  \"supplierId\": 1\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials"
-                  ]
-                },
-                "description": "**Permission**: `RAW_MATERIAL_CREATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_APPROVISIONNEMENT"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ PUT Update Stock (RAW_MATERIAL_STOCK_UPDATE)",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{responsable_achats_token}}",
-                    "description": "✅ RESPONSABLE_ACHATS (peut update stock)"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"quantity\": 50,\n  \"operation\": \"ADD\"\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/raw-materials/1/stock",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "raw-materials",
-                    "1",
-                    "stock"
-                  ]
-                },
-                "description": "**Permission**: `RAW_MATERIAL_STOCK_UPDATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_APPROVISIONNEMENT\n- ✅ RESPONSABLE_ACHATS"
-              },
-              "response": []
-            }
-          ],
-          "description": "Tests des endpoints Raw Materials"
-        }
-      ],
-      "description": "Module Supply Chain - Suppliers, Purchase Orders, Raw Materials"
-    },
-    {
-      "name": "🏭 Production Module",
-      "item": [
-        {
-          "name": "📦 Products (PRODUCT_*)",
-          "item": [
-            {
-              "name": "✅ GET All Products (PRODUCT_READ)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{chef_production_token}}",
-                    "description": "✅ CHEF_PRODUCTION"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/production/products",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "products"
-                  ]
-                },
-                "description": "**Permission**: `PRODUCT_READ`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ CHEF_PRODUCTION\n- ✅ PLANIFICATEUR\n- ✅ SUPERVISEUR_PRODUCTION\n- ✅ Rôles delivery (besoin de voir les produits)"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ POST Create Product (PRODUCT_CREATE)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{chef_production_token}}",
-                    "description": "✅ CHEF_PRODUCTION"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"code\": \"PROD-TEST-001\",\n  \"name\": \"Produit Test\",\n  \"description\": \"Description du produit de test\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 120,\n  \"cost\": 45.50,\n  \"stock\": 100.0,\n  \"stockMin\": 20.0\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/production/products",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "products"
-                  ]
-                },
-                "description": "**Permission**: `PRODUCT_CREATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ CHEF_PRODUCTION"
-              },
-              "response": []
-            },
-            {
-              "name": "❌ POST Create Product (Sans Permission)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{planificateur_token}}",
-                    "description": "❌ PLANIFICATEUR (seulement PRODUCT_READ)"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"code\": \"PROD-TEST-001\",\n  \"name\": \"Produit Test\",\n  \"description\": \"Description du produit de test\",\n  \"category\": \"Mobilier\",\n  \"productionTime\": 120,\n  \"cost\": 45.50,\n  \"stock\": 100.0,\n  \"stockMin\": 20.0\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/production/products",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "products"
-                  ]
-                },
-                "description": "**Attendu**: 403 Forbidden"
-              },
-              "response": []
-            }
-          ],
-          "description": "Tests des endpoints Products"
-        },
-        {
-          "name": "🏭 Production Orders (PRODUCTION_ORDER_*)",
-          "item": [
-            {
-              "name": "✅ GET All Production Orders (PRODUCTION_ORDER_READ)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{chef_production_token}}",
-                    "description": "✅ CHEF_PRODUCTION"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/production/production-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "production-orders"
-                  ]
-                },
-                "description": "**Permission**: `PRODUCTION_ORDER_READ`\n\n**Tous les rôles production peuvent lire**"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ POST Create Production Order (PRODUCTION_ORDER_CREATE)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{planificateur_token}}",
-                    "description": "✅ PLANIFICATEUR (peut créer)"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"productId\": 1,\n  \"quantity\": 50,\n  \"plannedStartDate\": \"2024-11-10\",\n  \"plannedEndDate\": \"2024-11-20\"\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/production/production-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "production-orders"
-                  ]
-                },
-                "description": "**Permission**: `PRODUCTION_ORDER_CREATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ CHEF_PRODUCTION\n- ✅ PLANIFICATEUR"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ PUT Start Production Order (PRODUCTION_ORDER_START)",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{chef_production_token}}",
-                    "description": "✅ CHEF_PRODUCTION"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/production/production-orders/1/start",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "production-orders",
-                    "1",
-                    "start"
-                  ]
-                },
-                "description": "**Permission**: `PRODUCTION_ORDER_START`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ CHEF_PRODUCTION\n- ✅ SUPERVISEUR_PRODUCTION"
-              },
-              "response": []
-            },
-            {
-              "name": "❌ PUT Start Production Order (Sans Permission)",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{planificateur_token}}",
-                    "description": "❌ PLANIFICATEUR (pas PRODUCTION_ORDER_START)"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/production/production-orders/1/start",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "production",
-                    "production-orders",
-                    "1",
-                    "start"
-                  ]
-                },
-                "description": "**Attendu**: 403 Forbidden"
-              },
-              "response": []
-            }
-          ],
-          "description": "Tests des endpoints Production Orders"
-        }
-      ],
-      "description": "Module Production - Products, Production Orders, Production Lines"
-    },
-    {
-      "name": "🚚 Delivery Module",
-      "item": [
-        {
-          "name": "👤 Customers (CUSTOMER_*)",
-          "item": [
-            {
-              "name": "✅ GET All Customers (CUSTOMER_READ)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_commercial_token}}",
-                    "description": "✅ GESTIONNAIRE_COMMERCIAL"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/customers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "customers"
-                  ]
-                },
-                "description": "**Permission**: `CUSTOMER_READ`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_COMMERCIAL\n- ✅ RESPONSABLE_LOGISTIQUE\n- ✅ SUPERVISEUR_LIVRAISONS"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ POST Create Customer (CUSTOMER_CREATE)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_commercial_token}}",
-                    "description": "✅ GESTIONNAIRE_COMMERCIAL"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"code\": \"CUST-TEST-001\",\n  \"name\": \"Client Test\",\n  \"contact\": \"Marie Martin\",\n  \"phone\": \"+33123456789\",\n  \"email\": \"client@test.com\",\n  \"address\": \"123 Rue Client, Paris\",\n  \"city\": \"Paris\",\n  \"postalCode\": \"75001\",\n  \"country\": \"France\"\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/customers",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "customers"
-                  ]
-                },
-                "description": "**Permission**: `CUSTOMER_CREATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_COMMERCIAL"
-              },
-              "response": []
-            }
-          ],
-          "description": "Tests des endpoints Customers"
-        },
-        {
-          "name": "📋 Delivery Orders (DELIVERY_ORDER_*)",
-          "item": [
-            {
-              "name": "✅ GET All Delivery Orders (DELIVERY_ORDER_READ)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_commercial_token}}",
-                    "description": "✅ GESTIONNAIRE_COMMERCIAL"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/delivery-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "delivery-orders"
-                  ]
-                },
-                "description": "**Permission**: `DELIVERY_ORDER_READ`\n\n**Tous les rôles delivery peuvent lire**"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ POST Create Delivery Order (DELIVERY_ORDER_CREATE)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{gestionnaire_commercial_token}}",
-                    "description": "✅ GESTIONNAIRE_COMMERCIAL"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"orderNumber\": \"DO-TEST-001\",\n  \"customerId\": 1,\n  \"orderDate\": \"2025-11-08\",\n  \"expectedDeliveryDate\": \"2025-11-15\",\n  \"deliveryAddress\": \"123 Rue Client\",\n  \"deliveryCity\": \"Paris\",\n  \"deliveryPostalCode\": \"75001\",\n  \"status\": \"EN_PREPARATION\",\n  \"orderLines\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 10.0,\n      \"unitPrice\": 99.99\n    }\n  ]\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/delivery-orders",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "delivery-orders"
-                  ]
-                },
-                "description": "**Permission**: `DELIVERY_ORDER_CREATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ GESTIONNAIRE_COMMERCIAL"
-              },
-              "response": []
-            }
-          ],
-          "description": "Tests des endpoints Delivery Orders"
-        },
-        {
-          "name": "🚛 Deliveries (DELIVERY_*)",
-          "item": [
-            {
-              "name": "✅ GET All Deliveries (DELIVERY_READ)",
-              "request": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{responsable_logistique_token}}",
-                    "description": "✅ RESPONSABLE_LOGISTIQUE"
-                  }
-                ],
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/deliveries",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "deliveries"
-                  ]
-                },
-                "description": "**Permission**: `DELIVERY_READ`\n\n**Tous les rôles delivery peuvent lire**"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ POST Create Delivery (DELIVERY_CREATE)",
-              "request": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{responsable_logistique_token}}",
-                    "description": "✅ RESPONSABLE_LOGISTIQUE"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"deliveryNumber\": \"DEL-TEST-001\",\n  \"deliveryOrderId\": 1,\n  \"vehicle\": \"Truck 12\",\n  \"driver\": \"Ahmed Benali\",\n  \"driverPhone\": \"+33600111222\",\n  \"status\": \"PLANIFIEE\",\n  \"deliveryDate\": \"2025-11-15\",\n  \"cost\": 25.50,\n  \"trackingNumber\": \"TRK-TEST-001\"\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/deliveries",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "deliveries"
-                  ]
-                },
-                "description": "**Permission**: `DELIVERY_CREATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ RESPONSABLE_LOGISTIQUE"
-              },
-              "response": []
-            },
-            {
-              "name": "✅ PUT Update Delivery Status (DELIVERY_STATUS_UPDATE)",
-              "request": {
-                "method": "PUT",
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Authorization",
-                    "value": "Bearer {{responsable_logistique_token}}",
-                    "description": "✅ RESPONSABLE_LOGISTIQUE"
-                  }
-                ],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"status\": \"EN_COURS\"\n}"
-                },
-                "url": {
-                  "raw": "{{base_url}}/api/delivery/deliveries/1/status",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "api",
-                    "delivery",
-                    "deliveries",
-                    "1",
-                    "status"
-                  ]
-                },
-                "description": "**Permission**: `DELIVERY_STATUS_UPDATE`\n\n**Qui peut:**\n- ✅ ADMIN\n- ✅ RESPONSABLE_LOGISTIQUE\n- ✅ SUPERVISEUR_LIVRAISONS"
-              },
-              "response": []
-            }
-          ],
-          "description": "Tests des endpoints Deliveries"
-        }
-      ],
-      "description": "Module Delivery - Customers, Delivery Orders, Deliveries"
-    },
-    {
-      "name": "🧪 Tests de Sécurité",
-      "item": [
-        {
-          "name": "❌ Unauthorized (Sans Token)",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/api/suppliers",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "suppliers"
-              ]
-            },
-            "description": "**Attendu**: 401 Unauthorized\n\nAucun token d'authentification fourni"
-          },
-          "response": []
-        },
-        {
-          "name": "❌ Invalid Token",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer invalid_token_xyz"
-              }
-            ],
-            "url": {
-              "raw": "{{base_url}}/api/suppliers",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "suppliers"
-              ]
-            },
-            "description": "**Attendu**: 401 Unauthorized\n\nToken JWT invalide"
-          },
-          "response": []
-        },
-        {
-          "name": "❌ Forbidden (Wrong Permission)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{superviseur_logistique_token}}",
-                "description": "❌ SUPERVISEUR_LOGISTIQUE (read-only)"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Fournisseur Test\",\n  \"email\": \"test@test.com\",\n  \"phone\": \"+33123456789\",\n  \"address\": \"123 Rue Test\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/suppliers",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "suppliers"
-              ]
-            },
-            "description": "**Attendu**: 403 Forbidden\n\nUtilisateur authentifié mais sans la permission SUPPLIER_CREATE"
-          },
-          "response": []
-        },
-        {
-          "name": "❌ Cross-Module Access (Production -> Supply)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{chef_production_token}}",
-                "description": "❌ CHEF_PRODUCTION (module production)"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Fournisseur Test\",\n  \"email\": \"test@test.com\",\n  \"phone\": \"+33123456789\",\n  \"address\": \"123 Rue Test\"\n}"
-            },
-            "url": {
-              "raw": "{{base_url}}/api/suppliers",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "api",
-                "suppliers"
-              ]
-            },
-            "description": "**Attendu**: 403 Forbidden\n\nUtilisateur du module production tente d'accéder au module supply"
-          },
-          "response": []
-        }
-      ],
-      "description": "Tests des cas d'erreur de sécurité"
+      ]
     }
-  ],
-  "description": "Authentication et tests en français"
+  ]
 }

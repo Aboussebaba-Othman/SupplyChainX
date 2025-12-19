@@ -52,11 +52,13 @@ public class Product extends BaseEntity {
     @DecimalMin(value = "0.0", message = "Le stock minimum ne peut pas être négatif")
     private Double stockMin;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // Cascade PERSIST et MERGE seulement - évite la suppression accidentelle des données historiques
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Builder.Default
     private List<BillOfMaterial> billsOfMaterial = new ArrayList<>();
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // Cascade PERSIST et MERGE seulement - évite la suppression accidentelle des ordres de production
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     @Builder.Default
     private List<ProductionOrder> productionOrders = new ArrayList<>();
 

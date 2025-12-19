@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.supplychainx.security.util.PasswordValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,9 +56,12 @@ public class UserService implements UserDetailsService {
             throw new DuplicateResourceException("Email already exists: " + dto.getEmail());
         }
 
+        // Valider la force du mot de passe
+        PasswordValidator.validate(dto.getPassword());
+
         // Map DTO to entity
         User user = userMapper.toEntity(dto);
-        
+
         // Encrypt password
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         
@@ -167,6 +171,9 @@ public class UserService implements UserDetailsService {
         if (!dto.getNewPassword().equals(dto.getConfirmPassword())) {
             throw new BusinessException("New password and confirmation do not match");
         }
+
+        // Valider la force du nouveau mot de passe
+        com.supplychainx.security.util.PasswordValidator.validate(dto.getNewPassword());
 
         // Update password
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
