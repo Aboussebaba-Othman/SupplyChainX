@@ -12,6 +12,7 @@ import com.supplychainx.security.mapper.UserMapper;
 import com.supplychainx.security.service.AuthenticationService;
 import com.supplychainx.security.service.JwtTokenService;
 import com.supplychainx.security.service.RateLimitingService;
+import com.supplychainx.security.service.RefreshTokenService;
 import com.supplychainx.security.service.TokenBlacklistService;
 import com.supplychainx.security.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ public class AuthenticationController {
     private final RateLimitingService rateLimitingService;
     private final JwtTokenService jwtTokenService;
     private final TokenBlacklistService tokenBlacklistService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDTO> login(
@@ -124,26 +126,36 @@ public class AuthenticationController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest request) {
+    public ResponseEntity<Void> logout(
+            HttpServletRequest request,
+            @RequestParam(required = false) String refreshToken) {
         log.info("POST /api/auth/logout - Tentative de déconnexion");
 
-        // Extract token from Authorization header
+        // Extract access token from Authorization header
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken == null || !bearerToken.startsWith("Bearer ")) {
             log.warn("POST /api/auth/logout - Token manquant ou invalide");
             return ResponseEntity.badRequest().build();
         }
 
-        String token = jwtTokenService.extractTokenFromBearer(bearerToken);
+        String accessToken = jwtTokenService.extractTokenFromBearer(bearerToken);
 
-        // Add token to blacklist with remaining expiration duration
+        // Revoke access token and refresh token
         try {
-            var remainingDuration = jwtTokenService.getRemainingExpiration(token);
-            tokenBlacklistService.blacklist(token, remainingDuration);
-            log.info("POST /api/auth/logout - Token révoqué avec succès");
+            // Blacklist access token
+            var remainingDuration = jwtTokenService.getRemainingExpiration(accessToken);
+            tokenBlacklistService.blacklist(accessToken, remainingDuration);
+
+            // Revoke refresh token in database if provided
+            if (refreshToken != null && !refreshToken.isBlank()) {
+                refreshTokenService.revokeToken(refreshToken);
+                log.info("POST /api/auth/logout - Refresh token révoqué");
+            }
+
+            log.info("POST /api/auth/logout - Déconnexion réussie");
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            log.error("POST /api/auth/logout - Erreur lors de la révocation du token: {}", e.getMessage());
+            log.error("POST /api/auth/logout - Erreur lors de la déconnexion: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

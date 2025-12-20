@@ -8,6 +8,7 @@
     <!-- Module Security -->
     <include file="db/changelog/security/01-create-users-table.xml"/>
     <include file="db/changelog/security/02-insert-test-users.xml"/>
+    <include file="db/changelog/security/04-create-refresh-tokens-table.xml"/>
 
     <!-- Module Supply -->
     <include file="db/changelog/supply/01-create-suppliers-table.xml"/>

@@ -4,6 +4,7 @@ import com.supplychainx.security.dto.request.LoginRequestDTO;
 import com.supplychainx.security.dto.request.UserRequestDTO;
 import com.supplychainx.security.dto.response.AuthenticationResponseDTO;
 import com.supplychainx.security.dto.response.UserResponseDTO;
+import com.supplychainx.security.entity.RefreshToken;
 import com.supplychainx.security.entity.User;
 import com.supplychainx.security.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,11 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-    
+
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtTokenService jwtTokenService;
     private final UserMapper userMapper;
+    private final RefreshTokenService refreshTokenService;
     
 
     @Transactional
@@ -44,22 +46,24 @@ public class AuthenticationService {
             // Récupérer l'utilisateur authentifié
             User user = (User) authentication.getPrincipal();
             
-            // Mettre à jour la date de dernière connexion
+            // Update last login date
             userService.updateLastLogin(user.getUsername());
-            
-            // Générer les tokens
+
+            // Generate access token
             String accessToken = jwtTokenService.generateToken(user);
-            String refreshToken = jwtTokenService.generateRefreshToken(user);
-            
+
+            // Create and save refresh token in database
+            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
             log.info("Connexion réussie pour l'utilisateur: {}", user.getUsername());
-            
-            // Construire la réponse
+
+            // Build response
             UserResponseDTO userResponse = userMapper.toResponseDTO(user);
-            
+
             return AuthenticationResponseDTO.builder()
                     .token(accessToken)
-                    .refreshToken(refreshToken)
-                    .expiresIn(86400000L) // 24 heures
+                    .refreshToken(refreshToken.getToken())
+                    .expiresIn(86400000L) // 24 hours
                     .user(userResponse)
                     .build();
                     
@@ -77,78 +81,76 @@ public class AuthenticationService {
         }
     }
     
-    /**
-     * Enregistre un nouvel utilisateur
-     * 
-     * @param userRequest les informations de l'utilisateur à créer
-     * @return la réponse d'authentification avec les tokens
-     */
+    // Register new user and generate tokens
     @Transactional
     public AuthenticationResponseDTO register(UserRequestDTO userRequest) {
         log.info("Tentative d'inscription pour l'utilisateur: {}", userRequest.getUsername());
-        
-        // Créer l'utilisateur
+
+        // Create user
         UserResponseDTO createdUser = userService.createUser(userRequest);
-        
-        // Récupérer l'entité User pour générer les tokens
+
+        // Get User entity to generate tokens
         User user = userService.getUserEntityByUsername(createdUser.getUsername());
-        
-        // Générer les tokens
+
+        // Generate access token
         String accessToken = jwtTokenService.generateToken(user);
-        String refreshToken = jwtTokenService.generateRefreshToken(user);
-        
+
+        // Create and save refresh token in database
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
         log.info("Inscription réussie pour l'utilisateur: {}", user.getUsername());
-        
-        // Construire la réponse
+
+        // Build response
         return AuthenticationResponseDTO.builder()
                 .token(accessToken)
-                .refreshToken(refreshToken)
-                .expiresIn(86400000L) // 24 heures
+                .refreshToken(refreshToken.getToken())
+                .expiresIn(86400000L) // 24 hours
                 .user(createdUser)
                 .build();
     }
     
 
-    @Transactional(readOnly = true)
-    public AuthenticationResponseDTO refreshToken(String refreshToken) {
+    // Refresh access token using refresh token (with rotation)
+    @Transactional
+    public AuthenticationResponseDTO refreshToken(String refreshTokenString) {
         log.debug("Tentative de rafraîchissement du token");
-        
-        // Valider le refresh token
-        if (!jwtTokenService.validateToken(refreshToken)) {
-            log.warn("Refresh token invalide");
-            throw new BadCredentialsException("Refresh token invalide ou expiré");
-        }
-        
-        // Extraire le nom d'utilisateur du refresh token
-        String username = jwtTokenService.extractUsername(refreshToken);
-        
-        // Récupérer l'utilisateur
-        User user = userService.getUserEntityByUsername(username);
-        
-        // Vérifier que le compte est actif
+
+        // Find and verify refresh token from database
+        RefreshToken refreshToken = refreshTokenService.findByToken(refreshTokenString);
+        refreshToken = refreshTokenService.verifyExpiration(refreshToken);
+
+        // Get user from refresh token
+        User user = refreshToken.getUser();
+
+        // Verify account is active
         if (!user.isEnabled()) {
-            log.warn("Tentative de rafraîchissement du token pour un compte désactivé: {}", username);
+            log.warn("Tentative de rafraîchissement du token pour un compte désactivé: {}", user.getUsername());
             throw new BadCredentialsException("Compte utilisateur désactivé");
         }
-        
+
         if (!user.isAccountNonLocked()) {
-            log.warn("Tentative de rafraîchissement du token pour un compte verrouillé: {}", username);
+            log.warn("Tentative de rafraîchissement du token pour un compte verrouillé: {}", user.getUsername());
             throw new BadCredentialsException("Compte utilisateur verrouillé");
         }
-        
-        // Générer de nouveaux tokens
+
+        // Update last used timestamp
+        refreshTokenService.updateLastUsed(refreshToken);
+
+        // Rotate refresh token (revoke old, create new)
+        RefreshToken newRefreshToken = refreshTokenService.rotateRefreshToken(refreshToken);
+
+        // Generate new access token
         String newAccessToken = jwtTokenService.generateToken(user);
-        String newRefreshToken = jwtTokenService.generateRefreshToken(user);
-        
-        log.info("Token rafraîchi avec succès pour l'utilisateur: {}", username);
-        
-        // Construire la réponse
+
+        log.info("Token rafraîchi avec succès pour l'utilisateur: {}", user.getUsername());
+
+        // Build response
         UserResponseDTO userResponse = userMapper.toResponseDTO(user);
-        
+
         return AuthenticationResponseDTO.builder()
                 .token(newAccessToken)
-                .refreshToken(newRefreshToken)
-                .expiresIn(86400000L) // 24 heures
+                .refreshToken(newRefreshToken.getToken())
+                .expiresIn(86400000L) // 24 hours
                 .user(userResponse)
                 .build();
     }

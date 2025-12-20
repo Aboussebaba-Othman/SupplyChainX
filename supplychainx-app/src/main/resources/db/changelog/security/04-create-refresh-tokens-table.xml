@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="04-create-refresh-tokens-table" author="claude">
+        <comment>Create refresh_tokens table for JWT refresh token storage</comment>
+
+        <createTable tableName="refresh_tokens">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="token" type="VARCHAR(500)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="expiry_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="revoked" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_used_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <!-- Add foreign key constraint to users table -->
+        <addForeignKeyConstraint
+                baseTableName="refresh_tokens"
+                baseColumnNames="user_id"
+                constraintName="fk_refresh_tokens_user"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <!-- Add index on user_id for better query performance -->
+        <createIndex indexName="idx_refresh_tokens_user_id" tableName="refresh_tokens">
+            <column name="user_id"/>
+        </createIndex>
+
+        <!-- Add index on token for faster lookups -->
+        <createIndex indexName="idx_refresh_tokens_token" tableName="refresh_tokens" unique="true">
+            <column name="token"/>
+        </createIndex>
+
+        <!-- Add index on expiry_date for cleanup jobs -->
+        <createIndex indexName="idx_refresh_tokens_expiry" tableName="refresh_tokens">
+            <column name="expiry_date"/>
+        </createIndex>
+
+        <!-- Add composite index for finding valid tokens -->
+        <createIndex indexName="idx_refresh_tokens_user_valid" tableName="refresh_tokens">
+            <column name="user_id"/>
+            <column name="revoked"/>
+            <column name="expiry_date"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
