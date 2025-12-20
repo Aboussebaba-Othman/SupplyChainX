@@ -44,3 +44,6 @@ application-staging.yml
 **/application-staging.yml
 
 README-DOCKER
+PHASE3-OPTIMIZATIONS.md
+CLEAN-CODE-PHASE1-IMPLEMENTATION.md
+CLEAN-CODE-IMPROVEMENTS.md

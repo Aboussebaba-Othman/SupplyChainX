@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -164,5 +165,19 @@ public class JwtTokenService {
             return bearerToken.substring(jwtProperties.getTokenPrefix().length());
         }
         return null;
+    }
+
+    // Calculate remaining time before token expiration (for blacklist duration)
+    public Duration getRemainingExpiration(String token) {
+        Date expiration = extractExpiration(token);
+        Date now = new Date();
+        long millisRemaining = expiration.getTime() - now.getTime();
+
+        // Return minimum duration if already expired
+        if (millisRemaining <= 0) {
+            return Duration.ofMinutes(1);
+        }
+
+        return Duration.ofMillis(millisRemaining);
     }
 }

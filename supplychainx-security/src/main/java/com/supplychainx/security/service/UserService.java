@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,7 @@ public class UserService implements UserDetailsService {
 
 
     @Override
+    @Cacheable(value = "users", key = "#username")
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("Loading user by username: {}", username);
         return userRepository.findByUsername(username)
@@ -125,6 +128,7 @@ public class UserService implements UserDetailsService {
     }
 
 
+    @CacheEvict(value = "users", key = "#result.username")
     public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
         log.info("Updating user ID: {}", id);
 

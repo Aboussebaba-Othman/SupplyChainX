@@ -1,26 +1,20 @@
 package com.supplychainx.security.util;
 
 import com.supplychainx.common.exception.ValidationException;
+import com.supplychainx.security.constants.SecurityConstants;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Utilitaire pour valider la force des mots de passe
- */
+// Password strength validator using SecurityConstants
 @UtilityClass
 public class PasswordValidator {
 
-    private static final int MIN_LENGTH = 8;
-    private static final int MAX_LENGTH = 128;
+    private static final int MIN_LENGTH = SecurityConstants.PASSWORD_MIN_LENGTH;
+    private static final int MAX_LENGTH = SecurityConstants.PASSWORD_MAX_LENGTH;
 
-    /**
-     * Valide un mot de passe selon les règles de sécurité
-     * 
-     * @param password Le mot de passe à valider
-     * @throws ValidationException si le mot de passe ne respecte pas les règles
-     */
+    // Validate password against security rules
     public static void validate(String password) {
         List<String> errors = new ArrayList<>();
 
@@ -28,37 +22,37 @@ public class PasswordValidator {
             throw new ValidationException("Le mot de passe est obligatoire");
         }
 
-        // Longueur minimum
+        // Check minimum length
         if (password.length() < MIN_LENGTH) {
             errors.add("Le mot de passe doit contenir au moins " + MIN_LENGTH + " caractères");
         }
 
-        // Longueur maximum (pour éviter les attaques DoS)
+        // Check maximum length (prevents DoS attacks)
         if (password.length() > MAX_LENGTH) {
             errors.add("Le mot de passe ne peut pas dépasser " + MAX_LENGTH + " caractères");
         }
 
-        // Au moins une lettre majuscule
+        // Require at least one uppercase letter
         if (!password.matches(".*[A-Z].*")) {
             errors.add("Le mot de passe doit contenir au moins une lettre majuscule");
         }
 
-        // Au moins une lettre minuscule
+        // Require at least one lowercase letter
         if (!password.matches(".*[a-z].*")) {
             errors.add("Le mot de passe doit contenir au moins une lettre minuscule");
         }
 
-        // Au moins un chiffre
+        // Require at least one digit
         if (!password.matches(".*[0-9].*")) {
             errors.add("Le mot de passe doit contenir au moins un chiffre");
         }
 
-        // Au moins un caractère spécial
+        // Require at least one special character
         if (!password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*")) {
             errors.add("Le mot de passe doit contenir au moins un caractère spécial");
         }
 
-        // Mots de passe courants interdits
+        // Reject common passwords
         if (isCommonPassword(password)) {
             errors.add("Ce mot de passe est trop commun");
         }
@@ -68,6 +62,7 @@ public class PasswordValidator {
         }
     }
 
+    // Check if password contains common weak patterns
     private static boolean isCommonPassword(String password) {
         String lowerPassword = password.toLowerCase();
         String[] commonPasswords = {
@@ -82,6 +77,7 @@ public class PasswordValidator {
         return false;
     }
 
+    // Check if password is strong (returns boolean)
     public static boolean isStrong(String password) {
         try {
             validate(password);

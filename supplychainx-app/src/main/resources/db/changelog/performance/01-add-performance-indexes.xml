@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="add-performance-indexes-supply-orders" author="claude-optimization">
+        <comment>Ajout d'index pour améliorer les performances des requêtes sur supply_orders</comment>
+        
+        <createIndex indexName="idx_supply_orders_order_number" tableName="supply_orders" unique="true">
+            <column name="order_number"/>
+        </createIndex>
+        
+        <createIndex indexName="idx_supply_orders_status" tableName="supply_orders">
+            <column name="status"/>
+        </createIndex>
+        
+        <createIndex indexName="idx_supply_orders_supplier_id" tableName="supply_orders">
+            <column name="supplier_id"/>
+        </createIndex>
+        
+        <createIndex indexName="idx_supply_orders_order_date" tableName="supply_orders">
+            <column name="order_date"/>
+        </createIndex>
+        
+        <createIndex indexName="idx_supply_orders_status_delivery_date" tableName="supply_orders">
+            <column name="status"/>
+            <column name="expected_delivery_date"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add-performance-indexes-products" author="claude-optimization">
+        <comment>Ajout d'index pour améliorer les performances sur products</comment>
+        
+        <createIndex indexName="idx_products_code" tableName="products" unique="true">
+            <column name="code"/>
+        </createIndex>
+        
+        <createIndex indexName="idx_products_category" tableName="products">
+            <column name="category"/>
+        </createIndex>
+        
+        <createIndex indexName="idx_products_stock" tableName="products">
+            <column name="stock"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add-performance-indexes-users" author="claude-optimization">
+        <comment>Ajout d'index pour authentification rapide</comment>
+        
+        <createIndex indexName="idx_users_username" tableName="users" unique="true">
+            <column name="username"/>
+        </createIndex>
+        
+        <createIndex indexName="idx_users_email" tableName="users" unique="true">
+            <column name="email"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

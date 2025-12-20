@@ -1,8 +1,10 @@
 package com.supplychainx.security.config;
 
+import com.supplychainx.security.constants.SecurityConstants;
 import com.supplychainx.security.filter.JwtAuthenticationFilter;
 import com.supplychainx.security.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -36,30 +38,33 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final PasswordEncoder passwordEncoder;
+
+    @Value("${cors.allowed-origins}")
+    private String[] allowedOrigins;
     
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Désactiver CSRF car nous utilisons JWT (stateless)
+                // Disable CSRF (using JWT stateless authentication)
                 .csrf(AbstractHttpConfigurer::disable)
-                
-                // Configuration CORS
+
+                // Configure CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                
-                // Gestion des exceptions d'authentification
+
+                // Handle authentication exceptions
                 .exceptionHandling(exception -> exception
                         .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
-                
-                // Politique de gestion de session: STATELESS (pas de session)
+
+                // Session management: STATELESS (no server sessions)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                
-                // Configuration des autorisations
+
+                // Configure authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        // Endpoints publics (pas d'authentification requise)
+                        // Public endpoints (no authentication required)
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/test/**",
@@ -69,22 +74,22 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/actuator/health"
                         ).permitAll()
-                        
-                        // Permettre OPTIONS pour CORS
+
+                        // Allow OPTIONS for CORS preflight
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        
-                        // Tous les autres endpoints nécessitent une authentification
+
+                        // All other endpoints require authentication
                         .anyRequest().authenticated()
                 )
-                
-                // Ajouter le filtre JWT avant le filtre d'authentification standard
+
+                // Add JWT filter before standard authentication filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                
-                // Configuration pour H2 console (développement uniquement)
+
+                // H2 console configuration (development only)
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.sameOrigin())
                 );
-        
+
         return http.build();
     }
     
@@ -108,21 +113,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        // Origines autorisées (à configurer selon l'environnement)
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000",
-                "http://localhost:4200",
-                "http://localhost:8080",
-                "http://localhost:8081"
-        ));
-        
-        // Méthodes HTTP autorisées
+
+        // Allowed origins (externalized via application.yml)
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
+
+        // Allowed HTTP methods
         configuration.setAllowedMethods(Arrays.asList(
                 "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"
         ));
-        
-        // Headers autorisés
+
+        // Allowed headers
         configuration.setAllowedHeaders(Arrays.asList(
                 "Authorization",
                 "Content-Type",
@@ -130,19 +130,19 @@ public class SecurityConfig {
                 "Origin",
                 "X-Requested-With"
         ));
-        
-        // Headers exposés
+
+        // Exposed headers
         configuration.setExposedHeaders(List.of("Authorization"));
-        
-        // Permettre les credentials (cookies, authorization headers)
+
+        // Allow credentials (cookies, authorization headers)
         configuration.setAllowCredentials(true);
-        
-        // Durée de cache de la configuration CORS (1 heure)
-        configuration.setMaxAge(3600L);
-        
+
+        // CORS configuration cache duration
+        configuration.setMaxAge(SecurityConstants.CORS_MAX_AGE_SECONDS);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        
+
         return source;
     }
 }

@@ -31,4 +31,7 @@
     <include file="db/changelog/audit/001-create-audit-logs-table.xml"/>
     <include file="db/changelog/audit/002-create-stock-alerts-table.xml"/>
 
+    <!-- Performance Optimizations -->
+    <include file="db/changelog/performance/01-add-performance-indexes.xml"/>
+
 </databaseChangeLog>
