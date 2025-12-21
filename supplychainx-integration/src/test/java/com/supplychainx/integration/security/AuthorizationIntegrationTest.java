@@ -12,9 +12,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * Tests d'intégration pour l'autorisation basée sur les rôles et permissions
- */
+// Tests d'intégration pour l'autorisation basée sur les rôles et permissions
 @DisplayName("Integration Tests - Authorization & Permissions")
 class AuthorizationIntegrationTest extends IntegrationTest {
 

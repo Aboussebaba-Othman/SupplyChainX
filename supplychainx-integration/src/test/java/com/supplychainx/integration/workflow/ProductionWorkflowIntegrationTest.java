@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Tests d'intégration E2E pour le workflow complet du module Production
- * 
  * Scénario testé:
  * 1. Authentification d'un chef de production
  * 2. Création de matières premières (setup)
