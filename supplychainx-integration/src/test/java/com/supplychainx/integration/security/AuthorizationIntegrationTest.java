@@ -2,7 +2,7 @@ package com.supplychainx.integration.security;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.supplychainx.integration.config.IntegrationTest;
+import com.supplychainx.integration.config.BaseSecurityIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @DisplayName("Integration Tests - Role-Based Access Control (RBAC)")
-class AuthorizationIntegrationTest extends IntegrationTest {
+class AuthorizationIntegrationTest extends BaseSecurityIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;

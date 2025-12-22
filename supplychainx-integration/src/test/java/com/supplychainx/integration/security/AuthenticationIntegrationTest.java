@@ -1,9 +1,6 @@
 package com.supplychainx.integration.security;
 
-import com.supplychainx.integration.config.IntegrationTest;
-import com.supplychainx.security.repository.RefreshTokenRepository;
-import com.supplychainx.security.repository.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.supplychainx.integration.config.BaseSecurityIntegrationTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @DisplayName("Integration Tests - Authentication & Registration")
-class AuthenticationIntegrationTest extends IntegrationTest {
+class AuthenticationIntegrationTest extends BaseSecurityIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @BeforeEach
-    void setUp() {
-        // Clean up refresh tokens before each test to ensure isolation
-        refreshTokenRepository.deleteAll();
-    }
 
     // ==================== LOGIN TESTS ====================
 
@@ -227,7 +212,7 @@ class AuthenticationIntegrationTest extends IntegrationTest {
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registerRequest))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.token").exists())
                 .andExpect(jsonPath("$.refreshToken").exists())
                 .andExpect(jsonPath("$.type").value("Bearer"))
@@ -290,11 +275,11 @@ class AuthenticationIntegrationTest extends IntegrationTest {
 
         long userCountBefore = userRepository.count();
 
-        // When & Then
+        // When & Then - Should return 409 Conflict since admin already exists
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registerRequest))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").exists());
 
         // Verify user was not created
@@ -362,7 +347,7 @@ class AuthenticationIntegrationTest extends IntegrationTest {
         MvcResult registerResult = mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(registerRequest))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andReturn();
 
         // When - Login with the same credentials

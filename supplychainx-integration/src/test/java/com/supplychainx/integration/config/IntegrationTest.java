@@ -10,24 +10,25 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.utility.DockerImageName;
 
-/**
- * Classe de base abstraite pour les tests d'intégration avec TestContainers
- * Utilise un conteneur MySQL singleton partagé entre tous les tests
- */
+
+//Classe de base abstraite pour les tests d'intégration avec TestContainers
+ // Utilise un conteneur MySQL singleton partagé entre tous les tests
+ 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ContextConfiguration(classes = SupplyChainXApplication.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public abstract class IntegrationTest {
-    
+
     private static final MySQLContainer<?> MYSQL_CONTAINER;
-    
+
     static {
         MYSQL_CONTAINER = new MySQLContainer<>(DockerImageName.parse("mysql:8.0"))
                 .withDatabaseName("test_supplychainx_db")
                 .withUsername("test")
-                .withPassword("test")
-                .withReuse(true);
+                .withPassword("test");
+                // withReuse disabled to ensure clean database for each test run
+                
         MYSQL_CONTAINER.start();
     }
     
