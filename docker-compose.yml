@@ -27,11 +27,15 @@ services:
     container_name: supplychainx-app
     restart: unless-stopped
     environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/supplychainx_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: supplychainx_user
       SPRING_DATASOURCE_PASSWORD: supplychainx_pass
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_LIQUIBASE_ENABLED: "true"
+      LOG_PATH: /app/logs
+      LOGSTASH_HOST: ${LOGSTASH_HOST:-supplychainx-logstash}
+      LOGSTASH_PORT: ${LOGSTASH_PORT:-5000}
     ports:
       - "8081:8081"
     depends_on:
@@ -117,4 +121,4 @@ volumes:
 
 networks:
   supplychainx-network:
-    driver: bridge
+    external: true

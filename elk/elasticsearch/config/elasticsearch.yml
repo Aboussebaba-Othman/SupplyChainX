@@ -1,0 +1,23 @@
+
+cluster.name: supplychainx-cluster
+node.name: supplychainx-node-1
+
+# Network settings
+network.host: 0.0.0.0
+http.port: 9200
+
+# Discovery settings (single-node for development)
+discovery.type: single-node
+
+# Security settings
+xpack.security.enabled: false
+xpack.security.enrollment.enabled: false
+
+# Performance settings
+bootstrap.memory_lock: false
+
+# Index settings
+action.auto_create_index: true
+
+# Logging
+logger.level: INFO

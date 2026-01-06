@@ -43,7 +43,12 @@ application-staging.yml
 **/application-prod.yml
 **/application-staging.yml
 
-README-DOCKER
-PHASE3-OPTIMIZATIONS.md
-CLEAN-CODE-PHASE1-IMPLEMENTATION.md
-CLEAN-CODE-IMPROVEMENTS.md
+### ELK Data ###
+elk/elasticsearch/data/
+elk/logstash/data/
+elk/kibana/data/
+logs/
+*.log.gz
+
+ELK-DOCUMENTATION.md
+ELK-QUICKSTART.md

@@ -45,12 +45,14 @@ WORKDIR /app
 # Install wget for health check (using apt for Debian-based image)
 RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
-RUN groupadd -r spring && useradd -r -g spring spring
+# Create non-root user and logs directory
+RUN groupadd -r spring && useradd -r -g spring spring \
+    && mkdir -p /app/logs \
+    && chown -R spring:spring /app/logs
 
 # Copy JAR from builder stage
 # Copy the repackaged executable jar produced by the Spring Boot build
-COPY --from=builder /build/supplychainx-app/target/supplychainx-app-*.jar app.jar
+COPY --from=builder /build/supplychainx-app/target/supplychainx-app-*-exec.jar app.jar
 
 # Change ownership
 RUN chown spring:spring app.jar

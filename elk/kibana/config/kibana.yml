@@ -1,0 +1,17 @@
+# Server settings
+server.name: supplychainx-kibana
+server.host: "0.0.0.0"
+server.port: 5601
+
+# Elasticsearch connection
+elasticsearch.hosts: ["http://elasticsearch:9200"]
+
+# Security
+xpack.security.enabled: false
+xpack.encryptedSavedObjects.encryptionKey: "supplychainx-kibana-encryption-key-min-32-chars-long"
+
+# Logging
+logging.root.level: info
+
+# Localization
+i18n.locale: "fr"
