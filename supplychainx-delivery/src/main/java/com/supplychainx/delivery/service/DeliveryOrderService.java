@@ -75,10 +75,18 @@ public class DeliveryOrderService {
                     .build();
 
             orderLines.add(orderLine);
+
+            // Réduire le stock du produit (réservation immédiate)
+            log.info("Réduction du stock pour le produit {} - Stock avant: {}, Quantité à réduire: {}",
+                    product.getName(), product.getStock(), lineDTO.getQuantity());
+            product.reduceStock(lineDTO.getQuantity().doubleValue());
+            productRepository.save(product);
+            log.info("Stock réduit pour le produit {} - Nouveau stock: {}",
+                    product.getName(), product.getStock());
         }
 
         deliveryOrder.setOrderLines(orderLines);
-        
+
         // Définir le statut initial si non fourni
         if (deliveryOrder.getStatus() == null) {
             deliveryOrder.setStatus(OrderStatus.EN_PREPARATION);
@@ -117,6 +125,9 @@ public class DeliveryOrderService {
         deliveryOrderMapper.updateEntityFromDTO(requestDTO, existingOrder);
         existingOrder.setCustomer(customer);
 
+        // Restaurer le stock des anciennes lignes de commande
+        restoreStock(existingOrder);
+
         // Mettre à jour les lignes de commande
         existingOrder.getOrderLines().clear();
         List<DeliveryOrderLine> newOrderLines = new ArrayList<>();
@@ -125,7 +136,7 @@ public class DeliveryOrderService {
             Product product = productRepository.findById(lineDTO.getProductId())
                     .orElseThrow(() -> new ResourceNotFoundException("Produit non trouvé avec l'ID: " + lineDTO.getProductId()));
 
-            // Vérifier la disponibilité du stock
+            // Vérifier la disponibilité du stock (après restauration)
             if (!product.isAvailable(lineDTO.getQuantity())) {
                 throw new BusinessException("Stock insuffisant pour le produit: " + product.getName() +
                         " (disponible: " + product.getStock() + ", demandé: " + lineDTO.getQuantity() + ")");
@@ -139,6 +150,12 @@ public class DeliveryOrderService {
                     .build();
 
             newOrderLines.add(orderLine);
+
+            // Réduire le stock du produit
+            product.reduceStock(lineDTO.getQuantity().doubleValue());
+            productRepository.save(product);
+            log.debug("Stock réduit pour le produit {} - Quantité: {}, Nouveau stock: {}",
+                    product.getName(), lineDTO.getQuantity(), product.getStock());
         }
 
         existingOrder.getOrderLines().addAll(newOrderLines);
@@ -231,6 +248,11 @@ public class DeliveryOrderService {
             throw new BusinessException("Impossible de modifier le statut d'une commande annulée");
         }
 
+        // Si annulation, restaurer le stock des produits
+        if (newStatus == OrderStatus.ANNULEE) {
+            restoreStock(order);
+        }
+
         order.setStatus(newStatus);
 
         // Si la commande est livrée, mettre à jour la date de livraison
@@ -244,6 +266,25 @@ public class DeliveryOrderService {
         return deliveryOrderMapper.toResponseDTO(updatedOrder);
     }
 
+    // Annuler une commande et restaurer le stock
+    @Transactional
+    public DeliveryOrderResponseDTO cancelOrder(Long id) {
+        log.info("Annulation de la commande ID: {}", id);
+        return updateStatus(id, OrderStatus.ANNULEE);
+    }
+
+    // Méthode privée pour restaurer le stock des produits d'une commande
+    private void restoreStock(DeliveryOrder order) {
+        for (DeliveryOrderLine line : order.getOrderLines()) {
+            Product product = line.getProduct();
+            product.addStock(line.getQuantity().doubleValue());
+            productRepository.save(product);
+            log.debug("Stock restauré pour le produit {} - Quantité: {}, Nouveau stock: {}",
+                    product.getName(), line.getQuantity(), product.getStock());
+        }
+        log.info("Stock restauré pour la commande ID: {}", order.getId());
+    }
+
     // Supprimer une commande
     @Transactional
     public void delete(Long id) {
@@ -255,6 +296,11 @@ public class DeliveryOrderService {
         // Vérifier si la commande peut être supprimée
         if (order.getStatus() == OrderStatus.EN_ROUTE || order.getStatus() == OrderStatus.LIVREE) {
             throw new BusinessException("Impossible de supprimer une commande en cours de livraison ou déjà livrée");
+        }
+
+        // Restaurer le stock si la commande n'était pas déjà annulée
+        if (order.getStatus() != OrderStatus.ANNULEE) {
+            restoreStock(order);
         }
 
         deliveryOrderRepository.delete(order);

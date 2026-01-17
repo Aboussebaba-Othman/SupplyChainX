@@ -1,14 +1,11 @@
 package com.supplychainx.security.constants;
 
-// Security constants to replace magic numbers and improve maintainability
 public final class SecurityConstants {
 
     // Prevent instantiation
     private SecurityConstants() {
         throw new UnsupportedOperationException("Cette classe ne peut pas être instanciée");
     }
-
-    // ==================== Password Constants ====================
 
     // Minimum password length
     public static final int PASSWORD_MIN_LENGTH = 8;
