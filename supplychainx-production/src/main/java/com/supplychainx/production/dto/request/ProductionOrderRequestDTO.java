@@ -16,9 +16,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ProductionOrderRequestDTO {
 
-    @NotBlank(message = "Le numéro d'ordre est obligatoire")
     @Size(max = 50, message = "Le numéro d'ordre ne peut pas dépasser 50 caractères")
-    private String orderNumber;
+    private String orderNumber; // Optionnel - généré automatiquement si non fourni
 
     @NotNull(message = "Le produit est obligatoire")
     private Long productId;

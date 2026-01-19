@@ -14,6 +14,7 @@ import com.supplychainx.production.repository.ProductRepository;
 import com.supplychainx.production.repository.ProductionOrderRepository;
 import com.supplychainx.supply.entity.RawMaterial;
 import com.supplychainx.supply.repository.RawMaterialRepository;
+import com.supplychainx.common.util.CodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -38,12 +39,20 @@ public class ProductionOrderService {
 
     // Créer un nouvel ordre de production
     public ProductionOrderResponseDTO createProductionOrder(ProductionOrderRequestDTO requestDTO) {
-        log.info("Création d'un nouvel ordre de production: {}", requestDTO.getOrderNumber());
-
-        // Vérifier si le numéro d'ordre existe déjà
-        if (productionOrderRepository.existsByOrderNumber(requestDTO.getOrderNumber())) {
-            throw new BusinessException("Un ordre de production avec ce numéro existe déjà: " + requestDTO.getOrderNumber());
+        // Génération automatique du numéro si non fourni
+        String orderNumber = requestDTO.getOrderNumber();
+        if (orderNumber == null || orderNumber.isBlank()) {
+            String lastNumber = productionOrderRepository.findLastOrderNumber().orElse(null);
+            orderNumber = CodeGenerator.generateProductionOrderNumber(lastNumber);
+            requestDTO.setOrderNumber(orderNumber);
+            log.info("Numéro d'ordre de production généré automatiquement: {}", orderNumber);
+        } else {
+            // Vérifier si le numéro d'ordre existe déjà
+            if (productionOrderRepository.existsByOrderNumber(orderNumber)) {
+                throw new BusinessException("Un ordre de production avec ce numéro existe déjà: " + orderNumber);
+            }
         }
+        log.info("Création d'un nouvel ordre de production: {}", orderNumber);
 
         // Vérifier que le produit existe
         Product product = productRepository.findById(requestDTO.getProductId())

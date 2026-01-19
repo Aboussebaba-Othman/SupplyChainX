@@ -15,9 +15,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class DeliveryRequestDTO {
 
-    @NotBlank(message = "Le numéro de livraison est obligatoire")
     @Size(max = 50, message = "Le numéro de livraison ne peut pas dépasser 50 caractères")
-    private String deliveryNumber;
+    private String deliveryNumber; // Optionnel - généré automatiquement si non fourni
 
     @NotNull(message = "La commande est obligatoire")
     private Long deliveryOrderId;

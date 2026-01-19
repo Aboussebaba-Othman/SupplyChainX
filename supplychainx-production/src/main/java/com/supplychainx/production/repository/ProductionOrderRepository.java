@@ -30,4 +30,8 @@ public interface ProductionOrderRepository extends JpaRepository<ProductionOrder
     List<ProductionOrder> findByStatusAndEndDateBefore(ProductionOrderStatus status, LocalDate now);
 
     Page<ProductionOrder> findByProductId(Long productId, Pageable pageable);
+
+    // Récupère le dernier numéro de commande de production pour la génération automatique
+    @Query("SELECT po.orderNumber FROM ProductionOrder po ORDER BY po.id DESC LIMIT 1")
+    Optional<String> findLastOrderNumber();
 }

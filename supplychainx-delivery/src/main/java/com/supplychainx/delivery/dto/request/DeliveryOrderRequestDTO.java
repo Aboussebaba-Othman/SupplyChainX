@@ -16,9 +16,8 @@ import java.util.List;
 @AllArgsConstructor
 public class DeliveryOrderRequestDTO {
 
-    @NotBlank(message = "Le numéro de commande est obligatoire")
     @Size(max = 50, message = "Le numéro de commande ne peut pas dépasser 50 caractères")
-    private String orderNumber;
+    private String orderNumber; // Optionnel - généré automatiquement si non fourni
 
     @NotNull(message = "Le client est obligatoire")
     private Long customerId;

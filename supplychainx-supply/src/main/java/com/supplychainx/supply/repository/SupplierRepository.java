@@ -46,4 +46,8 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long>, JpaSp
     // Recherche des fournisseurs avec pagination et tri
     @Query("SELECT s FROM Supplier s ORDER BY s.rating DESC, s.name ASC")
     Page<Supplier> findAllOrderByRatingDesc(Pageable pageable);
+
+    // Récupère le dernier code fournisseur pour la génération automatique
+    @Query("SELECT s.code FROM Supplier s ORDER BY s.id DESC LIMIT 1")
+    Optional<String> findLastCode();
 }

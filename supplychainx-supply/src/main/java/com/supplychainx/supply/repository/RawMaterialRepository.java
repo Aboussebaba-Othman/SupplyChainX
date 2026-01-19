@@ -51,4 +51,8 @@ public interface RawMaterialRepository extends JpaRepository<RawMaterial, Long>,
     // Compte le nombre de matières en stock critique
     @Query("SELECT COUNT(rm) FROM RawMaterial rm WHERE rm.stock < rm.stockMin")
     Long countLowStockMaterials();
+
+    // Récupère le dernier code matière première pour la génération automatique
+    @Query("SELECT rm.code FROM RawMaterial rm ORDER BY rm.id DESC LIMIT 1")
+    Optional<String> findLastCode();
 }

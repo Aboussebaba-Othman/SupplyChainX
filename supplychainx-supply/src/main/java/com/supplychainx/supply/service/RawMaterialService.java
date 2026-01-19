@@ -12,6 +12,7 @@ import com.supplychainx.supply.entity.Supplier;
 import com.supplychainx.supply.mapper.RawMaterialMapper;
 import com.supplychainx.supply.repository.RawMaterialRepository;
 import com.supplychainx.supply.repository.SupplierRepository;
+import com.supplychainx.common.util.CodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,10 +34,19 @@ public class RawMaterialService {
 
     @Transactional
     public RawMaterialResponseDTO create(RawMaterialRequestDTO requestDTO) {
-        log.info("Création d'une nouvelle matière première avec le code: {}", requestDTO.getCode());
-        if (rawMaterialRepository.existsByCode(requestDTO.getCode())) {
-            throw new DuplicateResourceException("Une matière première avec le code " + requestDTO.getCode() + " existe déjà");
+        // Génération automatique du code si non fourni
+        String code = requestDTO.getCode();
+        if (code == null || code.isBlank()) {
+            String lastCode = rawMaterialRepository.findLastCode().orElse(null);
+            code = CodeGenerator.generateRawMaterialCode(lastCode);
+            requestDTO.setCode(code);
+            log.info("Code matière première généré automatiquement: {}", code);
+        } else {
+            if (rawMaterialRepository.existsByCode(code)) {
+                throw new DuplicateResourceException("Une matière première avec le code " + code + " existe déjà");
+            }
         }
+        log.info("Création d'une nouvelle matière première avec le code: {}", code);
         RawMaterial rawMaterial = rawMaterialMapper.toEntity(requestDTO);
         if (requestDTO.getSupplierIds() != null && !requestDTO.getSupplierIds().isEmpty()) {
             List<Supplier> suppliers = new java.util.ArrayList<>();

@@ -15,6 +15,7 @@ import com.supplychainx.delivery.repository.CustomerRepository;
 import com.supplychainx.delivery.repository.DeliveryOrderRepository;
 import com.supplychainx.production.entity.Product;
 import com.supplychainx.production.repository.ProductRepository;
+import com.supplychainx.common.util.CodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -40,12 +41,20 @@ public class DeliveryOrderService {
     // Créer une nouvelle commande
     @Transactional
     public DeliveryOrderResponseDTO create(DeliveryOrderRequestDTO requestDTO) {
-        log.info("Création d'une nouvelle commande avec le numéro: {}", requestDTO.getOrderNumber());
-
-        // Vérifier si le numéro de commande existe déjà
-        if (deliveryOrderRepository.existsByOrderNumber(requestDTO.getOrderNumber())) {
-            throw new DuplicateResourceException("Une commande avec le numéro " + requestDTO.getOrderNumber() + " existe déjà");
+        // Génération automatique du numéro si non fourni
+        String orderNumber = requestDTO.getOrderNumber();
+        if (orderNumber == null || orderNumber.isBlank()) {
+            String lastNumber = deliveryOrderRepository.findLastOrderNumber().orElse(null);
+            orderNumber = CodeGenerator.generateDeliveryOrderNumber(lastNumber);
+            requestDTO.setOrderNumber(orderNumber);
+            log.info("Numéro de commande de livraison généré automatiquement: {}", orderNumber);
+        } else {
+            // Vérifier si le numéro de commande existe déjà
+            if (deliveryOrderRepository.existsByOrderNumber(orderNumber)) {
+                throw new DuplicateResourceException("Une commande avec le numéro " + orderNumber + " existe déjà");
+            }
         }
+        log.info("Création d'une nouvelle commande avec le numéro: {}", orderNumber);
 
         // Vérifier que le client existe
         Customer customer = customerRepository.findById(requestDTO.getCustomerId())

@@ -38,4 +38,8 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Long> {
 
     @Query("SELECT d FROM Delivery d WHERE d.trackingNumber = :trackingNumber")
     Optional<Delivery> findByTrackingNumber(@Param("trackingNumber") String trackingNumber);
+
+    // Récupère le dernier numéro de livraison pour la génération automatique
+    @Query("SELECT d.deliveryNumber FROM Delivery d ORDER BY d.id DESC LIMIT 1")
+    Optional<String> findLastDeliveryNumber();
 }

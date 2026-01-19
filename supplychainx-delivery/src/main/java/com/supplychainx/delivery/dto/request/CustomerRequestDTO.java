@@ -12,9 +12,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CustomerRequestDTO {
 
-    @NotBlank(message = "Le code client est obligatoire")
     @Size(max = 50, message = "Le code ne peut pas dépasser 50 caractères")
-    private String code;
+    private String code; // Optionnel - généré automatiquement si non fourni
 
     @NotBlank(message = "Le nom du client est obligatoire")
     @Size(max = 100, message = "Le nom ne peut pas dépasser 100 caractères")

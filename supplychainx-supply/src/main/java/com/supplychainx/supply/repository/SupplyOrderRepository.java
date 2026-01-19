@@ -73,4 +73,8 @@ public interface SupplyOrderRepository extends JpaRepository<SupplyOrder, Long>,
     // Recherche les dernières commandes
     @Query("SELECT so FROM SupplyOrder so ORDER BY so.orderDate DESC")
     Page<SupplyOrder> findRecentOrders(Pageable pageable);
+
+    // Récupère le dernier numéro de commande d'approvisionnement pour la génération automatique
+    @Query("SELECT so.orderNumber FROM SupplyOrder so ORDER BY so.id DESC LIMIT 1")
+    Optional<String> findLastOrderNumber();
 }

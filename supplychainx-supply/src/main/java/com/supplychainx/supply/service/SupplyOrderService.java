@@ -16,6 +16,7 @@ import com.supplychainx.supply.mapper.SupplyOrderMapper;
 import com.supplychainx.supply.repository.RawMaterialRepository;
 import com.supplychainx.supply.repository.SupplierRepository;
 import com.supplychainx.supply.repository.SupplyOrderRepository;
+import com.supplychainx.common.util.CodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -41,11 +42,20 @@ public class SupplyOrderService {
     // Créer une nouvelle commande d'approvisionnement
     @Transactional
     public SupplyOrderResponseDTO create(SupplyOrderRequestDTO requestDTO) {
-        log.info("Création d'une nouvelle commande avec le numéro: {}", requestDTO.getOrderNumber());
-        // Vérifier si le numéro de commande existe déjà
-        if (supplyOrderRepository.existsByOrderNumber(requestDTO.getOrderNumber())) {
-            throw new DuplicateResourceException("Une commande avec le numéro " + requestDTO.getOrderNumber() + " existe déjà");
+        // Génération automatique du numéro si non fourni
+        String orderNumber = requestDTO.getOrderNumber();
+        if (orderNumber == null || orderNumber.isBlank()) {
+            String lastNumber = supplyOrderRepository.findLastOrderNumber().orElse(null);
+            orderNumber = CodeGenerator.generateSupplyOrderNumber(lastNumber);
+            requestDTO.setOrderNumber(orderNumber);
+            log.info("Numéro de commande d'approvisionnement généré automatiquement: {}", orderNumber);
+        } else {
+            // Vérifier si le numéro de commande existe déjà
+            if (supplyOrderRepository.existsByOrderNumber(orderNumber)) {
+                throw new DuplicateResourceException("Une commande avec le numéro " + orderNumber + " existe déjà");
+            }
         }
+        log.info("Création d'une nouvelle commande avec le numéro: {}", orderNumber);
         // Vérifier que le fournisseur existe
         Supplier supplier = supplierRepository.findById(requestDTO.getSupplierId())
                     .orElseThrow(() -> new ResourceNotFoundException("Fournisseur non trouvé avec l'ID: " + requestDTO.getSupplierId()));

@@ -14,9 +14,8 @@ import java.util.List;
 @AllArgsConstructor
 public class RawMaterialRequestDTO {
 
-    @NotBlank(message = "Le code de la matière première est obligatoire")
     @Size(max = 50, message = "Le code ne peut pas dépasser 50 caractères")
-    private String code;
+    private String code; // Optionnel - généré automatiquement si non fourni
 
     @NotBlank(message = "Le nom de la matière première est obligatoire")
     @Size(max = 100, message = "Le nom ne peut pas dépasser 100 caractères")

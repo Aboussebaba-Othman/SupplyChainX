@@ -39,4 +39,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
            "FROM ProductionOrder po " +
            "WHERE po.product.id = :productId")
     boolean isUsedInProductionOrders(@Param("productId") Long productId);
+
+    // Récupère le dernier code produit pour la génération automatique
+    @Query("SELECT p.code FROM Product p ORDER BY p.id DESC LIMIT 1")
+    Optional<String> findLastCode();
 }

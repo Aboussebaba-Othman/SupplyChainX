@@ -7,6 +7,7 @@ import com.supplychainx.production.dto.response.ProductResponseDTO;
 import com.supplychainx.production.entity.Product;
 import com.supplychainx.production.mapper.ProductMapper;
 import com.supplychainx.production.repository.ProductRepository;
+import com.supplychainx.common.util.CodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,12 +27,20 @@ public class ProductService {
 
     // Créer un nouveau produit
     public ProductResponseDTO createProduct(ProductRequestDTO requestDTO) {
-        log.info("Création d'un nouveau produit avec le code: {}", requestDTO.getCode());
-
-        // Vérifier si le code existe déjà
-        if (productRepository.existsByCode(requestDTO.getCode())) {
-            throw new BusinessException("Un produit avec ce code existe déjà: " + requestDTO.getCode());
+        // Génération automatique du code si non fourni
+        String code = requestDTO.getCode();
+        if (code == null || code.isBlank()) {
+            String lastCode = productRepository.findLastCode().orElse(null);
+            code = CodeGenerator.generateProductCode(lastCode);
+            requestDTO.setCode(code);
+            log.info("Code produit généré automatiquement: {}", code);
+        } else {
+            // Vérifier si le code existe déjà
+            if (productRepository.existsByCode(code)) {
+                throw new BusinessException("Un produit avec ce code existe déjà: " + code);
+            }
         }
+        log.info("Création d'un nouveau produit avec le code: {}", code);
 
         Product product = productMapper.toEntity(requestDTO);
         Product savedProduct = productRepository.save(product);

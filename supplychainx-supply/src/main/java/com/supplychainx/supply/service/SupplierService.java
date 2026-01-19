@@ -9,6 +9,7 @@ import com.supplychainx.supply.dto.response.SupplierResponseDTO;
 import com.supplychainx.supply.entity.Supplier;
 import com.supplychainx.supply.mapper.SupplierMapper;
 import com.supplychainx.supply.repository.SupplierRepository;
+import com.supplychainx.common.util.CodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,10 +30,19 @@ public class SupplierService {
 
     @Transactional
     public SupplierResponseDTO create(SupplierRequestDTO requestDTO) {
-        log.info("Création d'un nouveau fournisseur avec le code: {}", requestDTO.getCode());
-        if (supplierRepository.existsByCode(requestDTO.getCode())) {
-            throw new DuplicateResourceException("Un fournisseur avec le code " + requestDTO.getCode() + " existe déjà");
+        // Génération automatique du code si non fourni
+        String code = requestDTO.getCode();
+        if (code == null || code.isBlank()) {
+            String lastCode = supplierRepository.findLastCode().orElse(null);
+            code = CodeGenerator.generateSupplierCode(lastCode);
+            requestDTO.setCode(code);
+            log.info("Code fournisseur généré automatiquement: {}", code);
+        } else {
+            if (supplierRepository.existsByCode(code)) {
+                throw new DuplicateResourceException("Un fournisseur avec le code " + code + " existe déjà");
+            }
         }
+        log.info("Création d'un nouveau fournisseur avec le code: {}", code);
         if (requestDTO.getEmail() != null && supplierRepository.existsByEmail(requestDTO.getEmail())) {
             throw new DuplicateResourceException("Un fournisseur avec l'email " + requestDTO.getEmail() + " existe déjà");
         }

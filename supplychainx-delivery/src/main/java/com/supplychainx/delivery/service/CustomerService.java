@@ -8,6 +8,7 @@ import com.supplychainx.delivery.dto.response.CustomerResponseDTO;
 import com.supplychainx.delivery.entity.Customer;
 import com.supplychainx.delivery.mapper.CustomerMapper;
 import com.supplychainx.delivery.repository.CustomerRepository;
+import com.supplychainx.common.util.CodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,12 +28,20 @@ public class CustomerService {
     // Créer un nouveau client
     @Transactional
     public CustomerResponseDTO create(CustomerRequestDTO requestDTO) {
-        log.info("Création d'un nouveau client avec le code: {}", requestDTO.getCode());
-
-        // Vérifier si le code existe déjà
-        if (customerRepository.existsByCode(requestDTO.getCode())) {
-            throw new DuplicateResourceException("Un client avec le code " + requestDTO.getCode() + " existe déjà");
+        // Génération automatique du code si non fourni
+        String code = requestDTO.getCode();
+        if (code == null || code.isBlank()) {
+            String lastCode = customerRepository.findLastCode().orElse(null);
+            code = CodeGenerator.generateCustomerCode(lastCode);
+            requestDTO.setCode(code);
+            log.info("Code client généré automatiquement: {}", code);
+        } else {
+            // Vérifier si le code existe déjà
+            if (customerRepository.existsByCode(code)) {
+                throw new DuplicateResourceException("Un client avec le code " + code + " existe déjà");
+            }
         }
+        log.info("Création d'un nouveau client avec le code: {}", code);
 
         // Vérifier si l'email existe déjà
         if (requestDTO.getEmail() != null && customerRepository.existsByEmail(requestDTO.getEmail())) {

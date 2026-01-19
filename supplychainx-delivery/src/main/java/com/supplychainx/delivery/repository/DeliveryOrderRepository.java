@@ -39,4 +39,8 @@ public interface DeliveryOrderRepository extends JpaRepository<DeliveryOrder, Lo
 
         @Query("SELECT d FROM DeliveryOrder d WHERE d.expectedDeliveryDate = :date AND d.status IN ('EN_PREPARATION', 'EN_ROUTE')")
         List<DeliveryOrder> findOrdersForDeliveryDate(@Param("date") LocalDate date);
+
+    // Récupère le dernier numéro de commande de livraison pour la génération automatique
+    @Query("SELECT d.orderNumber FROM DeliveryOrder d ORDER BY d.id DESC LIMIT 1")
+    Optional<String> findLastOrderNumber();
 }

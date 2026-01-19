@@ -28,4 +28,8 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     Page<Customer> findByCity(String city, Pageable pageable);
 
     Page<Customer> findByCountry(String country, Pageable pageable);
+
+    // Récupère le dernier code client pour la génération automatique
+    @Query("SELECT c.code FROM Customer c ORDER BY c.id DESC LIMIT 1")
+    Optional<String> findLastCode();
 }

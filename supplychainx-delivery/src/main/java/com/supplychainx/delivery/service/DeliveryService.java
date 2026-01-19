@@ -11,6 +11,7 @@ import com.supplychainx.delivery.enums.DeliveryStatus;
 import com.supplychainx.delivery.mapper.DeliveryMapper;
 import com.supplychainx.delivery.repository.DeliveryOrderRepository;
 import com.supplychainx.delivery.repository.DeliveryRepository;
+import com.supplychainx.common.util.CodeGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -34,12 +35,20 @@ public class DeliveryService {
     // Créer une nouvelle livraison
     @Transactional
     public DeliveryResponseDTO create(DeliveryRequestDTO requestDTO) {
-        log.info("Création d'une nouvelle livraison avec le numéro: {}", requestDTO.getDeliveryNumber());
-
-        // Vérifier si le numéro de livraison existe déjà
-        if (deliveryRepository.existsByDeliveryNumber(requestDTO.getDeliveryNumber())) {
-            throw new DuplicateResourceException("Une livraison avec le numéro " + requestDTO.getDeliveryNumber() + " existe déjà");
+        // Génération automatique du numéro si non fourni
+        String deliveryNumber = requestDTO.getDeliveryNumber();
+        if (deliveryNumber == null || deliveryNumber.isBlank()) {
+            String lastNumber = deliveryRepository.findLastDeliveryNumber().orElse(null);
+            deliveryNumber = CodeGenerator.generateDeliveryNumber(lastNumber);
+            requestDTO.setDeliveryNumber(deliveryNumber);
+            log.info("Numéro de livraison généré automatiquement: {}", deliveryNumber);
+        } else {
+            // Vérifier si le numéro de livraison existe déjà
+            if (deliveryRepository.existsByDeliveryNumber(deliveryNumber)) {
+                throw new DuplicateResourceException("Une livraison avec le numéro " + deliveryNumber + " existe déjà");
+            }
         }
+        log.info("Création d'une nouvelle livraison avec le numéro: {}", deliveryNumber);
 
         // Vérifier que la commande existe
         DeliveryOrder deliveryOrder = deliveryOrderRepository.findById(requestDTO.getDeliveryOrderId())
